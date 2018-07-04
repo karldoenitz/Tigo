@@ -3,6 +3,7 @@ package WebFramework
 
 import "net/http"
 
+// URL路由，此处存储URL映射。
 type UrlPattern struct {
 	UrlMapping map[string] interface{Handle(http.ResponseWriter, *http.Request)}
 }
