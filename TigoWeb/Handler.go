@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"encoding/json"
 	"fmt"
+	"strings"
 )
 
 // Handler的基础类，开发者开发的handler继承此类
@@ -50,4 +51,19 @@ func (baseHandler *BaseHandler)ResponseAsText(result string)  {
 func (baseHandler *BaseHandler)ResponseAsHtml(result string)  {
 	baseHandler.ResponseWriter.Header().Set("Content-Type", "text/html")
 	fmt.Fprintf(baseHandler.ResponseWriter, result)
+}
+
+// 检查请求是否被允许
+func (baseHandler *BaseHandler)CheckRequestMethodValid(methods ...string)(result bool) {
+	// 获取请求方式
+	requestMethod := baseHandler.Request.Method
+	// 遍历被允许的请求方式，判断是否合法
+	for _, value := range methods {
+		if requestMethod == value || strings.ToLower(requestMethod) == value {
+			return true
+		}
+	}
+	// 如果不合法返回405
+	baseHandler.ResponseWriter.WriteHeader(405)
+	return false
 }
