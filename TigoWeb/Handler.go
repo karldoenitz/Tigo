@@ -17,6 +17,7 @@ type BaseHandler struct {
 func (baseHandler *BaseHandler)InitHandler(responseWriter http.ResponseWriter, request *http.Request) {
 	baseHandler.Request = request
 	baseHandler.ResponseWriter = responseWriter
+	baseHandler.Request.ParseForm()
 }
 
 // 将对象转化为Json字符串，转换失败则返回空字符串。
