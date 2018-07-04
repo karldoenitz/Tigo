@@ -4,6 +4,7 @@ package WebFramework
 import (
 	"net/http"
 	"fmt"
+	"../logger"
 )
 
 // web容器
@@ -17,7 +18,9 @@ type Application struct {
 func (application *Application)Run() {
 	application.UrlPattern.Init()
 	address := fmt.Sprintf("%s:%s", application.IPAddress, application.Port)
+	logger.Info.Printf("Server run on: %s", address)
 	httpServerErr := http.ListenAndServe(address, nil)
 	if httpServerErr != nil {
+		logger.Error.Printf("HTTP SERVER ERROR! MSG: %s", httpServerErr.Error())
 	}
 }
