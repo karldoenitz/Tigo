@@ -67,3 +67,23 @@ func (baseHandler *BaseHandler)CheckRequestMethodValid(methods ...string)(result
 	baseHandler.ResponseWriter.WriteHeader(405)
 	return false
 }
+
+// 设置cookie
+func (baseHandler *BaseHandler)SetCookie(name string, value string) {
+
+}
+
+// 设置高级cookie选项
+func (baseHandler *BaseHandler)SetCookieObject() {
+
+}
+
+// 设置加密cookie
+
+// 获取cookie
+
+// 获取加密cookie
+
+// 获取header
+
+// 设置header
