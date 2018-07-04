@@ -44,3 +44,9 @@ func (baseHandler *BaseHandler)ResponseAsJson(response Response)  {
 func (baseHandler *BaseHandler)ResponseAsText(result string)  {
 	fmt.Fprintf(baseHandler.ResponseWriter, result)
 }
+
+// 向客户端响应一个html结果
+func (baseHandler *BaseHandler)ResponseAsHtml(result string)  {
+	baseHandler.ResponseWriter.Header().Set("Content-Type", "text/html")
+	fmt.Fprintf(baseHandler.ResponseWriter, result)
+}
