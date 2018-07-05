@@ -34,7 +34,7 @@ func (baseHandler *BaseHandler)ToJson(response Response) (result string) {
 }
 
 // 向客户端响应一个Json结果
-func (baseHandler *BaseHandler)ResponseAsJson(response Response)  {
+func (baseHandler *BaseHandler)ResponseAsJson(response Response) {
 	// 将对象转换为Json字符串
 	jsonResult := baseHandler.ToJson(response)
 	// 设置http报文头内的Content-Type
@@ -43,18 +43,18 @@ func (baseHandler *BaseHandler)ResponseAsJson(response Response)  {
 }
 
 // 向客户端响应一个Text结果
-func (baseHandler *BaseHandler)ResponseAsText(result string)  {
+func (baseHandler *BaseHandler)ResponseAsText(result string) {
 	fmt.Fprintf(baseHandler.ResponseWriter, result)
 }
 
 // 向客户端响应一个html结果
-func (baseHandler *BaseHandler)ResponseAsHtml(result string)  {
+func (baseHandler *BaseHandler)ResponseAsHtml(result string) {
 	baseHandler.ResponseWriter.Header().Set("Content-Type", "text/html")
 	fmt.Fprintf(baseHandler.ResponseWriter, result)
 }
 
 // 检查请求是否被允许
-func (baseHandler *BaseHandler)CheckRequestMethodValid(methods ...string)(result bool) {
+func (baseHandler *BaseHandler)CheckRequestMethodValid(methods ...string) (result bool) {
 	// 获取请求方式
 	requestMethod := baseHandler.Request.Method
 	// 遍历被允许的请求方式，判断是否合法
@@ -76,19 +76,7 @@ func (baseHandler *BaseHandler)SetCookie(name string, value string) {
 
 // 设置高级cookie选项
 func (baseHandler *BaseHandler)SetCookieObject(cookie Cookie) {
-	responseCookie := http.Cookie{
-		Name:       cookie.Name,
-		Value:      cookie.GetCookieEncodeValue(),
-		Path:       cookie.Path,
-		Domain:     cookie.Domain,
-		Expires:    cookie.Expires,
-		RawExpires: cookie.RawExpires,
-		MaxAge:     cookie.MaxAge,
-		Secure:     cookie.Secure,
-		HttpOnly:   cookie.HttpOnly,
-		Raw:        cookie.Raw,
-		Unparsed:   cookie.Unparsed,
-	}
+	responseCookie := cookie.ToHttpCookie()
 	http.SetCookie(baseHandler.ResponseWriter, &responseCookie)
 }
 
@@ -104,7 +92,7 @@ func (baseHandler *BaseHandler)SetSecureCookie(name string, value string, key st
 }
 
 // 获取cookie值，如果获取失败则返回空字符串
-func (baseHandler *BaseHandler)GetCookie(name string)(value string) {
+func (baseHandler *BaseHandler)GetCookie(name string) (value string) {
 	cookie, err := baseHandler.Request.Cookie(name)
 	if err != nil {
 		return ""
@@ -113,9 +101,47 @@ func (baseHandler *BaseHandler)GetCookie(name string)(value string) {
 	return value
 }
 
-// 获取加密cookie值
+// 获取加密cookie值，如果获取失败则返回空
+func (baseHandler *BaseHandler)GetSecureCookie(name string, key string) (value string) {
+	httpCookie, err := baseHandler.Request.Cookie(name)
+	if err != nil {
+		return ""
+	}
+	cookie := Cookie{}
+	cookie.ConvertFromHttpCookie(*httpCookie)
+	cookie.IsSecurity = true
+	cookie.SecurityKey = key
+	value = cookie.GetCookieDecodeValue()
+	return value
+}
 
-// 获取cookie对象
+// 获取cookie对象，多参数输入，参数如下：
+//   - 无参数：默认cookieName为空字符串
+//   - 一个参数：传入的参数为cookieName
+//   - 多个参数：传入的第一个参数为cookieName，第二个参数为加密/解密cookie所用的Key，此时认为cookie是需要进行加密/解密处理的
+func (baseHandler *BaseHandler)GetCookieObject(name ...string) (Cookie, error) {
+	cookie := Cookie{}
+	var cookieName, key string
+	length := len(name)
+	switch {
+	case length < 1:
+		cookieName = ""
+	case length == 1:
+		cookieName = name[0]
+	case length > 1:
+		cookieName = name[0]
+		key = name[1]
+	}
+	httpCookie, err := baseHandler.Request.Cookie(cookieName)
+	if err != nil {
+		return cookie, nil
+	}
+	cookie.ConvertFromHttpCookie(*httpCookie)
+	if len(key) > 0 {
+		cookie.SetSecurityKey(key)
+	}
+	return cookie, nil
+}
 
 // 获取header
 
