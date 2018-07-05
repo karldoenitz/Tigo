@@ -1,49 +1,69 @@
 package WebFramework
 
 import (
+	"encoding/base64"
+	"crypto/aes"
 	"crypto/cipher"
-	"crypto/des"
-	"bytes"
+	"io"
+	"crypto/rand"
+	"errors"
+	"crypto/md5"
 )
 
-// Des加密函数
-func DesEncrypt(origData, key []byte) ([]byte, error) {
-	block, err := des.NewCipher(key)
+// 根据key对原始数据进行加密，并将加密结果进行base64编码，
+// 加密失败则返回空
+//   - 此处以后会进行异常处理方面的优化
+func Encrypt(src[]byte, key []byte) string {
+	encryptValue, _ := encrypt(src, key)
+	return base64.StdEncoding.EncodeToString(encryptValue)
+}
+
+// 先对原始数据进行base64解码，然后根据key进行解密，
+// 解密失败则返回空
+//   - 此处以后会进行异常处理方面的优化
+func Decrypt(src[]byte, key []byte) ([]byte) {
+	result, _ := base64.StdEncoding.DecodeString(string(src))
+	value, _ := decrypt(result, key)
+	return value
+}
+
+// aes加密函数，
+// 先将key通过md5加密为64位，然后对原始值进行aes加密
+func encrypt(plainText []byte, key []byte) ([]byte, error) {
+	has := md5.Sum(key)
+	hasKey := []byte(has[:])
+	c, err := aes.NewCipher(hasKey)
 	if err != nil {
 		return nil, err
 	}
-	origData = PKCS5Padding(origData, block.BlockSize())
-	blockMode := cipher.NewCBCEncrypter(block, key)
-	cryptData := make([]byte, len(origData))
-	// 根据CryptBlocks方法的说明，如下方式初始化cryptData也可以
-	blockMode.CryptBlocks(cryptData, origData)
-	return cryptData, nil
-}
-
-// PKCS5填充函数
-func PKCS5Padding(cipherText []byte, blockSize int) []byte {
-	padding := blockSize - len(cipherText) % blockSize
-	padText := bytes.Repeat([]byte{byte(padding)}, padding)
-	return append(cipherText, padText...)
-}
-
-// Des解密函数
-func DesDecrypt(cryptData, key []byte) ([]byte, error) {
-	block, err := des.NewCipher(key)
+	gcm, err := cipher.NewGCM(c)
 	if err != nil {
 		return nil, err
 	}
-	blockMode := cipher.NewCBCDecrypter(block, key)
-	origData := make([]byte, len(cryptData))
-	blockMode.CryptBlocks(origData, cryptData)
-	origData = PKCS5UnPadding(origData)
-	return origData, nil
+	nonce := make([]byte, gcm.NonceSize())
+	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
+		return nil, err
+	}
+	return gcm.Seal(nonce, nonce, plainText, nil), nil
 }
 
-// PKCS5还原函数
-func PKCS5UnPadding(origData []byte) []byte {
-	length := len(origData)
-	// 去掉最后一个字节 unPadding 次
-	unPadding := int(origData[length-1])
-	return origData[:(length - unPadding)]
+// aes解密函数，
+// 先将key通过md5加密为64位，然后对加密值进行aes解密
+func decrypt(cipherText []byte, key []byte) ([]byte, error) {
+	has := md5.Sum(key)
+	hasKey := []byte(has[:])
+	c, err := aes.NewCipher(hasKey)
+	if err != nil {
+		return nil, err
+	}
+	gcm, err := cipher.NewGCM(c)
+	if err != nil {
+		return nil, err
+	}
+	nonceSize := gcm.NonceSize()
+	if len(cipherText) < nonceSize {
+		return nil, errors.New("cipherText too short")
+	}
+	nonce, cipherText := cipherText[:nonceSize], cipherText[nonceSize:]
+	return gcm.Open(nil, nonce, cipherText, nil)
 }

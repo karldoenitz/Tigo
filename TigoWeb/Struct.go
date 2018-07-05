@@ -40,11 +40,7 @@ func (cookie *Cookie)GetCookieEncodeValue()(result string) {
 	}
 	value := []byte(cookie.Value)
 	key   := []byte(cookie.SecurityKey)
-	securityValue, err := DesEncrypt(value, key)
-	if err != nil {
-		panic(err)
-	}
-	result = string(securityValue)
+	result = Encrypt(value, key)
 	return result
 }
 
@@ -58,10 +54,7 @@ func (cookie *Cookie)GetCookieDecodeValue()(result string) {
 	}
 	value := []byte(cookie.Value)
 	key   := []byte(cookie.SecurityKey)
-	securityValue, err := DesDecrypt(value, key)
-	if err != nil {
-		panic(err)
-	}
+	securityValue := Decrypt(value, key)
 	result = string(securityValue)
 	return result
 }
@@ -106,3 +99,5 @@ func (cookie *Cookie)SetSecurityKey(key string) {
 	cookie.SecurityKey = key
 	cookie.IsSecurity = true
 }
+
+//////////////////////////////////////Structure Response////////////////////////////////////////////////////////////////
