@@ -103,7 +103,15 @@ func (baseHandler *BaseHandler)SetSecureCookie(name string, value string, key st
 	baseHandler.SetCookieObject(cookie)
 }
 
-// 获取cookie值
+// 获取cookie值，如果获取失败则返回空字符串
+func (baseHandler *BaseHandler)GetCookie(name string)(value string) {
+	cookie, err := baseHandler.Request.Cookie(name)
+	if err != nil {
+		return ""
+	}
+	value = cookie.Value
+	return value
+}
 
 // 获取加密cookie值
 
