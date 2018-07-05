@@ -144,7 +144,7 @@ func (baseHandler *BaseHandler)GetCookieObject(name ...string) (Cookie, error) {
 	return cookie, nil
 }
 
-// 清除指定的cookie
+// 清除当前path下的指定的cookie
 func (baseHandler *BaseHandler)ClearCookie(name string) {
 	cookie := Cookie{
 		Name: name,
@@ -153,7 +153,7 @@ func (baseHandler *BaseHandler)ClearCookie(name string) {
 	baseHandler.SetCookieObject(cookie)
 }
 
-// 清除所有的cookie
+// 清除当前path下所有的cookie
 func (baseHandler *BaseHandler)ClearAllCookie() {
 	cookies := baseHandler.Request.Cookies()
 	for _, cookie := range cookies {
