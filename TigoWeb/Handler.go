@@ -74,15 +74,17 @@ func (baseHandler *BaseHandler)SetCookie(name string, value string) {
 }
 
 // 设置高级cookie选项
-func (baseHandler *BaseHandler)SetCookieObject() {
+func (baseHandler *BaseHandler)SetCookieObject(cookie http.Cookie) {
 
 }
 
 // 设置加密cookie
 
-// 获取cookie
+// 获取cookie值
 
-// 获取加密cookie
+// 获取加密cookie值
+
+// 获取cookie对象
 
 // 获取header
 
