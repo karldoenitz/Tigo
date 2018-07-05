@@ -143,6 +143,10 @@ func (baseHandler *BaseHandler)GetCookieObject(name ...string) (Cookie, error) {
 	return cookie, nil
 }
 
+// 清除指定的cookie
+
+// 清除所有的cookie
+
 // 获取header
 
 // 设置header
