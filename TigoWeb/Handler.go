@@ -70,15 +70,38 @@ func (baseHandler *BaseHandler)CheckRequestMethodValid(methods ...string)(result
 
 // 设置cookie
 func (baseHandler *BaseHandler)SetCookie(name string, value string) {
-
+	cookie := http.Cookie{Name:name, Value:value}
+	http.SetCookie(baseHandler.ResponseWriter, &cookie)
 }
 
 // 设置高级cookie选项
-func (baseHandler *BaseHandler)SetCookieObject(cookie http.Cookie) {
-
+func (baseHandler *BaseHandler)SetCookieObject(cookie Cookie) {
+	responseCookie := http.Cookie{
+		Name:       cookie.Name,
+		Value:      cookie.GetCookieEncodeValue(),
+		Path:       cookie.Path,
+		Domain:     cookie.Domain,
+		Expires:    cookie.Expires,
+		RawExpires: cookie.RawExpires,
+		MaxAge:     cookie.MaxAge,
+		Secure:     cookie.Secure,
+		HttpOnly:   cookie.HttpOnly,
+		Raw:        cookie.Raw,
+		Unparsed:   cookie.Unparsed,
+	}
+	http.SetCookie(baseHandler.ResponseWriter, &responseCookie)
 }
 
 // 设置加密cookie
+func (baseHandler *BaseHandler)SetSecureCookie(name string, value string, key string) {
+	cookie := Cookie{
+		Name:        name,
+		Value:       value,
+		IsSecurity:  true,
+		SecurityKey: key,
+	}
+	baseHandler.SetCookieObject(cookie)
+}
 
 // 获取cookie值
 
