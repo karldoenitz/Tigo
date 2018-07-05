@@ -1,5 +1,5 @@
 // Copyright 2018 The Tigo Authors. All rights reserved.
-package WebFramework
+package TigoWeb
 
 type Response interface {
 	Print()

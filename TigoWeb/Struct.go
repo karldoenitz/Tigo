@@ -1,4 +1,4 @@
-package WebFramework
+package TigoWeb
 
 import (
 	"time"
