@@ -1,6 +1,11 @@
 package WebFramework
 
-import "time"
+import (
+	"time"
+	"net/http"
+)
+
+//////////////////////////////////////Structure Cookie//////////////////////////////////////////////////////////////////
 
 // 自定义Cookie结构体，可参看http.Cookie
 type Cookie struct {
@@ -41,4 +46,63 @@ func (cookie *Cookie)GetCookieEncodeValue()(result string) {
 	}
 	result = string(securityValue)
 	return result
+}
+
+// 获取cookie解密值
+//   - IsSecurity如果设置为false，则返回原始值
+//   - IsSecurity如果设置为true，则返回加密后的值
+// 如果解密失败，则抛出异常
+func (cookie *Cookie)GetCookieDecodeValue()(result string) {
+	if !cookie.IsSecurity {
+		return cookie.Value
+	}
+	value := []byte(cookie.Value)
+	key   := []byte(cookie.SecurityKey)
+	securityValue, err := DesDecrypt(value, key)
+	if err != nil {
+		panic(err)
+	}
+	result = string(securityValue)
+	return result
+}
+
+// 转换为http/Cookie对象
+func (cookie *Cookie)ToHttpCookie()(http.Cookie) {
+	httpCookie := http.Cookie{
+		Name:       cookie.Name,
+		Value:      cookie.GetCookieEncodeValue(),
+		Path:       cookie.Path,
+		Domain:     cookie.Domain,
+		Expires:    cookie.Expires,
+		RawExpires: cookie.RawExpires,
+		MaxAge:     cookie.MaxAge,
+		Secure:     cookie.Secure,
+		HttpOnly:   cookie.HttpOnly,
+		Raw:        cookie.Raw,
+		Unparsed:   cookie.Unparsed,
+	}
+	return httpCookie
+}
+
+// 将http/Cookie转换为Cookie
+func (cookie *Cookie)ConvertFromHttpCookie(httpCookie http.Cookie) {
+	cookie.Name         = httpCookie.Name
+	cookie.Value        = httpCookie.Value
+
+	cookie.Path         = httpCookie.Path
+	cookie.Domain       = httpCookie.Domain
+	cookie.Expires      = httpCookie.Expires
+	cookie.RawExpires   = httpCookie.RawExpires
+
+	cookie.MaxAge       = httpCookie.MaxAge
+	cookie.Secure       = httpCookie.Secure
+	cookie.HttpOnly     = httpCookie.HttpOnly
+	cookie.Raw          = httpCookie.Raw
+	cookie.Unparsed     = httpCookie.Unparsed
+}
+
+// 为Cookie设置SecurityKey
+func (cookie *Cookie)SetSecurityKey(key string) {
+	cookie.SecurityKey = key
+	cookie.IsSecurity = true
 }
