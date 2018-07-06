@@ -190,3 +190,9 @@ func (baseHandler *BaseHandler)GetHeader(name string) (value string) {
 func (baseHandler *BaseHandler)SetHeader(name string, value string) {
 	baseHandler.ResponseWriter.Header().Set(name, value)
 }
+
+// 获取参数值
+
+// 获取URL quote后的值
+
+// 获取URL quote plus后的值
