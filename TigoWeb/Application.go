@@ -4,7 +4,7 @@ package TigoWeb
 import (
 	"net/http"
 	"fmt"
-	"../logger"
+	"Tigo/logger"
 )
 
 // web容器
