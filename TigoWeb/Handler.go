@@ -54,6 +54,25 @@ func (baseHandler *BaseHandler)ResponseAsHtml(result string) {
 	fmt.Fprintf(baseHandler.ResponseWriter, result)
 }
 
+// 向客户端永久重定向一个地址
+func (baseHandler *BaseHandler)RedirectPermanently(url string) {
+	baseHandler.ResponseWriter.WriteHeader(301)
+	baseHandler.SetHeader("Location", url)
+	fmt.Fprintf(baseHandler.ResponseWriter, "")
+}
+
+// 向客户端暂时重定向一个地址
+func (baseHandler *BaseHandler)Redirect(url string, expire ...time.Time)  {
+	baseHandler.SetHeader("Location", url)
+	baseHandler.ResponseWriter.WriteHeader(302)
+	if len(expire) > 0 {
+		expireTime := expire[0]
+		expires := expireTime.Format("Mon, 02 Jan 2006 15:04:05 GMT")
+		baseHandler.SetHeader("Expires", expires)
+	}
+	fmt.Fprintf(baseHandler.ResponseWriter, "")
+}
+
 // 检查请求是否被允许
 func (baseHandler *BaseHandler)CheckRequestMethodValid(methods ...string) (result bool) {
 	// 获取请求方式
@@ -162,5 +181,12 @@ func (baseHandler *BaseHandler)ClearAllCookie() {
 }
 
 // 获取header
+func (baseHandler *BaseHandler)GetHeader(name string) (value string) {
+	value = baseHandler.Request.Header.Get(name)
+	return value
+}
 
 // 设置header
+func (baseHandler *BaseHandler)SetHeader(name string, value string) {
+	baseHandler.ResponseWriter.Header().Set(name, value)
+}
