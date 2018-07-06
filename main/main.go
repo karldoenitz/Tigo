@@ -33,8 +33,21 @@ func (helloHandler *HelloHandler)Handle(responseWriter http.ResponseWriter, requ
 	helloHandler.ResponseAsHtml("<p1 style='color: red'>Hello Go!</p1>")
 }
 
+type RedirectHandler struct {
+	TigoWeb.BaseHandler
+}
+
+func (redirectHandler *RedirectHandler)Handle(responseWriter http.ResponseWriter, request *http.Request) {
+	redirectHandler.InitHandler(responseWriter, request)
+	if !redirectHandler.CheckRequestMethodValid("GET") {
+		return
+	}
+	redirectHandler.Redirect("http://www.baidu.com")
+}
+
 var urls = map[string]interface{Handle(http.ResponseWriter, *http.Request)}{
 	"/hello-world": &HelloHandler{},
+	"/redirect"   : &RedirectHandler{},
 }
 
 func main() {
