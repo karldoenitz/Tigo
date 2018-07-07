@@ -15,6 +15,8 @@ func (helloHandler *HelloHandler)Handle(responseWriter http.ResponseWriter, requ
 	if !helloHandler.CheckRequestMethodValid("GET", "POST") {
 		return
 	}
+	value := helloHandler.GetParameter("hello")
+	fmt.Println(value)
 	cookie := TigoWeb.Cookie{
 		Name:        "Tigo",
 		Value:       "Tiger Go",
