@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strings"
 	"time"
+	"io/ioutil"
 )
 
 // Handler的基础类，开发者开发的handler继承此类
@@ -191,8 +192,21 @@ func (baseHandler *BaseHandler)SetHeader(name string, value string) {
 	baseHandler.ResponseWriter.Header().Set(name, value)
 }
 
-// 获取参数值
-
-// 获取URL quote后的值
-
-// 获取URL quote plus后的值
+// 根据key获取对应的参数值
+//   - 如果Content-Type是application/json，则直接从http的body中解析出key对应的value
+//   - 否则，根据key直接获取value
+func (baseHandler *BaseHandler)GetParameter(key string) (value string) {
+	if baseHandler.GetHeader("Content-Type") == "application/json" {
+		var mapResult map[string]string
+		jsonData, _ := ioutil.ReadAll(baseHandler.Request.Body)
+		baseHandler.Request.Body.Close()
+		//使用 json.Unmarshal(data []byte, v interface{})进行转换，返回 error 信息
+		err := json.Unmarshal([]byte(jsonData), &mapResult)
+		if err != nil {
+			return ""
+		}
+		return mapResult[key]
+	}
+	value = baseHandler.Request.FormValue(key)
+	return value
+}
