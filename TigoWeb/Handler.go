@@ -102,12 +102,18 @@ func (baseHandler *BaseHandler)SetCookieObject(cookie Cookie) {
 }
 
 // 设置加密cookie
-func (baseHandler *BaseHandler)SetSecureCookie(name string, value string, key string) {
+func (baseHandler *BaseHandler)SetSecureCookie(name string, value string, key ...string) {
+	securityKey := ""
+	if len(key) > 0 {
+		securityKey = key[0]
+	} else {
+		securityKey = globalConfig.Cookie
+	}
 	cookie := Cookie{
 		Name:        name,
 		Value:       value,
 		IsSecurity:  true,
-		SecurityKey: key,
+		SecurityKey: securityKey,
 	}
 	baseHandler.SetCookieObject(cookie)
 }
@@ -123,7 +129,13 @@ func (baseHandler *BaseHandler)GetCookie(name string) (value string) {
 }
 
 // 获取加密cookie值，如果获取失败则返回空
-func (baseHandler *BaseHandler)GetSecureCookie(name string, key string) (value string) {
+func (baseHandler *BaseHandler)GetSecureCookie(name string, key ...string) (value string) {
+	securityKey := ""
+	if len(key) > 0 {
+		securityKey = key[0]
+	} else {
+		securityKey = globalConfig.Cookie
+	}
 	httpCookie, err := baseHandler.Request.Cookie(name)
 	if err != nil {
 		return ""
@@ -131,7 +143,7 @@ func (baseHandler *BaseHandler)GetSecureCookie(name string, key string) (value s
 	cookie := Cookie{}
 	cookie.ConvertFromHttpCookie(*httpCookie)
 	cookie.IsSecurity = true
-	cookie.SecurityKey = key
+	cookie.SecurityKey = securityKey
 	value = cookie.GetCookieDecodeValue()
 	return value
 }
