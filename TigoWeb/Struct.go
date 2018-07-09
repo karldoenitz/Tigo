@@ -139,6 +139,9 @@ type GlobalConfig struct {
 
 // 根据配置文件初始化全局配置变量
 func (globalConfig *GlobalConfig)Init(configPath string) {
+	if configPath == "" {
+		return
+	}
 	raw, err := ioutil.ReadFile(configPath)
 	if err != nil {
 		fmt.Println(err.Error())

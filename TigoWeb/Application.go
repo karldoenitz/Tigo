@@ -37,9 +37,7 @@ func (application *Application)runTLS(cert string, key string) {
 // 服务启动函数
 func (application *Application)Run() {
 	// 初始化全局变量
-	if application.ConfigPath != "" {
-		InitGlobalConfig(application.ConfigPath)
-	}
+	InitGlobalConfig(application.ConfigPath)
 	// 获取证书与密钥，判断是否启动https服务
 	cert, certKey := globalConfig.Cert, globalConfig.CertKey
 	if cert != "" && certKey != "" {
