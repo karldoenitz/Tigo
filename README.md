@@ -14,7 +14,7 @@ package main
 
 import (
     "net/http"
-    "github.com/Tigo/TigoWeb"
+    "github.com/karldoenitz/Tigo/TigoWeb"
 )
 
 // handler
@@ -57,7 +57,7 @@ go build main.go
 ```
 INFO: 2018/07/09 15:02:36 Application.go:22: Server run on: 0.0.0.0:8888
 ```
-打开浏览器访问地址```http://127.0.0.1:8888/hello-tigo```，就可以看到<span style='color: red'>Hello Tigo<span>。
+打开浏览器访问地址```http://127.0.0.1:8888/hello-tigo```，就可以看到<font color=red>Hello Tigo</font>。
 
 # 注意
 这个框架在Linux版本的 [CubeBackup for Google Apps](http://www.cubebackup.com) 中有所使用。
