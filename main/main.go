@@ -44,12 +44,25 @@ func (redirectHandler *RedirectHandler)Handle(responseWriter http.ResponseWriter
 	if !redirectHandler.CheckRequestMethodValid("GET") {
 		return
 	}
-	redirectHandler.Redirect("http://www.baidu.com")
+	redirectHandler.Redirect("http://www.tencent.com")
+}
+
+type TestCookieHandler struct {
+	TigoWeb.BaseHandler
+}
+
+func (testCookieHandler *TestCookieHandler)Handle(responseWriter http.ResponseWriter, request *http.Request) {
+	testCookieHandler.InitHandler(responseWriter, request)
+	testCookieHandler.SetSecureCookie("name", "value")
+	cookie := testCookieHandler.GetSecureCookie("name")
+	fmt.Println(cookie)
+	testCookieHandler.ResponseAsHtml("<h1>Tiger Go Go Go!</h1>")
 }
 
 var urls = map[string]interface{Handle(http.ResponseWriter, *http.Request)}{
 	"/hello-world": &HelloHandler{},
 	"/redirect"   : &RedirectHandler{},
+	"/test-cookie": &TestCookieHandler{},
 }
 
 func main() {
@@ -58,6 +71,7 @@ func main() {
 		IPAddress:  "0.0.0.0",
 		Port:       "8888",
 		UrlPattern: urlPattern,
+		ConfigPath: "./configuration.json",
 	}
 	application.Run()
 }
