@@ -1,5 +1,5 @@
 // Copyright 2018 The Tigo Authors. All rights reserved.
-package TigoWeb
+package logger
 
 import (
 	"io"
