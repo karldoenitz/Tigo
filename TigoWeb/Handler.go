@@ -210,3 +210,16 @@ func (baseHandler *BaseHandler)GetParameter(key string) (value string) {
 	value = baseHandler.Request.FormValue(key)
 	return value
 }
+
+// 根据key获取对应的参数值，解析json数据，返回对应的value
+func (baseHandler *BaseHandler)GetJsonValue(key string) (interface{}) {
+	var mapResult map[string]interface{}
+	jsonData, _ := ioutil.ReadAll(baseHandler.Request.Body)
+	baseHandler.Request.Body.Close()
+	//使用 json.Unmarshal(data []byte, v interface{})进行转换，返回 error 信息
+	err := json.Unmarshal([]byte(jsonData), &mapResult)
+	if err != nil {
+		return ""
+	}
+	return mapResult[key]
+}
