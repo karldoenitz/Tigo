@@ -43,12 +43,12 @@ func main() {
     application.Run()
 }
 ```
-### 编译
+### Compile
 Open terminal, cd to target directory, input the command：
 ```
 go build main.go
 ```
-### 运行
+### Run
 After compiled, there will be a runnable file named ```main```, input the command：
 ```
 ./main

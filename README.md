@@ -1,4 +1,4 @@
-# Tigo
+# Tigo([For English Documentation Click Here](https://github.com/karldoenitz/Tigo/blob/master/README_EN.md))
 ![Tigo logo](https://github.com/karldoenitz/karlooper/blob/master/documentations/images/logo.jpg "this is Tigo logo")  
 一个使用Go语言开发的web框架。
 
