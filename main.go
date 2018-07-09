@@ -2,7 +2,7 @@ package main
 
 import (
 	"net/http"
-	"github.com/Tigo/TigoWeb"
+	"Tigo/TigoWeb"
 	"fmt"
 )
 
