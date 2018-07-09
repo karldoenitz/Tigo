@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"encoding/json"
 	"fmt"
+	"os"
+	"io/ioutil"
 )
 
 //////////////////////////////////////Structure Cookie//////////////////////////////////////////////////////////////////
@@ -123,4 +125,24 @@ func (baseResponse *BaseResponse)ToJson() (string) {
 	}
 	// 将byte数组转换为string
 	return string(jsonResult)
+}
+
+//////////////////////////////////////Structure GlobalConfig////////////////////////////////////////////////////////////
+
+// 全局配置对象
+type GlobalConfig struct {
+	Cert     string  `json:"cert"`      // https证书路径
+	CertKey  string  `json:"cert_key"`  // https密钥路径
+	LogPath  string  `json:"log_path"`  // log文件路径
+	Cookie   string  `json:"cookie"`    // cookie加密解密的密钥
+}
+
+// 根据配置文件初始化全局配置变量
+func (globalConfig *GlobalConfig)Init(configPath string) {
+	raw, err := ioutil.ReadFile(configPath)
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+	json.Unmarshal(raw, &globalConfig)
 }
