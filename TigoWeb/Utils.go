@@ -69,3 +69,12 @@ func decrypt(cipherText []byte, key []byte) ([]byte, error) {
 	nonce, cipherText := cipherText[:nonceSize], cipherText[nonceSize:]
 	return gcm.Open(nil, nonce, cipherText, nil)
 }
+
+//////////////////////////////////////////////////初始化全局配置//////////////////////////////////////////////////////////
+
+// 初始化全局变量
+func InitGlobalConfig(configPath string) {
+	config := GlobalConfig{}
+	config.Init(configPath)
+	globalConfig = &config
+}
