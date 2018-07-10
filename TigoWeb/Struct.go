@@ -131,6 +131,8 @@ func (baseResponse *BaseResponse)ToJson() (string) {
 
 // 全局配置对象
 type GlobalConfig struct {
+	IP       string  `json:"ip"`        // IP地址
+	Port     int     `json:"port"`      // 端口
 	Cert     string  `json:"cert"`      // https证书路径
 	CertKey  string  `json:"cert_key"`  // https密钥路径
 	LogPath  string  `json:"log_path"`  // log文件路径
