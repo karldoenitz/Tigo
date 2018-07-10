@@ -69,7 +69,7 @@ func main() {
 	urlPattern := TigoWeb.UrlPattern{UrlMapping: urls}
 	application := TigoWeb.Application{
 		IPAddress:  "0.0.0.0",
-		Port:       "8888",
+		Port:       8888,
 		UrlPattern: urlPattern,
 		ConfigPath: "./configuration.json",
 	}
