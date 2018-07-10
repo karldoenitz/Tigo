@@ -10,7 +10,3 @@ go:
   - 1.9
 
 install: go get github.com/karldoenitz/Tigo/TigoWeb
-
-script:
-  - diff -u <(echo -n) <(gofmt -d -s .)
-  - go test -short
