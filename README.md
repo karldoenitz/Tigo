@@ -4,7 +4,7 @@
 
 # 安装
 ```
-go get github.com/karldoenitz/Tigo
+go get github.com/karldoenitz/Tigo/TigoWeb
 ```
 
 # 示例
