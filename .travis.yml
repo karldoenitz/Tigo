@@ -1,0 +1,13 @@
+language: go
+
+go:
+  - 1.3
+  - 1.4
+  - 1.5
+  - 1.6
+
+install: go get
+
+script:
+  - diff -u <(echo -n) <(gofmt -d -s .)
+  - go test -short
