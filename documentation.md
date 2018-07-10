@@ -132,4 +132,23 @@ func (urlPattern *UrlPattern)AppendUrlPattern(uri string, v interface{Handle(htt
 func (urlPattern *UrlPattern)Init()
 ```
 初始化URL映射。
+## type Application
+```go
+type Application struct {
+    IPAddress  string      // IP地址
+    Port       int         // 端口
+    UrlPattern UrlPattern  // url路由配置
+    ConfigPath string      // 全局配置
+}
+```
+Application结构体是启动http服务的入口。
+- IPAddress：服务绑定的IP地址，可以在configuration中配置，若在configuration中配置了则以configuration中配置的为主；
+- Port：端口，可以在configuration中配置，若在configuration中配置了则以configuration中配置的为主；
+- UrlPattern：路由配置；
+- ConfigPath：配置文件的路径。
+### func (application *Application)Run
+```go
+func (application *Application)Run()
+```
+此方法用来启动http服务，如果在configuration中配置了https的密钥和证书，服务则会以https方式启动。
 # Tigo.logger
