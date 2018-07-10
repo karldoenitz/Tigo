@@ -115,4 +115,21 @@ func (baseHandler *BaseHandler)ResponseAsJson(response Response)
 func (baseHandler *BaseHandler)ToJson(response Response) (result string)
 ```
 ```ToJson```方法是将一个对象转换成json字符串。如果转换失败则会返回空字符串。
+## type UrlPattern
+```go
+type UrlPattern struct {
+    UrlMapping map[string] interface{Handle(http.ResponseWriter, *http.Request)}
+}
+```
+URL路由设置，使用这个结构体在应用中配置URL与对应的handler。
+### func (urlPattern *UrlPattern)AppendUrlPattern
+```go
+func (urlPattern *UrlPattern)AppendUrlPattern(uri string, v interface{Handle(http.ResponseWriter, *http.Request)})
+```
+此方法是向指定URL上挂载一个Handler。
+### func (urlPattern *UrlPattern)Init
+```go
+func (urlPattern *UrlPattern)Init()
+```
+初始化URL映射。
 # Tigo.logger
