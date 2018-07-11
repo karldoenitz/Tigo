@@ -201,5 +201,38 @@ func (cookie *Cookie)ConvertFromHttpCookie(httpCookie http.Cookie)
 func (cookie *Cookie)SetSecurityKey(key string)
 ```
 使用此方法为cookie对象设置加密key
+## type BaseResponse
+```go
+type BaseResponse struct {
+
+}
+```
+继承此结构体的对象可以通过```func (baseHandler *BaseHandler)ResponseAsJson(response Response)```方法，序列化为json字符串传递给客户端。
+### func (baseResponse *BaseResponse)Print
+```
+func (baseResponse *BaseResponse)Print()
+```
+使用此方法可以打印当前Response对象到控制台中。
+### func (baseResponse *BaseResponse)ToJson
+```
+func (baseResponse *BaseResponse)ToJson() (string)
+```
+使用此方法将当前Response对象序列化为json字符串。
+## type GlobalConfig
+```go
+type GlobalConfig struct {
+    IP       string  `json:"ip"`        // IP地址
+    Port     int     `json:"port"`      // 端口
+    Cert     string  `json:"cert"`      // https证书路径
+    CertKey  string  `json:"cert_key"`  // https密钥路径
+    LogPath  string  `json:"log_path"`  // log文件路径
+    Cookie   string  `json:"cookie"`    // cookie加密解密的密钥
+}
+```
+### func (globalConfig *GlobalConfig)Init
+```go
+func (globalConfig *GlobalConfig)Init(configPath string)
+```
+根据配置文件初始化全局配置对象。
 # Tigo.logger
 
