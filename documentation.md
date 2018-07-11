@@ -243,7 +243,7 @@ func (globalConfig *GlobalConfig)Init(configPath string)
 - Cookie：cookie加密解密使用的密钥
 
 配置文件configuration.json示例如下：
-```json
+```javascript
 {
     "ip": "0.0.0.0",
     "port": 8888,
