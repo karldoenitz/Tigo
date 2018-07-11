@@ -253,5 +253,26 @@ func (globalConfig *GlobalConfig)Init(configPath string)
     "cookie": "thisiscookiekey"
 }
 ```
+## utils
+```go
+func Encrypt(src[]byte, key []byte) string
+```
+使用此方法对字符数组进行aes加密。
+```go
+func Decrypt(src[]byte, key []byte) ([]byte)
+```
+使用此方法对已加密的字符数组进行aes解密。
+```go
+func InitGlobalConfig(configPath string)
+```
+使用此方法初始化全局变量。
 # Tigo.logger
+使用此模块打印log。
+示例：
+```go
+import "github.com/karldoenitz/Tigo/logger"
 
+logger.Info.Printf("It is a test...")
+logger.Warning.Printf("warning!")
+logger.Error.Printf("ERROR!!!")
+```
