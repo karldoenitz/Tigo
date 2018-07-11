@@ -151,4 +151,55 @@ Application结构体是启动http服务的入口。
 func (application *Application)Run()
 ```
 此方法用来启动http服务，如果在configuration中配置了https的密钥和证书，服务则会以https方式启动。
+## type Cookie
+```go
+type Cookie struct {
+    Name        string
+    Value       string
+
+    IsSecurity  bool      // 是否对cookie值进行加密
+    SecurityKey string    // 加密cookie用到的key
+
+    Path        string    // 可选
+    Domain      string    // 可选
+    Expires     time.Time // 可选
+    RawExpires  string    // 只有在读取Cookie时有效
+
+    // MaxAge=0 表示未指定“Max-Age”属性
+    // MaxAge<0 表示现在删除cookie，相当于'Max-Age：0'
+    // MaxAge>0 表示Max-Age属性存在并以秒为单位给出
+    MaxAge      int
+    Secure      bool
+    HttpOnly    bool
+    Raw         string
+    Unparsed  []string    // 原始文本中未解析的属性值
+}
+```
+cookie结构体，用此结构体进行cookie处理。
+### func (cookie *Cookie)GetCookieEncodeValue
+```go
+func (cookie *Cookie)GetCookieEncodeValue()(result string)
+```
+使用此方法获取cookie的加密值。
+### func (cookie *Cookie)GetCookieDecodeValue
+```go
+func (cookie *Cookie)GetCookieDecodeValue()(result string)
+```
+使用此方法获取cookie的解密值。
+### func (cookie *Cookie)ToHttpCookie()
+```go
+func (cookie *Cookie)ToHttpCookie()(http.Cookie)
+```
+使用此方法将Cookie对象转换为http.Cookie对象。
+### func (cookie *Cookie)ConvertFromHttpCookie
+```go
+func (cookie *Cookie)ConvertFromHttpCookie(httpCookie http.Cookie)
+```
+使用此方法将http.Cookie对象转换为Cookie对象。
+### func (cookie *Cookie)SetSecurityKey
+```go
+func (cookie *Cookie)SetSecurityKey(key string)
+```
+使用此方法为cookie对象设置加密key
 # Tigo.logger
+
