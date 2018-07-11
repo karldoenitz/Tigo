@@ -30,7 +30,7 @@ API目录：
   - [type GlobalConfig](#GlobalConfig)
   - [utils](#utils)
 - [logger](#logger)
-# Tigo.TigoWeb<a name="TigoWeb"></a>
+# <a name="TigoWeb"></a>Tigo.TigoWeb
 TigoWeb是Tigo框架中的核心部分，Handler、URLpattern以及Application三大核心组件包含于此。
 ## type BaseHandler<a name="BaseHandler"></a>
 ```go
