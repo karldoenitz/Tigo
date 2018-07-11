@@ -233,6 +233,25 @@ type GlobalConfig struct {
 ```go
 func (globalConfig *GlobalConfig)Init(configPath string)
 ```
-根据配置文件初始化全局配置对象。
+根据配置文件初始化全局配置对象。  
+解析：
+- IP：配置服务地址
+- Port：配置服务绑定的端口
+- Cert：https证书地址
+- CertKey：https密钥
+- LogPath：log输出路径
+- Cookie：cookie加密解密使用的密钥
+
+配置文件configuration.json示例如下：
+```json
+{
+    "ip": "0.0.0.0",
+    "port": 8888,
+    "cert": "/home/work/certfile.ext"
+    "cert_key": "/home/work/certkeyfile.ext",
+    "log_path": "/home/work/log/server_run.log",
+    "cookie": "thisiscookiekey"
+}
+```
 # Tigo.logger
 
