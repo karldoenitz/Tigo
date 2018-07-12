@@ -47,7 +47,7 @@ API index:
 # Tigo.TigoWeb<a name="TigoWeb"></a>
 TigoWeb is the core part of Tigo framework, it contains Handler,URLpattern and Application.
 ## type BaseHandler<a name="BaseHandler"></a>
-```golang
+```go
 type BaseHandler struct {
     ResponseWriter  http.ResponseWriter
     Request        *http.Request
@@ -55,7 +55,7 @@ type BaseHandler struct {
 ```
 ```BaseHandler``` is the base structure of all handlers, the handlers developed by developers must extend this structure.
 ### func (*BaseHandler)InitHandler<a name="InitHandler"></a>
-```golang
+```go
 func (baseHandler *BaseHandler)InitHandler(responseWriter http.ResponseWriter, request *http.Request)
 ```
 ```InitHandler``` is the method to initialize handler, all the ```Handle``` method must call this method in handlers.
