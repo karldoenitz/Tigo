@@ -55,7 +55,7 @@ type BaseHandler struct {
 ```
 ```BaseHandler``` is the base structure of all handlers, the handlers developed by developers must extend this structure.
 ### func (*BaseHandler)InitHandler<a name="InitHandler"></a>
-```go
+```golang
 func (baseHandler *BaseHandler)InitHandler(responseWriter http.ResponseWriter, request *http.Request)
 ```
 ```InitHandler``` is the method to initialize handler, all the ```Handle``` method must call this method in handlers.
