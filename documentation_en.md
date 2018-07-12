@@ -1,5 +1,5 @@
 # Documentation([中文文档点击此处](https://github.com/karldoenitz/Tigo/blob/master/documentation.md))
-Tigo is a web framework developed in go language, based on net/http. In order to build web server quickly.
+Tigo is a web framework developed in go language, based on net/http. In order to build web server quickly.  
 API index:
 - [TigoWeb](#TigoWeb)
   - [type BaseHandler](#BaseHandler)
@@ -285,7 +285,7 @@ type GlobalConfig struct {
 ```go
 func (globalConfig *GlobalConfig)Init(configPath string)
 ```
-根据配置文件初始化全局配置对象。
+Use configuration file to initialize global configuration.    
 Glance:
 - IP: IP address
 - Port: the Port server blinded
@@ -310,19 +310,19 @@ Encrypt method<a name="Encrypt"></a>
 ```go
 func Encrypt(src[]byte, key []byte) string
 ```
-Use this method to encrypt byte array.
+Use this method to encrypt byte array.  
 Decrypt method<a name="Decrypt"></a>
 ```go
 func Decrypt(src[]byte, key []byte) ([]byte)
 ```
-Use this method to decrypt byte array.
+Use this method to decrypt byte array.  
 Initialize global configuration<a name="InitGlobalConfig"></a>
 ```go
 func InitGlobalConfig(configPath string)
 ```
 Use this method to initialize global configuration.
 # Tigo.logger<a name="logger"></a>
-Use this package to print log.
+Use this package to print log.  
 example：
 ```go
 import "github.com/karldoenitz/Tigo/logger"
