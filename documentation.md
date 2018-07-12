@@ -96,7 +96,7 @@ func (baseHandler *BaseHandler)GetSecureCookie(name string, key ...string) (valu
 ```
 ```GetSecureCookie```方法是用来获取加密的cookie值，key为解密所需要用到的密钥，key可以不填，也可以在configuration配置文件中配置。
 - 当configuration文件和函数参数中都设置了key，则以函数中设置的key为准；
-- 当configuration文件和函数参数中都未设置key，则依然会进行加密。
+- 当configuration文件和函数参数中都未设置key，则依然会进行解密。
 ### func (*BaseHandler)SetSecureCookie<a name="SetSecureCookie"></a>
 ```go
 func (baseHandler *BaseHandler)SetSecureCookie(name string, value string, key ...string)
