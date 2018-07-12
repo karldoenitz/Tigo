@@ -244,7 +244,7 @@ func (cookie *Cookie)ConvertFromHttpCookie(httpCookie http.Cookie)
 ```go
 func (cookie *Cookie)SetSecurityKey(key string)
 ```
-使用此方法为cookie对象设置加密key
+使用此方法为cookie对象设置加密key。
 ## type BaseResponse<a name="BaseResponse"></a>
 ```go
 type BaseResponse struct {
