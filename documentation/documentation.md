@@ -1,4 +1,4 @@
-# 文档([For English Documentation Click Here](https://github.com/karldoenitz/Tigo/blob/master/documentation_en.md))
+# 文档([For English Documentation Click Here](https://github.com/karldoenitz/Tigo/blob/master/documentation/documentation_en.md))
 Tigo是一款用go开发的web应用框架，基于net/http库实现，目的是用来快速搭建restful服务。  
 API目录：
 - [TigoWeb](#TigoWeb)

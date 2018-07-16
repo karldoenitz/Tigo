@@ -61,7 +61,7 @@ INFO: 2018/07/09 15:02:36 Application.go:22: Server run on: 0.0.0.0:8888
 打开浏览器访问地址```http://127.0.0.1:8888/hello-tigo```，就可以看到<font color=red>Hello Tigo</font>。
 
 # 文档
-[点击此处](https://github.com/karldoenitz/Tigo/documentation/blob/master/documentation.md)
+[点击此处](https://github.com/karldoenitz/Tigo/blob/master/documentation/documentation.md)
 
 # 注意
 这个框架在Linux版本的 [CubeBackup for Google Apps](http://www.cubebackup.com) 中有所使用。  

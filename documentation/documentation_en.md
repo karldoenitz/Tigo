@@ -1,4 +1,4 @@
-# Documentation([中文文档点击此处](https://github.com/karldoenitz/Tigo/blob/master/documentation.md))
+# Documentation([中文文档点击此处](https://github.com/karldoenitz/Tigo/blob/master/documentation/documentation.md))
 Tigo is a web framework developed in go language, based on net/http. In order to build web server quickly.  
 API index:
 - [TigoWeb](#TigoWeb)
