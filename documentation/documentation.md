@@ -44,6 +44,8 @@ API目录：
     - [func Decrypt](#Decrypt)
     - [func InitGlobalConfig](#InitGlobalConfig)
 - [logger](#logger)
+  - [functions](#loggerFunctions)
+    - [func SetLogPath](#SetLogPath)
 # Tigo.TigoWeb<a name="TigoWeb"></a>
 TigoWeb是Tigo框架中的核心部分，Handler、URLpattern以及Application三大核心组件包含于此。
 ## type BaseHandler<a name="BaseHandler"></a>
@@ -315,6 +317,11 @@ func InitGlobalConfig(configPath string)
 使用此方法初始化全局变量。
 # Tigo.logger<a name="logger"></a>
 使用此模块打印log。
+## logger模块内置方法<a name="loggerFunctions"></a>
+设置log文件的路径<a name="SetLogPath"></a>
+```go
+func SetLogPath(logPath string)
+```
 示例：
 ```go
 import "github.com/karldoenitz/Tigo/logger"
