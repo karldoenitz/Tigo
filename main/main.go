@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"github.com/karldoenitz/Tigo/TigoWeb"
 	"fmt"
+	"github.com/karldoenitz/Tigo/logger"
 )
 
 type HelloHandler struct {
@@ -56,6 +57,7 @@ func (testCookieHandler *TestCookieHandler)Handle(responseWriter http.ResponseWr
 	testCookieHandler.SetSecureCookie("name", "value")
 	cookie := testCookieHandler.GetSecureCookie("name")
 	fmt.Println(cookie)
+	logger.Error.Printf("interesting %s", "testing")
 	testCookieHandler.ResponseAsHtml("<h1>Tiger Go Go Go!</h1>")
 }
 

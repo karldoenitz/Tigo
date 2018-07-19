@@ -1,5 +1,6 @@
 {
   "cookie": "TencentCode",
   "ip": "0.0.0.0",
-  "port": 8080
+  "port": 8080,
+  "log_path": "/home/karl/Desktop/test.log"
 }
