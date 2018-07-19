@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"io/ioutil"
+	"github.com/karldoenitz/Tigo/logger"
 )
 
 //////////////////////////////////////Structure Cookie//////////////////////////////////////////////////////////////////
@@ -150,4 +151,5 @@ func (globalConfig *GlobalConfig)Init(configPath string) {
 		os.Exit(1)
 	}
 	json.Unmarshal(raw, &globalConfig)
+	logger.SetLogPath(globalConfig.LogPath)
 }
