@@ -15,13 +15,8 @@ var (
 	Error        *log.Logger
 )
 
-// 初始化函数，加载log模块时运行
-func init() {
-	dir, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-	var logPath = dir + "/log.log"
+// 初始化log模块
+func initLogger(logPath string) {
 	file, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalln("Failed to open error log file: ", err)
@@ -32,4 +27,19 @@ func init() {
 	Warning = log.New(os.Stdout, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
 	// 将错误日志写入log文件
 	Error = log.New(io.MultiWriter(file, os.Stderr), "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+}
+
+// 初始化函数，加载log模块时运行
+func init() {
+	dir, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	var logPath = dir + "/log.log"
+	initLogger(logPath)
+}
+
+// 设置log输出路径
+func SetLogPath(logPath string) {
+	initLogger(logPath)
 }
