@@ -44,6 +44,8 @@ API index:
     - [func Decrypt](#Decrypt)
     - [func InitGlobalConfig](#InitGlobalConfig)
 - [logger](#logger)
+  - [functions](#loggerFunctions)
+    - [func SetLogPath](#SetLogPath)
 # Tigo.TigoWeb<a name="TigoWeb"></a>
 TigoWeb is the core part of Tigo framework, it contains Handler,URLpattern and Application.
 ## type BaseHandler<a name="BaseHandler"></a>
@@ -323,6 +325,11 @@ func InitGlobalConfig(configPath string)
 Use this method to initialize global configuration.
 # Tigo.logger<a name="logger"></a>
 Use this package to print log.  
+## logger inner functions<a name="loggerFunctions"></a>
+Set Log file's Path<a name="SetLogPath"></a>
+```go
+func SetLogPath(logPath string)
+```
 example：
 ```go
 import "github.com/karldoenitz/Tigo/logger"
