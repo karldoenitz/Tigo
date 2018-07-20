@@ -15,8 +15,10 @@ var (
 	Error        *log.Logger
 )
 
+var logPath string = ""
+
 // 初始化log模块
-func initLogger(logPath string) {
+func initLogger() {
 	file, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalln("Failed to open error log file: ", err)
@@ -35,11 +37,12 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	var logPath = dir + "/log.log"
-	initLogger(logPath)
+	logPath = dir + "/log.log"
+	initLogger()
 }
 
 // 设置log输出路径
-func SetLogPath(logPath string) {
-	initLogger(logPath)
+func SetLogPath(defineLogPath string) {
+	logPath = defineLogPath
+	initLogger()
 }
