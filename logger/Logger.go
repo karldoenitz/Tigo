@@ -15,7 +15,7 @@ var (
 	Error        *log.Logger
 )
 
-var logPath string = ""
+var logPath = ""
 
 // 初始化log模块
 func initLogger() {
