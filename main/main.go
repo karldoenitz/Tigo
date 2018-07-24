@@ -57,6 +57,9 @@ func (testCookieHandler *TestCookieHandler)Handle(responseWriter http.ResponseWr
 	testCookieHandler.SetSecureCookie("name", "value")
 	cookie := testCookieHandler.GetSecureCookie("name")
 	fmt.Println(cookie)
+	logger.Trace.Printf("no trace: %s", "info")
+	logger.Info.Printf("this is info: %s", "Info Here")
+	logger.Warning.Printf("this is warning info: %s", "Warning Here")
 	logger.Error.Printf("interesting %s", "testing")
 	testCookieHandler.ResponseAsHtml("<h1>Tiger Go Go Go!</h1>")
 }
