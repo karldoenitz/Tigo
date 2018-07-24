@@ -72,7 +72,7 @@ func init() {
 	initLogger()
 }
 
-// 设置log输出路径
+// 设置log输出路径，警告：若使用了InitLoggerWithConfigFile和InitLoggerWithObject请不要使用此方法，会覆盖原有的log输出结构。
 func SetLogPath(defineLogPath string) {
 	logPath = defineLogPath
 	initLogger()

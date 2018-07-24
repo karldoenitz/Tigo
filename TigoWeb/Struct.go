@@ -132,12 +132,12 @@ func (baseResponse *BaseResponse)ToJson() (string) {
 
 // 全局配置对象
 type GlobalConfig struct {
-	IP       string  `json:"ip"`        // IP地址
-	Port     int     `json:"port"`      // 端口
-	Cert     string  `json:"cert"`      // https证书路径
-	CertKey  string  `json:"cert_key"`  // https密钥路径
-	LogPath  string  `json:"log_path"`  // log文件路径
-	Cookie   string  `json:"cookie"`    // cookie加密解密的密钥
+	IP       string           `json:"ip"`        // IP地址
+	Port     int              `json:"port"`      // 端口
+	Cert     string           `json:"cert"`      // https证书路径
+	CertKey  string           `json:"cert_key"`  // https密钥路径
+	Cookie   string           `json:"cookie"`    // cookie加密解密的密钥
+	Log      logger.LogLevel  `json:"log"`       // log相关属性配置
 }
 
 // 根据配置文件初始化全局配置变量
@@ -151,5 +151,5 @@ func (globalConfig *GlobalConfig)Init(configPath string) {
 		os.Exit(1)
 	}
 	json.Unmarshal(raw, &globalConfig)
-	logger.SetLogPath(globalConfig.LogPath)
+	logger.InitLoggerWithObject(globalConfig.Log)
 }
