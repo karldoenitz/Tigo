@@ -109,9 +109,9 @@ func InitLoggerWithObject(logLevel LogLevel)  {
 	updateLogMapping(logLevel.Warning)
 	updateLogMapping(logLevel.Error)
 	InitTrace(logLevel.Trace)
-	InitTrace(logLevel.Info)
-	InitTrace(logLevel.Warning)
-	InitTrace(logLevel.Error)
+	InitInfo(logLevel.Info)
+	InitWarning(logLevel.Warning)
+	InitError(logLevel.Error)
 }
 
 // 初始化Trace，默认情况下不输出
