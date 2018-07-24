@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"encoding/json"
 )
 
 var (
@@ -16,6 +17,18 @@ var (
 )
 
 var logPath = ""
+
+// log分级结构体
+//   - Trace    跟踪
+//   - Info     信息
+//   - Warning  预警
+//   - Error    错误
+type LogLevel struct {
+	Trace    string   `json:"trace"`
+	Info     string   `json:"info"`
+	Warning  string   `json:"warning"`
+	Error    string   `json:"error"`
+}
 
 // 初始化log模块
 func initLogger() {
@@ -45,4 +58,81 @@ func init() {
 func SetLogPath(defineLogPath string) {
 	logPath = defineLogPath
 	initLogger()
+}
+
+// 根据配置文件路径初始化log模块；
+// 配置文件需要配置如下部分：
+//   - trace    "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
+//   - info     "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
+//   - warning  "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
+//   - error    "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
+func InitLoggerWithConfigFile(filePath string) {
+	if filePath == "" {
+		return
+	}
+	raw, err := ioutil.ReadFile(filePath)
+	if err != nil {
+		os.Exit(1)
+	}
+	logLevel := LogLevel{}
+	json.Unmarshal(raw, &logLevel)
+	InitLoggerWithObject(logLevel)
+}
+
+// 根据LogLevel结构体的实例初始化log模块；
+// 配置文件需要配置如下部分：
+//   - Trace    "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
+//   - Info     "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
+//   - Warning  "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
+//   - Error    "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
+func InitLoggerWithObject(logLevel LogLevel)  {
+	
+}
+
+// 初始化Trace，默认情况下不输出
+func InitTrace(level string) {
+	switch {
+	case level == "" || level == "discard":
+		Trace = log.New(ioutil.Discard, "TRACE: ", log.Ldate|log.Ltime|log.Lshortfile)
+	case level == "stdout":
+		Trace = log.New(os.Stdout, "TRACE: ", log.Ldate|log.Ltime|log.Lshortfile)
+	default:
+		Trace = log.New(os.Stdout, "TRACE: ", log.Ldate|log.Ltime|log.Lshortfile)
+	}
+}
+
+// 初始化Info，默认情况下输出到终端
+func InitInfo(level string)  {
+	switch {
+	case level == "" || level == "discard":
+		Info = log.New(ioutil.Discard, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
+	case level == "stdout":
+		Info = log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
+	default:
+		Info = log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
+	}
+}
+
+// 初始化Warning，默认情况下输出到终端
+func InitWarning(level string)  {
+	switch {
+	case level == "" || level == "discard":
+		Warning = log.New(ioutil.Discard, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
+	case level == "stdout":
+		Warning = log.New(os.Stdout, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
+	default:
+		Warning = log.New(os.Stdout, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
+	}
+}
+
+// 初始化Warning，默认情况下输出到文件
+func InitError(level string)  {
+	switch {
+	case level == "" || level == "discard":
+		Error = log.New(ioutil.Discard, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+	case level == "stdout":
+		Error = log.New(os.Stdout, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+	default:
+		Error = log.New(os.Stdout, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+	}
 }
