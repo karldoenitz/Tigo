@@ -334,7 +334,20 @@ func InitGlobalConfig(configPath string)
 log模块所包含的结构体。
 ### type LogLevel<a name="LogLevel"></a>
 ```go
+// log分级结构体
+//   - Trace    跟踪
+//   - Info     信息
+//   - Warning  预警
+//   - Error    错误
+// discard: 丢弃，stdout: 终端输出，文件路径表示log具体输出的位置
+type LogLevel struct {
+	Trace    string   `json:"trace"`
+	Info     string   `json:"info"`
+	Warning  string   `json:"warning"`
+	Error    string   `json:"error"`
+}
 ```
+初始化此结构体，将此结构体作为参数传入```InitLoggerWithObject```中，初始化logger模块。
 ## logger模块内置方法<a name="loggerFunctions"></a>
 ### func SetLogPath<a name="SetLogPath"></a>
 设置log文件的路径
@@ -351,14 +364,17 @@ logger.Error.Printf("ERROR!!!")
 ```
 ### func InitLoggerWithConfigFile<a name="InitLoggerWithConfigFile"></a>
 ```go
+func InitLoggerWithConfigFile(filePath string)
 ```
 根据配置文件初始化logger模块。
 ### func InitLoggerWithObject<a name="InitLoggerWithObject"></a>
 ```go
+func InitLoggerWithObject(logLevel LogLevel)
 ```
 根据LogLevel实例初始化logger模块。
 ### func InitTrace<a name="InitTrace"></a>
 ```go
+func InitTrace(level string)
 ```
 初始化Trace实例。  
 参数解释：
@@ -367,6 +383,7 @@ logger.Error.Printf("ERROR!!!")
 - 文件具体路径：存储log的文件的路径。
 ### func InitInfo<a name="InitInfo"></a>
 ```go
+func InitInfo(level string)
 ```
 初始化Info实例。  
 参数解释：
@@ -375,6 +392,7 @@ logger.Error.Printf("ERROR!!!")
 - 文件具体路径：存储log的文件的路径。
 ### func InitWarning<a name="InitWarning"></a>
 ```go
+func InitWarning(level string)
 ```
 初始化Warning实例。  
 参数解释：
@@ -383,6 +401,7 @@ logger.Error.Printf("ERROR!!!")
 - 文件具体路径：存储log的文件的路径。
 ### func InitError<a name="InitError"></a>
 ```go
+func InitError(level string)
 ```
 初始化Error实例。  
 参数解释：
