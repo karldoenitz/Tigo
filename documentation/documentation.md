@@ -360,32 +360,32 @@ logger.Error.Printf("ERROR!!!")
 ### func InitTrace<a name="InitTrace"></a>
 ```go
 ```
-初始化Trace实例。
-参数解释：  
+初始化Trace实例。  
+参数解释：
 - discard：不处理；
 - stdout： 终端输出，不打印到文件；
 - 文件具体路径：存储log的文件的路径。
 ### func InitInfo<a name="InitInfo"></a>
 ```go
 ```
-初始化Info实例。
-参数解释：  
+初始化Info实例。  
+参数解释：
 - discard：不处理；
 - stdout： 终端输出，不打印到文件；
 - 文件具体路径：存储log的文件的路径。
 ### func InitWarning<a name="InitWarning"></a>
 ```go
 ```
-初始化Warning实例。
-参数解释：  
+初始化Warning实例。  
+参数解释：
 - discard：不处理；
 - stdout： 终端输出，不打印到文件；
 - 文件具体路径：存储log的文件的路径。
 ### func InitError<a name="InitError"></a>
 ```go
 ```
-初始化Error实例。
-参数解释：  
+初始化Error实例。  
+参数解释：
 - discard：不处理；
 - stdout： 终端输出，不打印到文件；
 - 文件具体路径：存储log的文件的路径。
