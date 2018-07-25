@@ -44,8 +44,17 @@ API目录：
     - [func Decrypt](#Decrypt)
     - [func InitGlobalConfig](#InitGlobalConfig)
 - [logger](#logger)
+  - [Demo](#logDemo)
+  - [structure](#LogStructure)
+    - [type LogLevel](#LogLevel)
   - [functions](#loggerFunctions)
     - [func SetLogPath](#SetLogPath)
+    - [func InitLoggerWithConfigFile](#InitLoggerWithConfigFile)
+    - [func InitLoggerWithObject](#InitLoggerWithObject)
+    - [func InitTrace](#InitTrace)
+    - [func InitInfo](#InitInfo)
+    - [func InitWarning](#InitWarning)
+    - [func InitError](#InitError)
 # Tigo.TigoWeb<a name="TigoWeb"></a>
 TigoWeb是Tigo框架中的核心部分，Handler、URLpattern以及Application三大核心组件包含于此。
 ## type BaseHandler<a name="BaseHandler"></a>
@@ -317,8 +326,18 @@ func InitGlobalConfig(configPath string)
 使用此方法初始化全局变量。
 # Tigo.logger<a name="logger"></a>
 使用此模块打印log。
+## Demo<a name="logDemo"></a>
+在Tigo框架中使用log模块，只要按照如下示例编写代码即可：
+```go
+```
+## Structure<a name="LogStructure"></a>
+log模块所包含的结构体。
+### type LogLevel<a name="LogLevel"></a>
+```go
+```
 ## logger模块内置方法<a name="loggerFunctions"></a>
-设置log文件的路径<a name="SetLogPath"></a>
+### func SetLogPath<a name="SetLogPath"></a>
+设置log文件的路径
 ```go
 func SetLogPath(logPath string)
 ```
@@ -330,3 +349,43 @@ logger.Info.Printf("It is a test...")
 logger.Warning.Printf("warning!")
 logger.Error.Printf("ERROR!!!")
 ```
+### func InitLoggerWithConfigFile<a name="InitLoggerWithConfigFile"></a>
+```go
+```
+根据配置文件初始化logger模块。
+### func InitLoggerWithObject<a name="InitLoggerWithObject"></a>
+```go
+```
+根据LogLevel实例初始化logger模块。
+### func InitTrace<a name="InitTrace"></a>
+```go
+```
+初始化Trace实例。
+参数解释：  
+- discard：不处理；
+- stdout： 终端输出，不打印到文件；
+- 文件具体路径：存储log的文件的路径。
+### func InitInfo<a name="InitInfo"></a>
+```go
+```
+初始化Info实例。
+参数解释：  
+- discard：不处理；
+- stdout： 终端输出，不打印到文件；
+- 文件具体路径：存储log的文件的路径。
+### func InitWarning<a name="InitWarning"></a>
+```go
+```
+初始化Warning实例。
+参数解释：  
+- discard：不处理；
+- stdout： 终端输出，不打印到文件；
+- 文件具体路径：存储log的文件的路径。
+### func InitError<a name="InitError"></a>
+```go
+```
+初始化Error实例。
+参数解释：  
+- discard：不处理；
+- stdout： 终端输出，不打印到文件；
+- 文件具体路径：存储log的文件的路径。

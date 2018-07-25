@@ -23,6 +23,7 @@ var logPath = ""
 //   - Info     信息
 //   - Warning  预警
 //   - Error    错误
+// discard: 丢弃，stdout: 终端输出，文件路径表示log具体输出的位置
 type LogLevel struct {
 	Trace    string   `json:"trace"`
 	Info     string   `json:"info"`
