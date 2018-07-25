@@ -329,7 +329,52 @@ func InitGlobalConfig(configPath string)
 ## Demo<a name="logDemo"></a>
 在Tigo框架中使用log模块，只要按照如下示例编写代码即可：
 ```go
+// 在Tigo框架中使用logger模块
+package main
+
+import (
+    "net/http"
+    "github.com/karldoenitz/Tigo/TigoWeb"
+    "github.com/karldoenitz/Tigo/logger"
+)
+
+type HelloHandler struct {
+    TigoWeb.BaseHandler
+}
+
+func (helloHandler *HelloHandler)Handle(responseWriter http.ResponseWriter, request *http.Request) {
+    helloHandler.InitHandler(responseWriter, request)
+    logger.Info.Printf("info data: %s", "test") // 此处打印log
+    helloHandler.ResponseAsHtml("<p1 style='color: red'>Hello Tigo!</p1>")
+}
+
+var urls = map[string]interface{Handle(http.ResponseWriter, *http.Request)}{
+    "/hello-tigo": &HelloHandler{},
+}
+
+func main() {
+    application := TigoWeb.Application{
+        UrlPattern: TigoWeb.UrlPattern{UrlMapping: urls},
+        ConfigPath: "./configuration.json",  // 此处配置文件，如果不适用配置文件，可以在代码中初始化LogLevel对象，使用该对象进行logger模块初始化。
+    }
+    application.Run()
+}
 ```
+```configuration.json```文件内容如下：
+```JavaScript
+{
+  "cookie": "TencentCode",
+  "ip": "0.0.0.0",
+  "port": 8080,
+  "log": {
+    "trace": "stdout",  // trace的内容只在终端输出，不在文件内保留
+    "info": "/Users/karllee/Desktop/run-info.log",  // info的内容存在run-info.log文件中
+    "warning": "/Users/karllee/Desktop/run.log",  // warning与error的日志存在同一个文件内
+    "error": "/Users/karllee/Desktop/run.log"
+  }
+}
+```
+以上为在Tigo框架中使用logger模块，如果想在第三方代码中使用logger模块，而不是在Tigo中，则可以参考`func (globalConfig *GlobalConfig)Init(configPath string)`方法，使用LogLevel或是配置文件初始化logger模块。
 ## Structure<a name="LogStructure"></a>
 log模块所包含的结构体。
 ### type LogLevel<a name="LogLevel"></a>
@@ -362,6 +407,7 @@ logger.Info.Printf("It is a test...")
 logger.Warning.Printf("warning!")
 logger.Error.Printf("ERROR!!!")
 ```
+注意：使用此方法会使原先的log配置失效。
 ### func InitLoggerWithConfigFile<a name="InitLoggerWithConfigFile"></a>
 ```go
 func InitLoggerWithConfigFile(filePath string)
