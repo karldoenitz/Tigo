@@ -44,8 +44,17 @@ API index:
     - [func Decrypt](#Decrypt)
     - [func InitGlobalConfig](#InitGlobalConfig)
 - [logger](#logger)
+  - [Demo](#logDemo)
+  - [structure](#LogStructure)
+    - [type LogLevel](#LogLevel)
   - [functions](#loggerFunctions)
     - [func SetLogPath](#SetLogPath)
+    - [func InitLoggerWithConfigFile](#InitLoggerWithConfigFile)
+    - [func InitLoggerWithObject](#InitLoggerWithObject)
+    - [func InitTrace](#InitTrace)
+    - [func InitInfo](#InitInfo)
+    - [func InitWarning](#InitWarning)
+    - [func InitError](#InitError)
 # Tigo.TigoWeb<a name="TigoWeb"></a>
 TigoWeb is the core part of Tigo framework, it contains Handler,URLpattern and Application.
 ## type BaseHandler<a name="BaseHandler"></a>
@@ -325,7 +334,74 @@ func InitGlobalConfig(configPath string)
 Use this method to initialize global configuration.
 # Tigo.logger<a name="logger"></a>
 Use this package to print log.  
+## Demo<a name="logDemo"></a>
+The demo about using ```logger``` package in the web application developed by Tigo.
+```go
+package main
+
+import (
+    "net/http"
+    "github.com/karldoenitz/Tigo/TigoWeb"
+    "github.com/karldoenitz/Tigo/logger"
+)
+
+type HelloHandler struct {
+    TigoWeb.BaseHandler
+}
+
+func (helloHandler *HelloHandler)Handle(responseWriter http.ResponseWriter, request *http.Request) {
+    helloHandler.InitHandler(responseWriter, request)
+    logger.Info.Printf("info data: %s", "test") // print log here
+    helloHandler.ResponseAsHtml("<p1 style='color: red'>Hello Tigo!</p1>")
+}
+
+var urls = map[string]interface{Handle(http.ResponseWriter, *http.Request)}{
+    "/hello-tigo": &HelloHandler{},
+}
+
+func main() {
+    application := TigoWeb.Application{
+        UrlPattern: TigoWeb.UrlPattern{UrlMapping: urls},
+        ConfigPath: "./configuration.json",  // use configuration file to config logger, or you can use LogLevel instance if you wanted.
+    }
+    application.Run()
+}
+```
+```configuration.json``` content：
+```JavaScript
+{
+  "cookie": "TencentCode",
+  "ip": "0.0.0.0",
+  "port": 8080,
+  "log": {
+    "trace": "stdout",  // only print trace message in console
+    "info": "/Users/karllee/Desktop/run-info.log",  // print info message in run-info.log file
+    "warning": "/Users/karllee/Desktop/run.log",  // print warning info and error info in same file
+    "error": "/Users/karllee/Desktop/run.log"
+  }
+}
+```
+If you wanna use logger package in your application not base on Tigo, you can use `func (globalConfig *GlobalConfig)Init(configPath string)` function to initialize logger package.
+## Structure<a name="LogStructure"></a>
+The structure in logger package:
+### type LogLevel<a name="LogLevel"></a>
+```go
+// log level structure
+//   - Trace
+//   - Info
+//   - Warning
+//   - Error
+// discard: discard, stdout: print in console; the path of log file
+type LogLevel struct {
+	Trace    string   `json:"trace"`
+	Info     string   `json:"info"`
+	Warning  string   `json:"warning"`
+	Error    string   `json:"error"`
+}
+```
+Initialize this structure and pass the instance to ```InitLoggerWithObject``` to init logger package.
 ## logger inner functions<a name="loggerFunctions"></a>
+### func SetLogPath<a name="SetLogPath"></a>
 Set Log file's Path<a name="SetLogPath"></a>
 ```go
 func SetLogPath(logPath string)
@@ -338,4 +414,50 @@ logger.Info.Printf("It is a test...")
 logger.Warning.Printf("warning!")
 logger.Error.Printf("ERROR!!!")
 ```
-
+Attention: this method can override the config you set before.
+### func InitLoggerWithConfigFile<a name="InitLoggerWithConfigFile"></a>
+```go
+func InitLoggerWithConfigFile(filePath string)
+```
+Initialize logger with configuration file.
+### func InitLoggerWithObject<a name="InitLoggerWithObject"></a>
+```go
+func InitLoggerWithObject(logLevel LogLevel)
+```
+Initialize logger with LogLevel instance.
+### func InitTrace<a name="InitTrace"></a>
+```go
+func InitTrace(level string)
+```
+Initialize Trace instance.  
+Parameter values:
+- discard: discard log message;
+- stdout: print log message in console;
+- real file path: the path of log file.
+### func InitInfo<a name="InitInfo"></a>
+```go
+func InitInfo(level string)
+```
+Initialize Info instance.  
+Parameter values:
+- discard: discard log message;
+- stdout: print log message in console;
+- real file path: the path of log file.
+### func InitWarning<a name="InitWarning"></a>
+```go
+func InitWarning(level string)
+```
+Initialize Warning instance.  
+Parameter values:
+- discard: discard log message;
+- stdout: print log message in console;
+- real file path: the path of log file.
+### func InitError<a name="InitError"></a>
+```go
+func InitError(level string)
+```
+Initialize Error instance.  
+Parameter values:
+- discard: discard log message;
+- stdout: print log message in console;
+- real file path: the path of log file.
