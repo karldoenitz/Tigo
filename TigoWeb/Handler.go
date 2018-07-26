@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 	"io/ioutil"
+	"html/template"
 )
 
 // Handler的基础类，开发者开发的handler继承此类
@@ -53,6 +54,19 @@ func (baseHandler *BaseHandler)ResponseAsText(result string) {
 func (baseHandler *BaseHandler)ResponseAsHtml(result string) {
 	baseHandler.ResponseWriter.Header().Set("Content-Type", "text/html")
 	fmt.Fprintf(baseHandler.ResponseWriter, result)
+}
+
+// 渲染模板，返回数据
+// 参数解析如下：
+//   - data：表示传入的待渲染的数据
+//   - templates：表示模板文件的路径，接受多个模板文件
+func (baseHandler *BaseHandler)Render(data interface{}, templates ...string) {
+	templateBasePath := globalConfig.Template
+	for _, value := range templates {
+		value = templateBasePath + value
+	}
+	t, _ := template.ParseFiles(templates...)
+	t.Execute(baseHandler.ResponseWriter, data)
 }
 
 // 向客户端永久重定向一个地址

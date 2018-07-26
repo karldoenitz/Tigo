@@ -137,6 +137,7 @@ type GlobalConfig struct {
 	Cert     string           `json:"cert"`      // https证书路径
 	CertKey  string           `json:"cert_key"`  // https密钥路径
 	Cookie   string           `json:"cookie"`    // cookie加密解密的密钥
+	Template string           `json:"template"`  // 模板文件所在文件夹的路径
 	Log      logger.LogLevel  `json:"log"`       // log相关属性配置
 }
 
