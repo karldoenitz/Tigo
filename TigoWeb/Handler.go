@@ -62,10 +62,12 @@ func (baseHandler *BaseHandler)ResponseAsHtml(result string) {
 //   - templates：表示模板文件的路径，接受多个模板文件
 func (baseHandler *BaseHandler)Render(data interface{}, templates ...string) {
 	templateBasePath := globalConfig.Template
+	var templatePath []string
 	for _, value := range templates {
 		value = templateBasePath + value
+		templatePath = append(templatePath, value)
 	}
-	t, _ := template.ParseFiles(templates...)
+	t, _ := template.ParseFiles(templatePath...)
 	t.Execute(baseHandler.ResponseWriter, data)
 }
 
