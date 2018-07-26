@@ -1,7 +1,7 @@
 # 文档([For English Documentation Click Here](https://github.com/karldoenitz/Tigo/blob/master/documentation/documentation_en.md))
 Tigo是一款用go开发的web应用框架，基于net/http库实现，目的是用来快速搭建restful服务。  
 API目录：
-- [TigoWeb](#TigoWeb)
+- [TigoWeb](#KTigoWeb)
   - [type BaseHandler](#BaseHandler)
     - [func InitHandler](#InitHandler)
     - [func GetJsonValue](#GetJsonValue)
@@ -55,7 +55,7 @@ API目录：
     - [func InitInfo](#InitInfo)
     - [func InitWarning](#InitWarning)
     - [func InitError](#InitError)
-# Tigo.TigoWeb<a name="TigoWeb"></a>
+# Tigo.TigoWeb<a name="KTigoWeb"></a>
 TigoWeb是Tigo框架中的核心部分，Handler、URLpattern以及Application三大核心组件包含于此。
 ## type BaseHandler<a name="BaseHandler"></a>
 ```go
