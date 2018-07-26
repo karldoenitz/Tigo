@@ -276,12 +276,12 @@ func (baseResponse *BaseResponse)ToJson() (string)
 ## type GlobalConfig<a name="GlobalConfig"></a>
 ```go
 type GlobalConfig struct {
-    IP       string  `json:"ip"`        // IP地址
-    Port     int     `json:"port"`      // 端口
-    Cert     string  `json:"cert"`      // https证书路径
-    CertKey  string  `json:"cert_key"`  // https密钥路径
-    LogPath  string  `json:"log_path"`  // log文件路径
-    Cookie   string  `json:"cookie"`    // cookie加密解密的密钥
+	IP       string           `json:"ip"`        // IP地址
+	Port     int              `json:"port"`      // 端口
+	Cert     string           `json:"cert"`      // https证书路径
+	CertKey  string           `json:"cert_key"`  // https密钥路径
+	Cookie   string           `json:"cookie"`    // cookie加密解密的密钥
+	Log      logger.LogLevel  `json:"log"`       // log相关属性配置
 }
 ```
 ### func (globalConfig *GlobalConfig)Init<a name="GlobalInit"></a>
@@ -294,8 +294,8 @@ func (globalConfig *GlobalConfig)Init(configPath string)
 - Port：配置服务绑定的端口
 - Cert：https证书地址
 - CertKey：https密钥
-- LogPath：log输出路径
 - Cookie：cookie加密解密使用的密钥
+- Log：log相关属性的配置，Tigo.logger.LogLevel结构体的实例
 
 配置文件configuration.json示例如下：
 ```javascript

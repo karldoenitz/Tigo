@@ -284,12 +284,12 @@ Use this method to convert object to json string.
 ## type GlobalConfig<a name="GlobalConfig"></a>
 ```go
 type GlobalConfig struct {
-    IP       string  `json:"ip"`        // IP address
-    Port     int     `json:"port"`      // Port
-    Cert     string  `json:"cert"`      // https cert
-    CertKey  string  `json:"cert_key"`  // https key
-    LogPath  string  `json:"log_path"`  // log path
-    Cookie   string  `json:"cookie"`    // cookie's security key
+    IP       string           `json:"ip"`        // IP address
+    Port     int              `json:"port"`      // Port
+    Cert     string           `json:"cert"`      // https cert
+    CertKey  string           `json:"cert_key"`  // https key
+    Cookie   string           `json:"cookie"`    // cookie's security key
+    Log      logger.LogLevel  `json:"log_path"`  // log config
 }
 ```
 ### func (globalConfig *GlobalConfig)Init<a name="GlobalInit"></a>
@@ -302,8 +302,8 @@ Glance:
 - Port: the Port server blinded
 - Cert: the path of https cert file
 - CertKey: the path of https key file
-- LogPath: the path of log file
 - Cookie: the key to encrypt/decrypt cookie
+- Log: the instance of Tigo.logger.LogLevel
 
 configuration.json example：
 ```javascript
