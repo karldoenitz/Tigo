@@ -55,9 +55,9 @@ API目录：
     - [func InitInfo](#InitInfo)
     - [func InitWarning](#InitWarning)
     - [func InitError](#InitError)
-# Tigo.TigoWeb<a name="TigoWeb"></a>
+# Tigo.TigoWeb<a name="#TigoWeb"></a>
 TigoWeb是Tigo框架中的核心部分，Handler、URLpattern以及Application三大核心组件包含于此。
-## type BaseHandler<a name="BaseHandler"></a>
+## type BaseHandler<a name="#BaseHandler"></a>
 ```go
 type BaseHandler struct {
     ResponseWriter  http.ResponseWriter
@@ -65,129 +65,129 @@ type BaseHandler struct {
 }
 ```
 ```BaseHandler```是一切handler的父结构体，开发者开发的handler必须继承此结构体。
-### func (*BaseHandler)InitHandler<a name="InitHandler"></a>
+### func (*BaseHandler)InitHandler<a name="#InitHandler"></a>
 ```go
 func (baseHandler *BaseHandler)InitHandler(responseWriter http.ResponseWriter, request *http.Request)
 ```
 ```InitHandler```方法是初始化结构体必须要使用的方法，所有的Handler中的Handle方法必须调用此方法。
-### func (*BaseHandler)GetJsonValue<a name="GetJsonValue"></a>
+### func (*BaseHandler)GetJsonValue<a name="#GetJsonValue"></a>
 ```go
 func (baseHandler *BaseHandler)GetJsonValue(key string) (interface{})
 ```
 ```GetJsonValue```方法是根据key获取客户端传递的json对象。客户端发送的请求的Content-Type必须是application/json。
-### func (*BaseHandler)GetParameter<a name="GetParameter"></a>
+### func (*BaseHandler)GetParameter<a name="#GetParameter"></a>
 ```go
 func (baseHandler *BaseHandler)GetParameter(key string) (value string)
 ```
 ```GetParameter```方法是根据key获取客户端传递的参数值。
 - 可以从URL上获取参数值，或是form中；如果http的body是json，也可以从中解析出参数值。
-### func (*BaseHandler)GetHeader<a name="GetHeader"></a>
+### func (*BaseHandler)GetHeader<a name="#GetHeader"></a>
 ```go
 func (baseHandler *BaseHandler)GetHeader(name string) (value string)
 ```
 ```GetHeader```方法是根据name获取http的header值。
-### func (*BaseHandler)SetHeader<a name="SetHeader"></a>
+### func (*BaseHandler)SetHeader<a name="#SetHeader"></a>
 ```go
 func (baseHandler *BaseHandler)SetHeader(name string, value string)
 ```
 ```SetHeader```方法是根据name设置http的header值。
-### func (*BaseHandler)GetCookie<a name="GetCookie"></a>
+### func (*BaseHandler)GetCookie<a name="#GetCookie"></a>
 ```go
 func (baseHandler *BaseHandler)GetCookie(name string) (value string)
 ```
 ```GetCookie```方法是根据name获取cookie值。
-### func (*BaseHandler)SetCookie<a name="SetCookie"></a>
+### func (*BaseHandler)SetCookie<a name="#SetCookie"></a>
 ```go
 func (baseHandler *BaseHandler)SetCookie(name string, value string)
 ```
 ```SetCookie```方法是根据name设置cookie值。
-### func (*BaseHandler)GetSecureCookie<a name="GetSecureCookie"></a>
+### func (*BaseHandler)GetSecureCookie<a name="#GetSecureCookie"></a>
 ```go
 func (baseHandler *BaseHandler)GetSecureCookie(name string, key ...string) (value string)
 ```
 ```GetSecureCookie```方法是用来获取加密的cookie值，key为解密所需要用到的密钥，key可以不填，也可以在configuration配置文件中配置。
 - 当configuration文件和函数参数中都设置了key，则以函数中设置的key为准；
 - 当configuration文件和函数参数中都未设置key，则依然会进行解密。
-### func (*BaseHandler)SetSecureCookie<a name="SetSecureCookie"></a>
+### func (*BaseHandler)SetSecureCookie<a name="#SetSecureCookie"></a>
 ```go
 func (baseHandler *BaseHandler)SetSecureCookie(name string, value string, key ...string)
 ```
 ```SetSecureCookie```方法是用来给客户端设置一个加密cookie，key为加密所需要用到的密钥，key可以不填，也可以在configuration配置文件中配置。
 - 当configuration文件和函数参数中都设置了key，则以函数中设置的key为准；
 - 当configuration文件和函数参数中都未设置key，则依然会进行加密。
-### func (*BaseHandler)GetCookieObject<a name="GetCookieObject"></a>
+### func (*BaseHandler)GetCookieObject<a name="#GetCookieObject"></a>
 ```go
 func (baseHandler *BaseHandler)GetCookieObject(name ...string) (Cookie, error)
 ```
 ```GetCookieObject```方法是用来根据name获取指定的cookie对象，返回值类型为```Cookie```。
-### func (*BaseHandler)SetCookieObject<a name="SetCookieObject"></a>
+### func (*BaseHandler)SetCookieObject<a name="#SetCookieObject"></a>
 ```go
 func (baseHandler *BaseHandler)SetCookieObject(cookie Cookie)
 ```
 ```SetCookieObject```方法接收一个```Cookie```对象，为客户端设置cookie。
-### func (*BaseHandler)ClearCookie<a name="ClearCookie"></a>
+### func (*BaseHandler)ClearCookie<a name="#ClearCookie"></a>
 ```go
 func (baseHandler *BaseHandler)ClearCookie(name string)
 ```
 ```ClearCookie```方法是根据指定的name清除cookie。
-### func (*BaseHandler)ClearAllCookie<a name="ClearAllCookie"></a>
+### func (*BaseHandler)ClearAllCookie<a name="#ClearAllCookie"></a>
 ```go
 func (baseHandler *BaseHandler)ClearAllCookie()
 ```
 ```ClearAllCookie```方法是用来清空所有的cookie的。
-### func (*BaseHandler)CheckRequestMethodValid<a name="CheckRequestMethodValid"></a>
+### func (*BaseHandler)CheckRequestMethodValid<a name="#CheckRequestMethodValid"></a>
 ```go
 func (baseHandler *BaseHandler)CheckRequestMethodValid(methods ...string) (result bool)
 ```
 ```CheckRequestMethodValid```方法是用来判断http请求方法是否合法，接收多个参数，参数表示支持的http请求方式，不填参数则认为不支持所有请求方式。
-### func (*BaseHandler)Redirect<a name="Redirect"></a>
+### func (*BaseHandler)Redirect<a name="#Redirect"></a>
 ```go
 func (baseHandler *BaseHandler)Redirect(url string, expire ...time.Time)
 ```
 ```Redirect```方法是将当前handler所挂载的URL重定向到另一个URL地址，expire为客户端过期时间，如果不填写expire，则会使用客户端默认过期时间。
-### func (*BaseHandler)RedirectPermanently<a name="RedirectPermanently"></a>
+### func (*BaseHandler)RedirectPermanently<a name="#RedirectPermanently"></a>
 ```go
 func (baseHandler *BaseHandler)RedirectPermanently(url string)
 ```
 ```RedirectPermanently```方法是将当前handler所挂载的URL永久性重定向到另一个URL地址。
-### func (*BaseHandler)ResponseAsHtml<a name="ResponseAsHtml"></a>
+### func (*BaseHandler)ResponseAsHtml<a name="#ResponseAsHtml"></a>
 ```go
 func (baseHandler *BaseHandler)ResponseAsHtml(result string)
 ```
 ```ResponseAsHtml```方法是将传入的字符串以html文本类型响应给客户端。
-### func (*BaseHandler)ResponseAsText<a name="ResponseAsText"></a>
+### func (*BaseHandler)ResponseAsText<a name="#ResponseAsText"></a>
 ```go
 func (baseHandler *BaseHandler)ResponseAsText(result string)
 ```
 ```ResponseAsText```方法是将传入的字符串以text文本类型响应给客户端。
-### func (*BaseHandler)ResponseAsJson<a name="ResponseAsJson"></a>
+### func (*BaseHandler)ResponseAsJson<a name="#ResponseAsJson"></a>
 ```go
 func (baseHandler *BaseHandler)ResponseAsJson(response Response)
 ```
 ```ResponseAsJson```方法是将传入的对象转换成json字符串，然后响应给客户端，如果转换失败则会向客户端响应空字符串。
-### func (*BaseHandler)ToJson<a name="ToJson"></a>
+### func (*BaseHandler)ToJson<a name="#ToJson"></a>
 ```go
 func (baseHandler *BaseHandler)ToJson(response Response) (result string)
 ```
 ```ToJson```方法是将一个对象转换成json字符串。如果转换失败则会返回空字符串。
-## type UrlPattern<a name="UrlPattern"></a>
+## type UrlPattern<a name="#UrlPattern"></a>
 ```go
 type UrlPattern struct {
     UrlMapping map[string] interface{Handle(http.ResponseWriter, *http.Request)}
 }
 ```
 URL路由设置，使用这个结构体在应用中配置URL与对应的handler。
-### func (urlPattern *UrlPattern)AppendUrlPattern<a name="AppendUrlPattern"></a>
+### func (urlPattern *UrlPattern)AppendUrlPattern<a name="#AppendUrlPattern"></a>
 ```go
 func (urlPattern *UrlPattern)AppendUrlPattern(uri string, v interface{Handle(http.ResponseWriter, *http.Request)})
 ```
 此方法是向指定URL上挂载一个Handler。
-### func (urlPattern *UrlPattern)Init<a name="Init"></a>
+### func (urlPattern *UrlPattern)Init<a name="#Init"></a>
 ```go
 func (urlPattern *UrlPattern)Init()
 ```
 初始化URL映射。
-## type Application<a name="Application"></a>
+## type Application<a name="#Application"></a>
 ```go
 type Application struct {
     IPAddress  string      // IP地址
@@ -201,12 +201,12 @@ Application结构体是启动http服务的入口。
 - Port：端口，可以在configuration中配置，若在configuration中配置了则以configuration中配置的为主；
 - UrlPattern：路由配置；
 - ConfigPath：配置文件的路径。
-### func (application *Application)Run<a name="Run"></a>
+### func (application *Application)Run<a name="#Run"></a>
 ```go
 func (application *Application)Run()
 ```
 此方法用来启动http服务，如果在configuration中配置了https的密钥和证书，服务则会以https方式启动。
-## type Cookie<a name="Cookie"></a>
+## type Cookie<a name="#Cookie"></a>
 ```go
 type Cookie struct {
     Name        string
@@ -231,49 +231,49 @@ type Cookie struct {
 }
 ```
 cookie结构体，用此结构体进行cookie处理。
-### func (cookie *Cookie)GetCookieEncodeValue<a name="GetCookieEncodeValue"></a>
+### func (cookie *Cookie)GetCookieEncodeValue<a name="#GetCookieEncodeValue"></a>
 ```go
 func (cookie *Cookie)GetCookieEncodeValue()(result string)
 ```
 使用此方法获取cookie的加密值。
-### func (cookie *Cookie)GetCookieDecodeValue<a name="GetCookieDecodeValue"></a>
+### func (cookie *Cookie)GetCookieDecodeValue<a name="#GetCookieDecodeValue"></a>
 ```go
 func (cookie *Cookie)GetCookieDecodeValue()(result string)
 ```
 使用此方法获取cookie的解密值。
-### func (cookie *Cookie)ToHttpCookie<a name="ToHttpCookie"></a>
+### func (cookie *Cookie)ToHttpCookie<a name="#ToHttpCookie"></a>
 ```go
 func (cookie *Cookie)ToHttpCookie()(http.Cookie)
 ```
 使用此方法将Cookie对象转换为http.Cookie对象。
-### func (cookie *Cookie)ConvertFromHttpCookie<a name="ConvertFromHttpCookie"></a>
+### func (cookie *Cookie)ConvertFromHttpCookie<a name="#ConvertFromHttpCookie"></a>
 ```go
 func (cookie *Cookie)ConvertFromHttpCookie(httpCookie http.Cookie)
 ```
 使用此方法将http.Cookie对象转换为Cookie对象。
-### func (cookie *Cookie)SetSecurityKey<a name="SetSecurityKey"></a>
+### func (cookie *Cookie)SetSecurityKey<a name="#SetSecurityKey"></a>
 ```go
 func (cookie *Cookie)SetSecurityKey(key string)
 ```
 使用此方法为cookie对象设置加密key。
-## type BaseResponse<a name="BaseResponse"></a>
+## type BaseResponse<a name="#BaseResponse"></a>
 ```go
 type BaseResponse struct {
 
 }
 ```
 继承此结构体的对象可以通过```func (baseHandler *BaseHandler)ResponseAsJson(response Response)```方法，序列化为json字符串传递给客户端。
-### func (baseResponse *BaseResponse)Print<a name="Print"></a>
+### func (baseResponse *BaseResponse)Print<a name="#Print"></a>
 ```
 func (baseResponse *BaseResponse)Print()
 ```
 使用此方法可以打印当前Response对象到控制台中。
-### func (baseResponse *BaseResponse)ToJson<a name="ResponseToJson"></a>
+### func (baseResponse *BaseResponse)ToJson<a name="#ResponseToJson"></a>
 ```
 func (baseResponse *BaseResponse)ToJson() (string)
 ```
 使用此方法将当前Response对象序列化为json字符串。
-## type GlobalConfig<a name="GlobalConfig"></a>
+## type GlobalConfig<a name="#GlobalConfig"></a>
 ```go
 type GlobalConfig struct {
     IP       string  `json:"ip"`        // IP地址
@@ -284,7 +284,7 @@ type GlobalConfig struct {
     Cookie   string  `json:"cookie"`    // cookie加密解密的密钥
 }
 ```
-### func (globalConfig *GlobalConfig)Init<a name="GlobalInit"></a>
+### func (globalConfig *GlobalConfig)Init<a name="#GlobalInit"></a>
 ```go
 func (globalConfig *GlobalConfig)Init(configPath string)
 ```
@@ -308,25 +308,25 @@ func (globalConfig *GlobalConfig)Init(configPath string)
     "cookie": "thisiscookiekey"
 }
 ```
-## utils<a name="utils"></a>
-加密方法<a name="Encrypt"></a>
+## utils<a name="#utils"></a>
+加密方法<a name="#Encrypt"></a>
 ```go
 func Encrypt(src[]byte, key []byte) string
 ```
 使用此方法对字符数组进行aes加密。  
-解密方法<a name="Decrypt"></a>
+解密方法<a name="#Decrypt"></a>
 ```go
 func Decrypt(src[]byte, key []byte) ([]byte)
 ```
 使用此方法对已加密的字符数组进行aes解密。  
-初始化全局变量方法<a name="InitGlobalConfig"></a>
+初始化全局变量方法<a name="#InitGlobalConfig"></a>
 ```go
 func InitGlobalConfig(configPath string)
 ```
 使用此方法初始化全局变量。
-# Tigo.logger<a name="logger"></a>
+# Tigo.logger<a name="#logger"></a>
 使用此模块打印log。
-## Demo<a name="logDemo"></a>
+## Demo<a name="#logDemo"></a>
 在Tigo框架中使用log模块，只要按照如下示例编写代码即可：
 ```go
 // 在Tigo框架中使用logger模块
@@ -375,9 +375,9 @@ func main() {
 }
 ```
 以上为在Tigo框架中使用logger模块，如果想在第三方代码中使用logger模块，而不是在Tigo中，则可以参考`func (globalConfig *GlobalConfig)Init(configPath string)`方法，使用LogLevel或是配置文件初始化logger模块。
-## Structure<a name="LogStructure"></a>
+## Structure<a name="#LogStructure"></a>
 log模块所包含的结构体。
-### type LogLevel<a name="LogLevel"></a>
+### type LogLevel<a name="#LogLevel"></a>
 ```go
 // log分级结构体
 //   - Trace    跟踪
@@ -393,8 +393,8 @@ type LogLevel struct {
 }
 ```
 初始化此结构体，将此结构体作为参数传入```InitLoggerWithObject```中，初始化logger模块。
-## logger模块内置方法<a name="loggerFunctions"></a>
-### func SetLogPath<a name="SetLogPath"></a>
+## logger模块内置方法<a name="#loggerFunctions"></a>
+### func SetLogPath<a name="#SetLogPath"></a>
 设置log文件的路径
 ```go
 func SetLogPath(logPath string)
@@ -408,17 +408,17 @@ logger.Warning.Printf("warning!")
 logger.Error.Printf("ERROR!!!")
 ```
 注意：使用此方法会使原先的log配置失效。
-### func InitLoggerWithConfigFile<a name="InitLoggerWithConfigFile"></a>
+### func InitLoggerWithConfigFile<a name="#InitLoggerWithConfigFile"></a>
 ```go
 func InitLoggerWithConfigFile(filePath string)
 ```
 根据配置文件初始化logger模块。
-### func InitLoggerWithObject<a name="InitLoggerWithObject"></a>
+### func InitLoggerWithObject<a name="#InitLoggerWithObject"></a>
 ```go
 func InitLoggerWithObject(logLevel LogLevel)
 ```
 根据LogLevel实例初始化logger模块。
-### func InitTrace<a name="InitTrace"></a>
+### func InitTrace<a name="#InitTrace"></a>
 ```go
 func InitTrace(level string)
 ```
@@ -427,7 +427,7 @@ func InitTrace(level string)
 - discard：不处理；
 - stdout： 终端输出，不打印到文件；
 - 文件具体路径：存储log的文件的路径。
-### func InitInfo<a name="InitInfo"></a>
+### func InitInfo<a name="#InitInfo"></a>
 ```go
 func InitInfo(level string)
 ```
@@ -436,7 +436,7 @@ func InitInfo(level string)
 - discard：不处理；
 - stdout： 终端输出，不打印到文件；
 - 文件具体路径：存储log的文件的路径。
-### func InitWarning<a name="InitWarning"></a>
+### func InitWarning<a name="#InitWarning"></a>
 ```go
 func InitWarning(level string)
 ```
@@ -445,7 +445,7 @@ func InitWarning(level string)
 - discard：不处理；
 - stdout： 终端输出，不打印到文件；
 - 文件具体路径：存储log的文件的路径。
-### func InitError<a name="InitError"></a>
+### func InitError<a name="#InitError"></a>
 ```go
 func InitError(level string)
 ```
