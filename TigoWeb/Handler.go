@@ -24,6 +24,8 @@ func (baseHandler *BaseHandler)InitHandler(responseWriter http.ResponseWriter, r
 	baseHandler.Request.ParseForm()
 }
 
+/////////////////////////////////////////////////////output/////////////////////////////////////////////////////////////
+
 // 将对象转化为Json字符串，转换失败则返回空字符串。
 // 传入参数Response为一个interface，必须有成员函数Print。
 func (baseHandler *BaseHandler)ToJson(response Response) (result string) {
@@ -104,6 +106,8 @@ func (baseHandler *BaseHandler)CheckRequestMethodValid(methods ...string) (resul
 	baseHandler.ResponseWriter.WriteHeader(405)
 	return false
 }
+
+/////////////////////////////////////////////////////cookie/////////////////////////////////////////////////////////////
 
 // 设置cookie
 func (baseHandler *BaseHandler)SetCookie(name string, value string) {
@@ -208,6 +212,8 @@ func (baseHandler *BaseHandler)ClearAllCookie() {
 		baseHandler.ClearCookie(cookie.Name)
 	}
 }
+
+/////////////////////////////////////////////////////input//////////////////////////////////////////////////////////////
 
 // 获取header
 func (baseHandler *BaseHandler)GetHeader(name string) (value string) {
