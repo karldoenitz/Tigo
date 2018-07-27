@@ -5,7 +5,7 @@ A web framework developed in go language.
 
 # Install
 ```
-go get github.com/karldoenitz/Tigo/TigoWeb
+go get github.com/karldoenitz/Tigo/...
 ```
 
 # Demo
