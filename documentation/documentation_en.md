@@ -158,6 +158,18 @@ func (baseHandler *BaseHandler)Redirect(url string, expire ...time.Time)
 func (baseHandler *BaseHandler)RedirectPermanently(url string)
 ```
 ```RedirectPermanently``` is the method to redirect client to another url permanently.
+### func (baseHandler *BaseHandler)Render<a name="Render"></a>
+```go
+func (baseHandler *BaseHandler)Render(data interface{}, templates ...string)
+```
+`Render` is the method to compile html template and response the result to client.
+
+parameters:
+- data: the instance of any type structure;
+- templates: the name of html templates.
+
+**Attention:**
+If not configure base path of templates in configuration, this method will use relative path.
 ### func (*BaseHandler)ResponseAsHtml<a name="ResponseAsHtml"></a>
 ```go
 func (baseHandler *BaseHandler)ResponseAsHtml(result string)
