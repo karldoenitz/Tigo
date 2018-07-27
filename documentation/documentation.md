@@ -19,6 +19,7 @@ API目录：
     - [func CheckRequestMethodValid](#CheckRequestMethodValid)
     - [func Redirect](#Redirect)
     - [func RedirectPermanently](#RedirectPermanently)
+    - [func Render](#Render)
     - [func ResponseAsHtml](#ResponseAsHtml)
     - [func ResponseAsText](#ResponseAsText)
     - [func ResponseAsJson](#ResponseAsJson)
@@ -150,6 +151,11 @@ func (baseHandler *BaseHandler)Redirect(url string, expire ...time.Time)
 func (baseHandler *BaseHandler)RedirectPermanently(url string)
 ```
 ```RedirectPermanently```方法是将当前handler所挂载的URL永久性重定向到另一个URL地址。
+### func (baseHandler *BaseHandler)Render<a name="Render"></a>
+```go
+func (baseHandler *BaseHandler)Render(data interface{}, templates ...string)
+```
+`Render`方法是根据数据和html模板渲染网页，并将渲染后的结果以网页形式相应给客户端。
 ### func (*BaseHandler)ResponseAsHtml<a name="ResponseAsHtml"></a>
 ```go
 func (baseHandler *BaseHandler)ResponseAsHtml(result string)
