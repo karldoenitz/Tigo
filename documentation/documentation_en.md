@@ -168,7 +168,7 @@ parameters:
 - data: the instance of any type structure;
 - templates: the name of html templates.
 
-**Attention:**
+**Attention:**  
 If not configure base path of templates in configuration, this method will use relative path.
 ### func (*BaseHandler)ResponseAsHtml<a name="ResponseAsHtml"></a>
 ```go
