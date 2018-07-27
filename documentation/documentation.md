@@ -155,11 +155,11 @@ func (baseHandler *BaseHandler)RedirectPermanently(url string)
 ```go
 func (baseHandler *BaseHandler)Render(data interface{}, templates ...string)
 ```
-`Render`方法是根据数据和html模板渲染网页，并将渲染后的结果以网页形式相应给客户端。
+`Render`方法是根据数据和html模板渲染网页，并将渲染后的结果以网页形式相应给客户端。  
 参数解析：
 - data：任意类型结构体实例；
-- templates：需要渲染的模板文件名称。
-**注意：**
+- templates：需要渲染的模板文件名称。  
+**注意：**  
 如果在配置文件中没有配置template的路径，则此函数选择模板时将会使用相对路径。
 ### func (*BaseHandler)ResponseAsHtml<a name="ResponseAsHtml"></a>
 ```go
