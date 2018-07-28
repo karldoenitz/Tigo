@@ -5,7 +5,7 @@ import "net/http"
 
 // URL路由，此处存储URL映射。
 type UrlPattern struct {
-	UrlMapping map[string] interface{Handle(http.ResponseWriter, *http.Request)}
+	UrlMapping map[string] interface{}
 }
 
 // 向http服务挂载单个handler，注意：
@@ -17,6 +17,6 @@ func (urlPattern *UrlPattern)AppendUrlPattern(uri string, v interface{Handle(htt
 // 初始化url映射，遍历UrlMapping，将handler与对应的URL依次挂载到http服务上
 func (urlPattern *UrlPattern)Init() {
 	for key, value := range urlPattern.UrlMapping {
-		urlPattern.AppendUrlPattern(key, value)
+		urlPattern.AppendUrlPattern(key, value.(interface{Handle(http.ResponseWriter, *http.Request)}))
 	}
 }

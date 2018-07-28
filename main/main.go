@@ -64,7 +64,7 @@ func (testCookieHandler *TestCookieHandler)Handle(responseWriter http.ResponseWr
 	testCookieHandler.ResponseAsHtml("<h1>Tiger Go Go Go!</h1>")
 }
 
-var urls = map[string]interface{Handle(http.ResponseWriter, *http.Request)}{
+var urls = map[string]interface{}{
 	"/hello-world": &HelloHandler{},
 	"/redirect"   : &RedirectHandler{},
 	"/test-cookie": &TestCookieHandler{},
