@@ -361,7 +361,7 @@ func (helloHandler *HelloHandler)Handle(responseWriter http.ResponseWriter, requ
     helloHandler.ResponseAsHtml("<p1 style='color: red'>Hello Tigo!</p1>")
 }
 
-var urls = map[string]interface{Handle(http.ResponseWriter, *http.Request)}{
+var urls = map[string]interface{}{
     "/hello-tigo": &HelloHandler{},
 }
 

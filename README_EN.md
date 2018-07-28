@@ -29,7 +29,7 @@ func (helloHandler *HelloHandler)Handle(responseWriter http.ResponseWriter, requ
 }
 
 // url路由配置
-var urls = map[string]interface{Handle(http.ResponseWriter, *http.Request)}{
+var urls = map[string]interface{}{
     "/hello-tigo": &HelloHandler{},
 }
 
