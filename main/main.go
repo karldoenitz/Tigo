@@ -71,11 +71,10 @@ var urls = map[string]interface{}{
 }
 
 func main() {
-	urlPattern := TigoWeb.UrlPattern{UrlMapping: urls}
 	application := TigoWeb.Application{
 		IPAddress:  "0.0.0.0",
 		Port:       8888,
-		UrlPattern: urlPattern,
+		UrlPattern: urls,
 		ConfigPath: "./configuration.json",
 	}
 	application.Run()
