@@ -9,15 +9,14 @@ import (
 
 // web容器
 type Application struct {
-	IPAddress  string      // IP地址
-	Port       int         // 端口
-	UrlPattern UrlPattern  // url路由配置
-	ConfigPath string      // 全局配置
+	IPAddress  string                  // IP地址
+	Port       int                     // 端口
+	UrlPattern map[string]interface{}  // url路由配置
+	ConfigPath string                  // 全局配置
 }
 
 // http服务启动函数
 func (application *Application)run() {
-	application.UrlPattern.Init()
 	address := fmt.Sprintf("%s:%d", application.IPAddress, application.Port)
 	logger.Info.Printf("Server run on: %s", address)
 	httpServerErr := http.ListenAndServe(address, nil)
@@ -28,7 +27,6 @@ func (application *Application)run() {
 
 // https服务启动函数
 func (application *Application)runTLS(cert string, key string) {
-	application.UrlPattern.Init()
 	address := fmt.Sprintf("%s:%d", application.IPAddress, application.Port)
 	logger.Info.Printf("Server run on: %s", address)
 	http.ListenAndServeTLS(address, cert, key, nil)
@@ -36,6 +34,8 @@ func (application *Application)runTLS(cert string, key string) {
 
 // 服务启动函数
 func (application *Application)Run() {
+	urlPattern := UrlPattern{UrlMapping:application.UrlPattern}
+	urlPattern.Init()
 	// 初始化全局变量
 	InitGlobalConfig(application.ConfigPath)
 	if globalConfig.IP != "" {
