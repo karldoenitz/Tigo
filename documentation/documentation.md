@@ -367,7 +367,7 @@ var urls = map[string]interface{}{
 
 func main() {
     application := TigoWeb.Application{
-        UrlPattern: TigoWeb.UrlPattern{UrlMapping: urls},
+        UrlPattern: urls,
         ConfigPath: "./configuration.json",  // 此处配置文件，如果不适用配置文件，可以在代码中初始化LogLevel对象，使用该对象进行logger模块初始化。
     }
     application.Run()

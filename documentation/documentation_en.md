@@ -373,7 +373,7 @@ var urls = map[string]interface{}{
 
 func main() {
     application := TigoWeb.Application{
-        UrlPattern: TigoWeb.UrlPattern{UrlMapping: urls},
+        UrlPattern: urls,
         ConfigPath: "./configuration.json",  // use configuration file to config logger, or you can use LogLevel instance if you wanted.
     }
     application.Run()
