@@ -8,6 +8,7 @@ import (
 	"os"
 	"io/ioutil"
 	"github.com/karldoenitz/Tigo/logger"
+	"strings"
 )
 
 //////////////////////////////////////Structure Cookie//////////////////////////////////////////////////////////////////
@@ -146,6 +147,21 @@ func (globalConfig *GlobalConfig)Init(configPath string) {
 	if configPath == "" {
 		return
 	}
+	if strings.HasSuffix(configPath, ".json") {
+		globalConfig.initWithJson(configPath)
+	}
+	if strings.HasSuffix(configPath, ".yaml") || strings.HasSuffix(configPath, "yml") {
+		globalConfig.initWithYaml(configPath)
+	}
+}
+
+// 根据yaml文件进行配置
+func (globalConfig *GlobalConfig)initWithYaml(configPath string) {
+
+}
+
+// 根据json文件进行配置
+func (globalConfig *GlobalConfig)initWithJson(configPath string) {
 	raw, err := ioutil.ReadFile(configPath)
 	if err != nil {
 		fmt.Println(err.Error())
