@@ -1,7 +1,6 @@
 package main
 
 import (
-	"net/http"
 	"github.com/karldoenitz/Tigo/TigoWeb"
 	"fmt"
 	"github.com/karldoenitz/Tigo/logger"
@@ -11,8 +10,7 @@ type HelloHandler struct {
 	TigoWeb.BaseHandler
 }
 
-func (helloHandler *HelloHandler)Handle(responseWriter http.ResponseWriter, request *http.Request) {
-	helloHandler.InitHandler(responseWriter, request)
+func (helloHandler *HelloHandler)Handle() {
 	if !helloHandler.CheckRequestMethodValid("GET", "POST") {
 		return
 	}
@@ -31,7 +29,7 @@ func (helloHandler *HelloHandler)Handle(responseWriter http.ResponseWriter, requ
 	fmt.Println(clientCookie.Value)
 	fmt.Println(clientCookie.SecurityKey)
 	fmt.Println(clientCookie.Path)
-	c, _ := request.Cookie("Tigo")
+	c, _ := helloHandler.Request.Cookie("Tigo")
 	fmt.Println(c)
 	helloHandler.ResponseAsHtml("<p1 style='color: red'>Hello Go!</p1>")
 }
@@ -40,8 +38,7 @@ type RedirectHandler struct {
 	TigoWeb.BaseHandler
 }
 
-func (redirectHandler *RedirectHandler)Handle(responseWriter http.ResponseWriter, request *http.Request) {
-	redirectHandler.InitHandler(responseWriter, request)
+func (redirectHandler *RedirectHandler)Handle() {
 	if !redirectHandler.CheckRequestMethodValid("GET") {
 		return
 	}
@@ -52,8 +49,7 @@ type TestCookieHandler struct {
 	TigoWeb.BaseHandler
 }
 
-func (testCookieHandler *TestCookieHandler)Handle(responseWriter http.ResponseWriter, request *http.Request) {
-	testCookieHandler.InitHandler(responseWriter, request)
+func (testCookieHandler *TestCookieHandler)Handle() {
 	testCookieHandler.SetSecureCookie("name", "value")
 	cookie := testCookieHandler.GetSecureCookie("name")
 	fmt.Println(cookie)
