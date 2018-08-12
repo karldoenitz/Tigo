@@ -23,8 +23,7 @@ type HelloHandler struct {
     TigoWeb.BaseHandler
 }
 
-func (helloHandler *HelloHandler)Handle(responseWriter http.ResponseWriter, request *http.Request) {
-    helloHandler.InitHandler(responseWriter, request)
+func (helloHandler *HelloHandler)Handle() {
     helloHandler.ResponseAsHtml("<p1 style='color: red'>Hello Tigo!</p1>")
 }
 

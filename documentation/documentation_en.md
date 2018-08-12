@@ -361,8 +361,7 @@ type HelloHandler struct {
     TigoWeb.BaseHandler
 }
 
-func (helloHandler *HelloHandler)Handle(responseWriter http.ResponseWriter, request *http.Request) {
-    helloHandler.InitHandler(responseWriter, request)
+func (helloHandler *HelloHandler)Handle() {
     logger.Info.Printf("info data: %s", "test") // print log here
     helloHandler.ResponseAsHtml("<p1 style='color: red'>Hello Tigo!</p1>")
 }
@@ -405,10 +404,10 @@ The structure in logger package:
 //   - Error
 // discard: discard, stdout: print in console; the path of log file
 type LogLevel struct {
-	Trace    string   `json:"trace"`
-	Info     string   `json:"info"`
-	Warning  string   `json:"warning"`
-	Error    string   `json:"error"`
+    Trace    string   `json:"trace"`
+    Info     string   `json:"info"`
+    Warning  string   `json:"warning"`
+    Error    string   `json:"error"`
 }
 ```
 Initialize this structure and pass the instance to ```InitLoggerWithObject``` to init logger package.

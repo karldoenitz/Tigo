@@ -355,8 +355,7 @@ type HelloHandler struct {
     TigoWeb.BaseHandler
 }
 
-func (helloHandler *HelloHandler)Handle(responseWriter http.ResponseWriter, request *http.Request) {
-    helloHandler.InitHandler(responseWriter, request)
+func (helloHandler *HelloHandler)Handle() {
     logger.Info.Printf("info data: %s", "test") // 此处打印log
     helloHandler.ResponseAsHtml("<p1 style='color: red'>Hello Tigo!</p1>")
 }
@@ -399,10 +398,10 @@ log模块所包含的结构体。
 //   - Error    错误
 // discard: 丢弃，stdout: 终端输出，文件路径表示log具体输出的位置
 type LogLevel struct {
-	Trace    string   `json:"trace"`
-	Info     string   `json:"info"`
-	Warning  string   `json:"warning"`
-	Error    string   `json:"error"`
+    Trace    string   `json:"trace"`
+    Info     string   `json:"info"`
+    Warning  string   `json:"warning"`
+    Error    string   `json:"error"`
 }
 ```
 初始化此结构体，将此结构体作为参数传入```InitLoggerWithObject```中，初始化logger模块。
