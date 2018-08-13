@@ -11,7 +11,7 @@ type UrlPatternMidWare struct {
 	Handler interface{}
 }
 
-// 封装HTTP请求的中间件，主要有一下功能：
+// 封装HTTP请求的中间件，主要有以下功能：
 //  - 1、根据反射找到挂载的handler；
 //  - 2、调用handler的InitHandler方法；
 //  - 3、进行HTTP请求预处理，包括判断请求方式是否合法等；
