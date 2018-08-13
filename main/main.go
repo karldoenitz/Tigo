@@ -10,10 +10,7 @@ type HelloHandler struct {
 	TigoWeb.BaseHandler
 }
 
-func (helloHandler *HelloHandler)Handle() {
-	if !helloHandler.CheckRequestMethodValid("GET", "POST") {
-		return
-	}
+func (helloHandler *HelloHandler)Get() {
 	value := helloHandler.GetParameter("hello")
 	fmt.Println(value)
 	cookie := TigoWeb.Cookie{
@@ -38,10 +35,7 @@ type RedirectHandler struct {
 	TigoWeb.BaseHandler
 }
 
-func (redirectHandler *RedirectHandler)Handle() {
-	if !redirectHandler.CheckRequestMethodValid("GET") {
-		return
-	}
+func (redirectHandler *RedirectHandler)Get() {
 	redirectHandler.Redirect("http://www.tencent.com")
 }
 
@@ -49,7 +43,7 @@ type TestCookieHandler struct {
 	TigoWeb.BaseHandler
 }
 
-func (testCookieHandler *TestCookieHandler)Handle() {
+func (testCookieHandler *TestCookieHandler)Get() {
 	testCookieHandler.SetSecureCookie("name", "value")
 	cookie := testCookieHandler.GetSecureCookie("name")
 	fmt.Println(cookie)
