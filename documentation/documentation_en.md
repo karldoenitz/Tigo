@@ -16,7 +16,6 @@ API index:
     - [func SetCookieObject](#SetCookieObject)
     - [func ClearCookie](#ClearCookie)
     - [func ClearAllCookie](#ClearAllCookie)
-    - [func CheckRequestMethodValid](#CheckRequestMethodValid)
     - [func Redirect](#Redirect)
     - [func RedirectPermanently](#RedirectPermanently)
     - [func ResponseAsHtml](#ResponseAsHtml)
@@ -135,19 +134,6 @@ func (baseHandler *BaseHandler)ClearCookie(name string)
 func (baseHandler *BaseHandler)ClearAllCookie()
 ```
 ```ClearAllCookie``` is the method to clear all cookie.
-### func (*BaseHandler)CheckRequestMethodValid<a name="CheckRequestMethodValid"></a>
-```go
-func (baseHandler *BaseHandler)CheckRequestMethodValid(methods ...string) (result bool)
-```
-```CheckRequestMethodValid``` is the method to check request method, example:
-```go
-func (h *Handler)Handle(responseWriter http.ResponseWriter, request *http.Request) {
-    h.InitHandler(responseWriter, request)
-    if !h.CheckRequestMethodValid("GET", "POST") {
-        return
-    }
-}
-```
 ### func (*BaseHandler)Redirect<a name="Redirect"></a>
 ```go
 func (baseHandler *BaseHandler)Redirect(url string, expire ...time.Time)

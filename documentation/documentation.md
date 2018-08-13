@@ -16,7 +16,6 @@ API目录：
     - [func SetCookieObject](#SetCookieObject)
     - [func ClearCookie](#ClearCookie)
     - [func ClearAllCookie](#ClearAllCookie)
-    - [func CheckRequestMethodValid](#CheckRequestMethodValid)
     - [func Redirect](#Redirect)
     - [func RedirectPermanently](#RedirectPermanently)
     - [func Render](#Render)
@@ -136,11 +135,6 @@ func (baseHandler *BaseHandler)ClearCookie(name string)
 func (baseHandler *BaseHandler)ClearAllCookie()
 ```
 ```ClearAllCookie```方法是用来清空所有的cookie的。
-### func (*BaseHandler)CheckRequestMethodValid<a name="CheckRequestMethodValid"></a>
-```go
-func (baseHandler *BaseHandler)CheckRequestMethodValid(methods ...string) (result bool)
-```
-```CheckRequestMethodValid```方法是用来判断http请求方法是否合法，接收多个参数，参数表示支持的http请求方式，不填参数则认为不支持所有请求方式。
 ### func (*BaseHandler)Redirect<a name="Redirect"></a>
 ```go
 func (baseHandler *BaseHandler)Redirect(url string, expire ...time.Time)
