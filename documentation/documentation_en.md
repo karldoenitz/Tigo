@@ -361,7 +361,7 @@ type HelloHandler struct {
     TigoWeb.BaseHandler
 }
 
-func (helloHandler *HelloHandler)Handle() {
+func (helloHandler *HelloHandler)Get() {
     logger.Info.Printf("info data: %s", "test") // print log here
     helloHandler.ResponseAsHtml("<p1 style='color: red'>Hello Tigo!</p1>")
 }
