@@ -5,8 +5,7 @@ import (
 	"net/http"
 	"encoding/json"
 	"fmt"
-	"strings"
-	"time"
+		"time"
 	"io/ioutil"
 	"html/template"
 )
@@ -90,21 +89,6 @@ func (baseHandler *BaseHandler)Redirect(url string, expire ...time.Time)  {
 		baseHandler.SetHeader("Expires", expires)
 	}
 	fmt.Fprintf(baseHandler.ResponseWriter, "")
-}
-
-// 检查请求是否被允许
-func (baseHandler *BaseHandler)CheckRequestMethodValid(methods ...string) (result bool) {
-	// 获取请求方式
-	requestMethod := baseHandler.Request.Method
-	// 遍历被允许的请求方式，判断是否合法
-	for _, value := range methods {
-		if requestMethod == value || strings.ToLower(requestMethod) == value {
-			return true
-		}
-	}
-	// 如果不合法返回405
-	baseHandler.ResponseWriter.WriteHeader(405)
-	return false
 }
 
 /////////////////////////////////////////////////////cookie/////////////////////////////////////////////////////////////
@@ -256,4 +240,42 @@ func (baseHandler *BaseHandler)GetJsonValue(key string) (interface{}) {
 		return ""
 	}
 	return mapResult[key]
+}
+
+//////////////////////////////////////////////////HTTP Method///////////////////////////////////////////////////////////
+
+// 请求方法不合法
+func (baseHandler *BaseHandler)methodNotAllowed() {
+	baseHandler.ResponseWriter.WriteHeader(405)
+}
+
+func (baseHandler *BaseHandler)Get() {
+	baseHandler.methodNotAllowed()
+}
+
+func (baseHandler *BaseHandler)Put() {
+	baseHandler.methodNotAllowed()
+}
+
+func (baseHandler *BaseHandler)Post() {
+	baseHandler.methodNotAllowed()
+}
+
+func (baseHandler *BaseHandler)Connect() {
+	baseHandler.methodNotAllowed()
+}
+
+func (baseHandler *BaseHandler)Trace() {
+	baseHandler.methodNotAllowed()
+}
+
+func (baseHandler *BaseHandler)Head() {
+}
+
+func (baseHandler *BaseHandler)Delete() {
+	baseHandler.methodNotAllowed()
+}
+
+func (baseHandler *BaseHandler)Options() {
+	baseHandler.methodNotAllowed()
 }

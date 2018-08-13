@@ -22,7 +22,9 @@ func (urlPatternMidWare UrlPatternMidWare)Handle(responseWriter http.ResponseWri
 	handler := reflect.ValueOf(urlPatternMidWare.Handler)
 	// 获取init方法
 	init := handler.MethodByName("InitHandler")
-	function := handler.MethodByName("Handle")
+	// 获取HTTP请求方式
+	requestMethod := MethodMapping[request.Method]
+	function := handler.MethodByName(requestMethod)
 	initParams := []reflect.Value{reflect.ValueOf(responseWriter), reflect.ValueOf(request)}
 	var functionParams []reflect.Value
 	if init.IsValid() {
