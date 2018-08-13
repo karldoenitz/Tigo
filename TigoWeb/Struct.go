@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"github.com/karldoenitz/Tigo/logger"
 	"strings"
+	"gopkg.in/yaml.v2"
 )
 
 //////////////////////////////////////Structure Cookie//////////////////////////////////////////////////////////////////
@@ -157,7 +158,17 @@ func (globalConfig *GlobalConfig)Init(configPath string) {
 
 // 根据yaml文件进行配置
 func (globalConfig *GlobalConfig)initWithYaml(configPath string) {
-
+	raw, err := ioutil.ReadFile(configPath)
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
+	ymlErr := yaml.Unmarshal(raw, &globalConfig)
+	if ymlErr != nil {
+		fmt.Println(ymlErr.Error())
+		os.Exit(1)
+	}
+	logger.InitLoggerWithObject(globalConfig.Log)
 }
 
 // 根据json文件进行配置
@@ -167,6 +178,10 @@ func (globalConfig *GlobalConfig)initWithJson(configPath string) {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
-	json.Unmarshal(raw, &globalConfig)
+	jsonErr := json.Unmarshal(raw, &globalConfig)
+	if jsonErr != nil {
+		fmt.Println(jsonErr.Error())
+		os.Exit(1)
+	}
 	logger.InitLoggerWithObject(globalConfig.Log)
 }

@@ -7,6 +7,8 @@ import (
 	"log"
 	"os"
 	"encoding/json"
+	"strings"
+	"gopkg.in/yaml.v2"
 )
 
 var (
@@ -94,7 +96,12 @@ func InitLoggerWithConfigFile(filePath string) {
 		os.Exit(1)
 	}
 	logLevel := LogLevel{}
-	json.Unmarshal(raw, &logLevel)
+	if strings.HasSuffix(filePath, ".json") {
+		json.Unmarshal(raw, &logLevel)
+	}
+	if strings.HasSuffix(filePath, ".yaml") || strings.HasSuffix(filePath, "yml") {
+		yaml.Unmarshal(raw, &logLevel)
+	}
 	InitLoggerWithObject(logLevel)
 }
 
