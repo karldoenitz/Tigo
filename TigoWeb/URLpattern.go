@@ -4,11 +4,13 @@ package TigoWeb
 import (
 	"net/http"
 	"reflect"
+	"Tigo/logger"
 )
 
 // URL路由中间件
 type UrlPatternMidWare struct {
 	Handler interface{}
+	requestUrl string
 }
 
 // 封装HTTP请求的中间件，主要有以下功能：
@@ -24,6 +26,7 @@ func (urlPatternMidWare UrlPatternMidWare)Handle(responseWriter http.ResponseWri
 	init := handler.MethodByName("InitHandler")
 	// 获取HTTP请求方式
 	requestMethod := MethodMapping[request.Method]
+	logger.Trace.Printf("%s %s", requestMethod, urlPatternMidWare.requestUrl)
 	function := handler.MethodByName(requestMethod)
 	initParams := []reflect.Value{reflect.ValueOf(responseWriter), reflect.ValueOf(request)}
 	var functionParams []reflect.Value
@@ -51,6 +54,7 @@ func (urlPattern *UrlPattern)Init() {
 	for key, value := range urlPattern.UrlMapping {
 		urlPatternMidWare := UrlPatternMidWare{
 			Handler:value,
+			requestUrl:key,
 		}
 		urlPattern.AppendUrlPattern(key, &urlPatternMidWare)
 	}
