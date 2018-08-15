@@ -34,8 +34,6 @@ func (application *Application)runTLS(cert string, key string) {
 
 // 服务启动函数
 func (application *Application)Run() {
-	urlPattern := UrlPattern{UrlMapping:application.UrlPattern}
-	urlPattern.Init()
 	// 初始化全局变量
 	InitGlobalConfig(application.ConfigPath)
 	if globalConfig.IP != "" {
@@ -44,6 +42,9 @@ func (application *Application)Run() {
 	if globalConfig.Port != 0 {
 		application.Port = globalConfig.Port
 	}
+	// url挂载
+	urlPattern := UrlPattern{UrlMapping:application.UrlPattern}
+	urlPattern.Init()
 	// 获取证书与密钥，判断是否启动https服务
 	cert, certKey := globalConfig.Cert, globalConfig.CertKey
 	if cert != "" && certKey != "" {
