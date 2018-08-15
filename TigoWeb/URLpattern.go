@@ -4,7 +4,7 @@ package TigoWeb
 import (
 	"net/http"
 	"reflect"
-	"Tigo/logger"
+	"github.com/karldoenitz/Tigo/logger"
 )
 
 // URL路由中间件
