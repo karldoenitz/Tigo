@@ -12,4 +12,4 @@
 *.out
 .idea/
 *.log
-main/main
+demo/*/main
