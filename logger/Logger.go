@@ -59,8 +59,8 @@ func initLogger() {
 	}
 	Trace = log.New(ioutil.Discard, "TRACE: ", log.Ldate|log.Ltime|log.Lshortfile)
 	// 将运行日志写入控制台
-	Info = log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
-	Warning = log.New(os.Stdout, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
+	Info = log.New(os.Stdout, "\x1b[34mINFO: \x1b[0m", log.Ldate|log.Ltime|log.Lshortfile)
+	Warning = log.New(os.Stdout, "\x1b[33mWARNING: \x1b[0m", log.Ldate|log.Ltime|log.Lshortfile)
 	// 将错误日志写入log文件
 	Error = log.New(io.MultiWriter(file, os.Stderr), "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
 }
@@ -129,7 +129,7 @@ func InitTrace(level string) {
 		Trace = log.New(ioutil.Discard, "TRACE: ", log.Ldate|log.Ltime|log.Lshortfile)
 		break
 	case level == "stdout":
-		Trace = log.New(os.Stdout, "TRACE: ", log.Ldate|log.Ltime|log.Lshortfile)
+		Trace = log.New(os.Stdout, "\x1b[32mWARNING: \x1b[0m", log.Ldate|log.Ltime|log.Lshortfile)
 		break
 	default:
 		logFile := logFileMapping[level]
@@ -144,7 +144,7 @@ func InitInfo(level string)  {
 		Info = log.New(ioutil.Discard, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
 		break
 	case level == "stdout":
-		Info = log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
+		Info = log.New(os.Stdout, "\x1b[34mINFO: \x1b[0m", log.Ldate|log.Ltime|log.Lshortfile)
 		break
 	default:
 		logFile := logFileMapping[level]
@@ -160,7 +160,7 @@ func InitWarning(level string)  {
 		Warning = log.New(ioutil.Discard, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
 		break
 	case level == "stdout":
-		Warning = log.New(os.Stdout, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
+		Warning = log.New(os.Stdout, "\x1b[33mWARNING: \x1b[0m", log.Ldate|log.Ltime|log.Lshortfile)
 		break
 	default:
 		logFile := logFileMapping[level]
@@ -176,7 +176,7 @@ func InitError(level string)  {
 		Error = log.New(ioutil.Discard, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
 		break
 	case level == "stdout":
-		Error = log.New(os.Stdout, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+		Error = log.New(os.Stdout, "\x1b[31mERROR: \x1b[0m", log.Ldate|log.Ltime|log.Lshortfile)
 		break
 	default:
 		logFile := logFileMapping[level]

@@ -26,7 +26,7 @@ func (urlPatternMidWare UrlPatternMidWare)Handle(responseWriter http.ResponseWri
 	init := handler.MethodByName("InitHandler")
 	// 获取HTTP请求方式
 	requestMethod := MethodMapping[request.Method]
-	logger.Trace.Printf("\x1b[32m%s %s\x1b[0m", requestMethod, urlPatternMidWare.requestUrl)
+	logger.Trace.Printf("%s %s", requestMethod, urlPatternMidWare.requestUrl)
 	function := handler.MethodByName(requestMethod)
 	initParams := []reflect.Value{reflect.ValueOf(responseWriter), reflect.ValueOf(request)}
 	var functionParams []reflect.Value
