@@ -9,16 +9,35 @@ import (
 	"encoding/json"
 	"strings"
 	"gopkg.in/yaml.v2"
+	"fmt"
 )
 
+////////////////////////////////////////////////////常量/////////////////////////////////////////////////////////////////
+
 var (
-	Trace        *log.Logger
-	Info         *log.Logger
-	Warning      *log.Logger
-	Error        *log.Logger
+	Trace        *TiLog
+	Info         *TiLog
+	Warning      *TiLog
+	Error        *TiLog
+)
+
+const (
+	TraceLevel int = iota + 1
+    InfoLevel
+	WarningLevel
+	ErrorLevel
 )
 
 var logPath = ""
+
+var formater = map[int] string {
+	TraceLevel:   "\x1b[32m %s \x1b[0m",
+	InfoLevel:    "\x1b[34m %s \x1b[0m",
+	WarningLevel: "\x1b[33m %s \x1b[0m",
+	ErrorLevel:   "\x1b[31m %s \x1b[0m",
+}
+
+////////////////////////////////////////////////////结构体///////////////////////////////////////////////////////////////
 
 // log分级结构体
 //   - Trace    跟踪
@@ -32,6 +51,31 @@ type LogLevel struct {
 	Warning  string   `json:"warning"`
 	Error    string   `json:"error"`
 }
+
+type TiLog struct {
+	*log.Logger
+	Level int
+}
+
+func (l *TiLog) Printf(format string, v ...interface{}) {
+	formatStr := formater[l.Level]
+	format = fmt.Sprintf(formatStr, format)
+	l.Output(2, fmt.Sprintf(format, v...))
+}
+
+func (l *TiLog) Print(v ...interface{}) {
+	formatStr := formater[l.Level]
+	logInfo := fmt.Sprintf(formatStr, fmt.Sprint(v...))
+	l.Output(2, logInfo)
+}
+
+func (l *TiLog) Println(v ...interface{}) {
+	formatStr := formater[l.Level]
+	logInfo := fmt.Sprintf(formatStr, fmt.Sprintln(v...))
+	l.Output(2, logInfo)
+}
+
+////////////////////////////////////////////////////初始化logger的方法集//////////////////////////////////////////////////
 
 // log文件路径与文件对象的关系映射
 var logFileMapping = map[string] *os.File{}
@@ -57,12 +101,20 @@ func initLogger() {
 	if err != nil {
 		log.Fatalln("Failed to open error log file: ", err)
 	}
-	Trace = log.New(ioutil.Discard, "TRACE: ", log.Ldate|log.Ltime|log.Lshortfile)
+	Trace = &TiLog{}
+	Trace.Logger = log.New(ioutil.Discard, "\x1b[32m TRACE:   \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+	Trace.Level = TraceLevel
 	// 将运行日志写入控制台
-	Info = log.New(os.Stdout, "\x1b[34mINFO: \x1b[0m", log.Ldate|log.Ltime|log.Lshortfile)
-	Warning = log.New(os.Stdout, "\x1b[33mWARNING: \x1b[0m", log.Ldate|log.Ltime|log.Lshortfile)
+	Info = &TiLog{}
+	Info.Logger = log.New(os.Stdout, "\x1b[34m INFO:    \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+	Info.Level = InfoLevel
+	Warning = &TiLog{}
+	Warning.Logger = log.New(os.Stdout, "\x1b[33m WARNING: \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+	Warning.Level = WarningLevel
 	// 将错误日志写入log文件
-	Error = log.New(io.MultiWriter(file, os.Stderr), "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+	Error = &TiLog{}
+	Error.Logger = log.New(io.MultiWriter(file, os.Stderr), "\x1b[31m ERROR:   \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+	Error.Level = ErrorLevel
 }
 
 // 初始化函数，加载log模块时运行
@@ -124,63 +176,67 @@ func InitLoggerWithObject(logLevel LogLevel)  {
 
 // 初始化Trace，默认情况下不输出
 func InitTrace(level string) {
+	Trace.Level = TraceLevel
 	switch {
 	case level == "" || level == "discard":
-		Trace = log.New(ioutil.Discard, "TRACE: ", log.Ldate|log.Ltime|log.Lshortfile)
+		Trace.Logger = log.New(ioutil.Discard, "\x1b[32m TRACE:   \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
 		break
 	case level == "stdout":
-		Trace = log.New(os.Stdout, "\x1b[32mWARNING: \x1b[0m", log.Ldate|log.Ltime|log.Lshortfile)
+		Trace.Logger = log.New(os.Stdout, "\x1b[32m TRACE:   \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
 		break
 	default:
 		logFile := logFileMapping[level]
-		Trace = log.New(io.MultiWriter(logFile, os.Stderr), "TRACE: ", log.Ldate|log.Ltime|log.Lshortfile)
+		Trace.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[32m TRACE:   \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
 	}
 }
 
 // 初始化Info，默认情况下输出到终端
 func InitInfo(level string)  {
+	Info.Level = InfoLevel
 	switch {
 	case level == "" || level == "discard":
-		Info = log.New(ioutil.Discard, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
+		Info.Logger = log.New(ioutil.Discard, "\x1b[34m INFO:    \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
 		break
 	case level == "stdout":
-		Info = log.New(os.Stdout, "\x1b[34mINFO: \x1b[0m", log.Ldate|log.Ltime|log.Lshortfile)
+		Info.Logger = log.New(os.Stdout, "\x1b[34m INFO:    \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
 		break
 	default:
 		logFile := logFileMapping[level]
-		Info = log.New(io.MultiWriter(logFile, os.Stderr), "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
+		Info.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[34m INFO:    \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
 		break
 	}
 }
 
 // 初始化Warning，默认情况下输出到终端
 func InitWarning(level string)  {
+	Warning.Level = WarningLevel
 	switch {
 	case level == "" || level == "discard":
-		Warning = log.New(ioutil.Discard, "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
+		Warning.Logger = log.New(ioutil.Discard, "\x1b[33m WARNING: \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
 		break
 	case level == "stdout":
-		Warning = log.New(os.Stdout, "\x1b[33mWARNING: \x1b[0m", log.Ldate|log.Ltime|log.Lshortfile)
+		Warning.Logger = log.New(os.Stdout, "\x1b[33m WARNING: \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
 		break
 	default:
 		logFile := logFileMapping[level]
-		Warning = log.New(io.MultiWriter(logFile, os.Stderr), "WARNING: ", log.Ldate|log.Ltime|log.Lshortfile)
+		Warning.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[33m WARNING: \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
 		break
 	}
 }
 
 // 初始化Warning，默认情况下输出到文件
 func InitError(level string)  {
+	Error.Level = ErrorLevel
 	switch {
 	case level == "" || level == "discard":
-		Error = log.New(ioutil.Discard, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+		Error.Logger = log.New(ioutil.Discard, "\x1b[31m ERROR:   \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
 		break
 	case level == "stdout":
-		Error = log.New(os.Stdout, "\x1b[31mERROR: \x1b[0m", log.Ldate|log.Ltime|log.Lshortfile)
+		Error.Logger = log.New(os.Stdout, "\x1b[31m ERROR:   \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
 		break
 	default:
 		logFile := logFileMapping[level]
-		Error = log.New(io.MultiWriter(logFile, os.Stderr), "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
+		Error.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[31m ERROR:   \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
 		break
 	}
 }
