@@ -185,3 +185,129 @@ func (globalConfig *GlobalConfig)initWithJson(configPath string) {
 	}
 	logger.InitLoggerWithObject(globalConfig.Log)
 }
+
+//////////////////////////////////////Json Param Structure /////////////////////////////////////////////////////////////
+
+type JsonParams struct {
+	Value interface{}
+}
+
+// 将json中的参数值转换为string
+func (json *JsonParams)ToString() string {
+	if json.Value == nil {
+		return ""
+	}
+	return json.Value.(string)
+}
+
+// 将json中的参数值转换为bool
+func (json *JsonParams)ToBool(defaultValue ...bool) bool {
+	if json.Value == nil {
+		if len(defaultValue) > 0 {
+			return defaultValue[0]
+		}
+		return false
+	}
+	return json.Value.(bool)
+}
+
+// 将json中的参数值转换为int
+func (json *JsonParams)ToInt() int {
+	if json.Value == nil {
+		return 0
+	}
+	return json.Value.(int)
+}
+
+// 将json中的参数值转换为int8
+func (json *JsonParams)ToInt8() int8 {
+	if json.Value == nil {
+		return 0
+	}
+	return json.Value.(int8)
+}
+
+// 将json中的参数值转换为int16
+func (json *JsonParams)ToInt16() int16 {
+	if json.Value == nil {
+		return 0
+	}
+	return json.Value.(int16)
+}
+
+// 将json中的参数值转换为int32
+func (json *JsonParams)ToInt32() int32 {
+	if json.Value == nil {
+		return 0
+	}
+	return json.Value.(int32)
+}
+
+// 将json中的参数值转换为int64
+func (json *JsonParams)ToInt64() int64 {
+	if json.Value == nil {
+		return 0
+	}
+	return json.Value.(int64)
+}
+
+// 将json中的参数值转换为int
+func (json *JsonParams)ToUint() uint {
+	if json.Value == nil {
+		return 0
+	}
+	return json.Value.(uint)
+}
+
+// 将json中的参数值转换为int8
+func (json *JsonParams)ToUint8() uint8 {
+	if json.Value == nil {
+		return 0
+	}
+	return json.Value.(uint8)
+}
+
+// 将json中的参数值转换为int16
+func (json *JsonParams)ToUint16() uint16 {
+	if json.Value == nil {
+		return 0
+	}
+	return json.Value.(uint16)
+}
+
+// 将json中的参数值转换为int32
+func (json *JsonParams)ToUint32() uint32 {
+	if json.Value == nil {
+		return 0
+	}
+	return json.Value.(uint32)
+}
+
+// 将json中的参数值转换为int64
+func (json *JsonParams)ToUint64() uint64 {
+	if json.Value == nil {
+		return 0
+	}
+	return json.Value.(uint64)
+}
+
+// 将json中的参数值转换为float32
+func (json *JsonParams)ToFloat32() float32 {
+	if json.Value == nil {
+		return 0
+	}
+	return json.Value.(float32)
+}
+
+// 将json中的参数值转换为float64
+func (json *JsonParams)ToFloat64() float64 {
+	if json.Value == nil {
+		return 0
+	}
+	return json.Value.(float64)
+}
+
+// 将json中的参数值转换为目标对象
+func (json *JsonParams)To(result *interface{}) {
+
+}

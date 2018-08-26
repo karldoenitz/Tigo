@@ -7,7 +7,7 @@ type TestHandler struct {
 }
 
 func (testHandler *TestHandler) Post() {
-	paramOne := testHandler.GetParameter("one").(bool)
+	paramOne := testHandler.GetParameter("one").ToBool(false)
 	paramTwo := testHandler.GetParameter("two")
 	if paramOne {
 		testHandler.Response(paramTwo)
