@@ -7,9 +7,11 @@ type TestHandler struct {
 }
 
 func (testHandler *TestHandler) Post() {
-	paramOne := testHandler.GetParameter("one")
+	paramOne := testHandler.GetParameter("one").(bool)
 	paramTwo := testHandler.GetParameter("two")
-	testHandler.ResponseAsText(paramOne+paramTwo)
+	if paramOne {
+		testHandler.Response(paramTwo)
+	}
 }
 
 var url = map[string] interface{} {

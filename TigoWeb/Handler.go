@@ -14,6 +14,7 @@ import (
 type BaseHandler struct {
 	ResponseWriter  http.ResponseWriter
 	Request        *http.Request
+	JsonParams      map[string] interface{}
 }
 
 // 初始化Handler的方法
@@ -21,6 +22,16 @@ func (baseHandler *BaseHandler)InitHandler(responseWriter http.ResponseWriter, r
 	baseHandler.Request = request
 	baseHandler.ResponseWriter = responseWriter
 	baseHandler.Request.ParseForm()
+}
+
+// 解析json中的值
+func (baseHandler *BaseHandler)PassJson() {
+	if baseHandler.GetHeader("Content-Type") == "application/json" {
+		jsonData, _ := ioutil.ReadAll(baseHandler.Request.Body)
+		defer baseHandler.Request.Body.Close()
+		//使用 json.Unmarshal(data []byte, v interface{})进行转换，返回 error 信息
+		json.Unmarshal([]byte(jsonData), &baseHandler.JsonParams)
+	}
 }
 
 /////////////////////////////////////////////////////output/////////////////////////////////////////////////////////////
@@ -55,6 +66,11 @@ func (baseHandler *BaseHandler)ResponseAsText(result string) {
 func (baseHandler *BaseHandler)ResponseAsHtml(result string) {
 	baseHandler.ResponseWriter.Header().Set("Content-Type", "text/html")
 	fmt.Fprintf(baseHandler.ResponseWriter, result)
+}
+
+// 向客户端响应一个结果
+func (baseHandler *BaseHandler)Response(result ...interface{}) {
+	fmt.Fprintf(baseHandler.ResponseWriter, "%v", result)
 }
 
 // 渲染模板，返回数据
@@ -213,17 +229,9 @@ func (baseHandler *BaseHandler)SetHeader(name string, value string) {
 // 根据key获取对应的参数值
 //   - 如果Content-Type是application/json，则直接从http的body中解析出key对应的value
 //   - 否则，根据key直接获取value
-func (baseHandler *BaseHandler)GetParameter(key string) (value string) {
+func (baseHandler *BaseHandler)GetParameter(key string) (value interface{}) {
 	if baseHandler.GetHeader("Content-Type") == "application/json" {
-		var mapResult map[string]string
-		jsonData, _ := ioutil.ReadAll(baseHandler.Request.Body)
-		baseHandler.Request.Body.Close()
-		//使用 json.Unmarshal(data []byte, v interface{})进行转换，返回 error 信息
-		err := json.Unmarshal([]byte(jsonData), &mapResult)
-		if err != nil {
-			return ""
-		}
-		return mapResult[key]
+		return baseHandler.JsonParams[key]
 	}
 	value = baseHandler.Request.FormValue(key)
 	return value

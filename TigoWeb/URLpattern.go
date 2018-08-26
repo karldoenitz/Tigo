@@ -24,6 +24,8 @@ func (urlPatternMidWare UrlPatternMidWare)Handle(responseWriter http.ResponseWri
 	handler := reflect.ValueOf(urlPatternMidWare.Handler)
 	// 获取init方法
 	init := handler.MethodByName("InitHandler")
+	// 解析参数
+	paramPasser := handler.MethodByName("PassJson")
 	// 获取HTTP请求方式
 	requestMethod := MethodMapping[request.Method]
 	logger.Trace.Printf("%s %s", requestMethod, urlPatternMidWare.requestUrl)
@@ -32,6 +34,9 @@ func (urlPatternMidWare UrlPatternMidWare)Handle(responseWriter http.ResponseWri
 	var functionParams []reflect.Value
 	if init.IsValid() {
 		init.Call(initParams)
+	}
+	if paramPasser.IsValid() {
+		paramPasser.Call(functionParams)
 	}
 	if function.IsValid() {
 		function.Call(functionParams)
