@@ -308,7 +308,7 @@ func (jsonParam *JsonParams)ToFloat64() float64 {
 }
 
 // 将json中的参数值转换为目标对象
-func (jsonParam *JsonParams)To(result *interface{}) {
+func (jsonParam *JsonParams)To(result interface{}) {
 	if jsonParam.Value == nil {
 		return
 	}
