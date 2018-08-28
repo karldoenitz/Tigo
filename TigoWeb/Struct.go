@@ -197,7 +197,11 @@ func (jsonParam *JsonParams)ToString() string {
 	if jsonParam.Value == nil {
 		return ""
 	}
-	return jsonParam.Value.(string)
+	result, success := jsonParam.Value.(string)
+	if !success {
+		return ""
+	}
+	return result
 }
 
 // 将json中的参数值转换为bool
@@ -208,7 +212,11 @@ func (jsonParam *JsonParams)ToBool(defaultValue ...bool) bool {
 		}
 		return false
 	}
-	return jsonParam.Value.(bool)
+	result, success := jsonParam.Value.(bool)
+	if !success {
+		return false
+	}
+	return result
 }
 
 // 将json中的参数值转换为int
@@ -216,7 +224,11 @@ func (jsonParam *JsonParams)ToInt() int {
 	if jsonParam.Value == nil {
 		return 0
 	}
-	return jsonParam.Value.(int)
+	result, success := jsonParam.Value.(int)
+	if !success {
+		return 0
+	}
+	return result
 }
 
 // 将json中的参数值转换为int8
@@ -224,7 +236,11 @@ func (jsonParam *JsonParams)ToInt8() int8 {
 	if jsonParam.Value == nil {
 		return 0
 	}
-	return jsonParam.Value.(int8)
+	result, success := jsonParam.Value.(int8)
+	if !success {
+		return 0
+	}
+	return result
 }
 
 // 将json中的参数值转换为int16
@@ -232,7 +248,11 @@ func (jsonParam *JsonParams)ToInt16() int16 {
 	if jsonParam.Value == nil {
 		return 0
 	}
-	return jsonParam.Value.(int16)
+	result, success := jsonParam.Value.(int16)
+	if !success {
+		return 0
+	}
+	return result
 }
 
 // 将json中的参数值转换为int32
@@ -240,7 +260,11 @@ func (jsonParam *JsonParams)ToInt32() int32 {
 	if jsonParam.Value == nil {
 		return 0
 	}
-	return jsonParam.Value.(int32)
+	result, success := jsonParam.Value.(int32)
+	if !success {
+		return 0
+	}
+	return result
 }
 
 // 将json中的参数值转换为int64
@@ -248,7 +272,11 @@ func (jsonParam *JsonParams)ToInt64() int64 {
 	if jsonParam.Value == nil {
 		return 0
 	}
-	return jsonParam.Value.(int64)
+	result, success := jsonParam.Value.(int64)
+	if !success {
+		return 0
+	}
+	return result
 }
 
 // 将json中的参数值转换为int
@@ -256,7 +284,11 @@ func (jsonParam *JsonParams)ToUint() uint {
 	if jsonParam.Value == nil {
 		return 0
 	}
-	return jsonParam.Value.(uint)
+	result, success := jsonParam.Value.(uint)
+	if !success {
+		return 0
+	}
+	return result
 }
 
 // 将json中的参数值转换为int8
@@ -264,7 +296,11 @@ func (jsonParam *JsonParams)ToUint8() uint8 {
 	if jsonParam.Value == nil {
 		return 0
 	}
-	return jsonParam.Value.(uint8)
+	result, success := jsonParam.Value.(uint8)
+	if !success {
+		return 0
+	}
+	return result
 }
 
 // 将json中的参数值转换为int16
@@ -272,7 +308,11 @@ func (jsonParam *JsonParams)ToUint16() uint16 {
 	if jsonParam.Value == nil {
 		return 0
 	}
-	return jsonParam.Value.(uint16)
+	result, success := jsonParam.Value.(uint16)
+	if !success {
+		return 0
+	}
+	return result
 }
 
 // 将json中的参数值转换为int32
@@ -280,7 +320,11 @@ func (jsonParam *JsonParams)ToUint32() uint32 {
 	if jsonParam.Value == nil {
 		return 0
 	}
-	return jsonParam.Value.(uint32)
+	result, success := jsonParam.Value.(uint32)
+	if !success {
+		return 0
+	}
+	return result
 }
 
 // 将json中的参数值转换为int64
@@ -288,7 +332,11 @@ func (jsonParam *JsonParams)ToUint64() uint64 {
 	if jsonParam.Value == nil {
 		return 0
 	}
-	return jsonParam.Value.(uint64)
+	result, success := jsonParam.Value.(uint64)
+	if !success {
+		return 0
+	}
+	return result
 }
 
 // 将json中的参数值转换为float32
@@ -296,7 +344,11 @@ func (jsonParam *JsonParams)ToFloat32() float32 {
 	if jsonParam.Value == nil {
 		return 0
 	}
-	return jsonParam.Value.(float32)
+	result, success := jsonParam.Value.(float32)
+	if !success {
+		return 0
+	}
+	return result
 }
 
 // 将json中的参数值转换为float64
@@ -304,7 +356,11 @@ func (jsonParam *JsonParams)ToFloat64() float64 {
 	if jsonParam.Value == nil {
 		return 0
 	}
-	return jsonParam.Value.(float64)
+	result, success := jsonParam.Value.(float64)
+	if !success {
+		return 0
+	}
+	return result
 }
 
 // 将json中的参数值转换为目标对象
