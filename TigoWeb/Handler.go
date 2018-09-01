@@ -15,6 +15,7 @@ type BaseHandler struct {
 	ResponseWriter  http.ResponseWriter
 	Request        *http.Request
 	JsonParams      map[string] interface{}
+	ctxValMap       map[string] interface{}
 }
 
 // 初始化Handler的方法
@@ -292,4 +293,18 @@ func (baseHandler *BaseHandler)Delete() {
 
 func (baseHandler *BaseHandler)Options() {
 	baseHandler.methodNotAllowed()
+}
+
+//////////////////////////////////////////////////Context Method////////////////////////////////////////////////////////
+
+func (baseHandler *BaseHandler)SetCtxVal(key string, val interface{}) {
+	baseHandler.ctxValMap[key] = val
+}
+
+func (baseHandler *BaseHandler)GetCtxVal(key string) interface{} {
+	if val, isExisted := baseHandler.ctxValMap[key]; isExisted {
+		return val
+	} else {
+		return nil
+	}
 }
