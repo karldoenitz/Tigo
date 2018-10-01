@@ -2,12 +2,14 @@
 package TigoWeb
 
 import (
-	"net/http"
 	"encoding/json"
 	"fmt"
-		"time"
-	"io/ioutil"
+	"github.com/karldoenitz/Tigo/logger"
 	"html/template"
+	"io/ioutil"
+	"net/http"
+	"net/http/httputil"
+	"time"
 )
 
 // Handler的基础类，开发者开发的handler继承此类
@@ -306,5 +308,38 @@ func (baseHandler *BaseHandler)GetCtxVal(key string) interface{} {
 		return val
 	} else {
 		return nil
+	}
+}
+
+//////////////////////////////////////////////////http message dump/////////////////////////////////////////////////////
+
+// 获取http请求报文
+func (baseHandler *BaseHandler)getHttpRequestMsg() string {
+	req, err := httputil.DumpRequest(baseHandler.Request, true)
+	if err != nil {
+		return err.Error()
+	}
+	return string(req)
+}
+
+// 获取http请求报文，根据logLevel值进行不同的输出
+//  - 1: 将http报文输出到trace级别日志中
+//  - 2: 将http报文输出到info级别日志中
+//  - 3: 将http报文输出到warning级别日志中
+//  - 4: 将http报文输出到error级别日志中
+//  - others: 将http报文输出到控制台
+func (baseHandler *BaseHandler)DumpHttpRequestMsg(logLevel int) {
+	reqMsg := baseHandler.getHttpRequestMsg()
+	switch logLevel {
+	case logger.TraceLevel:
+		logger.Trace.Println(reqMsg)
+	case logger.InfoLevel:
+		logger.Trace.Println(reqMsg)
+	case logger.WarningLevel:
+		logger.Trace.Println(reqMsg)
+	case logger.ErrorLevel:
+		logger.Error.Println(reqMsg)
+	default:
+		fmt.Println(reqMsg)
 	}
 }
