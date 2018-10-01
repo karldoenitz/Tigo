@@ -11,7 +11,8 @@ type HelloHandler struct {
 }
 
 func (helloHandler *HelloHandler)Get() {
-	value := helloHandler.GetParameter("hello")
+	helloHandler.DumpHttpRequestMsg(logger.TraceLevel)
+	value := helloHandler.GetParameter("hello").ToString()
 	fmt.Println(value)
 	cookie := TigoWeb.Cookie{
 		Name:        "Tigo",

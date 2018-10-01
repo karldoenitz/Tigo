@@ -334,9 +334,9 @@ func (baseHandler *BaseHandler)DumpHttpRequestMsg(logLevel int) {
 	case logger.TraceLevel:
 		logger.Trace.Println(reqMsg)
 	case logger.InfoLevel:
-		logger.Trace.Println(reqMsg)
+		logger.Info.Println(reqMsg)
 	case logger.WarningLevel:
-		logger.Trace.Println(reqMsg)
+		logger.Warning.Println(reqMsg)
 	case logger.ErrorLevel:
 		logger.Error.Println(reqMsg)
 	default:
