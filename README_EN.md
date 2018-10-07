@@ -13,10 +13,7 @@ go get github.com/karldoenitz/Tigo/...
 ```go
 package main
 
-import (
-    "net/http"
-    "github.com/karldoenitz/Tigo/TigoWeb"
-)
+import "github.com/karldoenitz/Tigo/TigoWeb"
 
 // handler
 type HelloHandler struct {
