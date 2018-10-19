@@ -22,6 +22,7 @@ API index:
     - [func ResponseAsText](#ResponseAsText)
     - [func ResponseAsJson](#ResponseAsJson)
     - [func ToJson](#ToJson)
+    - [func DumpHttpRequestMsg](#DumpHttpRequestMsg)
   - [type UrlPattern](#UrlPattern)
     - [func AppendUrlPattern](#AppendUrlPattern)
     - [func Init](#Init)
@@ -176,6 +177,17 @@ func (baseHandler *BaseHandler)ResponseAsJson(response Response)
 func (baseHandler *BaseHandler)ToJson(response Response) (result string)
 ```
 ```ToJson``` is the method to convert response object to json string.
+### func (*BaseHandler)DumpHttpRequestMsg<a name="DumpHttpRequestMsg"></a>
+```go
+func (baseHandler *BaseHandler)DumpHttpRequestMsg(logLevel int) (result string)
+```
+```DumpHttpRequestMsg``` is the method to dump http request message to console or log file.  
+The parameter `logLevel`'s value:
+- 1: dump message to trace level    // logger.TraceLevel
+- 2: dump message to info level     // logger.InfoLevel
+- 3: dump message to warning level  // logger.WarningLevel
+- 4: dump message to error level    // logger.ErrorLevel
+- others: dump message to console
 ## type UrlPattern<a name="UrlPattern"></a>
 ```go
 type UrlPattern struct {

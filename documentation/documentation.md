@@ -23,6 +23,7 @@ API目录：
     - [func ResponseAsText](#ResponseAsText)
     - [func ResponseAsJson](#ResponseAsJson)
     - [func ToJson](#ToJson)
+    - [func DumpHttpRequestMsg](#DumpHttpRequestMsg)
   - [type UrlPattern](#UrlPattern)
     - [func AppendUrlPattern](#AppendUrlPattern)
     - [func Init](#Init)
@@ -177,6 +178,17 @@ func (baseHandler *BaseHandler)ResponseAsJson(response Response)
 func (baseHandler *BaseHandler)ToJson(response Response) (result string)
 ```
 ```ToJson```方法是将一个对象转换成json字符串。如果转换失败则会返回空字符串。
+### func (*BaseHandler)DumpHttpRequestMsg<a name="DumpHttpRequestMsg"></a>
+```go
+func (baseHandler *BaseHandler)DumpHttpRequestMsg(logLevel int) (result string)
+```
+```DumpHttpRequestMsg```方法是将此次请求的http报文输出到终端或log文件中。  
+参数logLevel如下：
+- 1: 将http报文输出到trace级别日志中   // logger.TraceLevel
+- 2: 将http报文输出到info级别日志中    // logger.InfoLevel
+- 3: 将http报文输出到warning级别日志中 // logger.WarningLevel
+- 4: 将http报文输出到error级别日志中   // logger.ErrorLevel
+- others: 将http报文输出到控制台
 ## type UrlPattern<a name="UrlPattern"></a>
 ```go
 type UrlPattern struct {
