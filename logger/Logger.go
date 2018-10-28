@@ -2,14 +2,16 @@
 package logger
 
 import (
+	"encoding/json"
+	"fmt"
+	"gopkg.in/yaml.v2"
 	"io"
 	"io/ioutil"
 	"log"
 	"os"
-	"encoding/json"
+	"strconv"
 	"strings"
-	"gopkg.in/yaml.v2"
-	"fmt"
+	"time"
 )
 
 ////////////////////////////////////////////////////常量/////////////////////////////////////////////////////////////////
@@ -28,9 +30,11 @@ const (
 	ErrorLevel
 )
 
+var dateFormatter = ".2006-01-02_15:04:05"
+
 var logPath = ""
 
-var formater = map[int] string {
+var formatter = map[int] string {
 	TraceLevel:   "\x1b[32m %s \x1b[0m",
 	InfoLevel:    "\x1b[34m %s \x1b[0m",
 	WarningLevel: "\x1b[33m %s \x1b[0m",
@@ -50,6 +54,7 @@ type LogLevel struct {
 	Info     string   `json:"info"`
 	Warning  string   `json:"warning"`
 	Error    string   `json:"error"`
+	TimeRoll string   `json:"time_roll"`
 }
 
 type TiLog struct {
@@ -58,19 +63,19 @@ type TiLog struct {
 }
 
 func (l *TiLog) Printf(format string, v ...interface{}) {
-	formatStr := formater[l.Level]
+	formatStr := formatter[l.Level]
 	format = fmt.Sprintf(formatStr, format)
 	l.Output(2, fmt.Sprintf(format, v...))
 }
 
 func (l *TiLog) Print(v ...interface{}) {
-	formatStr := formater[l.Level]
+	formatStr := formatter[l.Level]
 	logInfo := fmt.Sprintf(formatStr, fmt.Sprint(v...))
 	l.Output(2, logInfo)
 }
 
 func (l *TiLog) Println(v ...interface{}) {
-	formatStr := formater[l.Level]
+	formatStr := formatter[l.Level]
 	logInfo := fmt.Sprintf(formatStr, fmt.Sprintln(v...))
 	l.Output(2, logInfo)
 }
@@ -145,6 +150,7 @@ func InitLoggerWithConfigFile(filePath string) {
 	}
 	raw, err := ioutil.ReadFile(filePath)
 	if err != nil {
+		println(err.Error())
 		os.Exit(1)
 	}
 	logLevel := LogLevel{}
@@ -164,6 +170,7 @@ func InitLoggerWithConfigFile(filePath string) {
 //   - Warning  "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
 //   - Error    "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
 func InitLoggerWithObject(logLevel LogLevel)  {
+	go startTimer(sliceLog, logLevel)
 	updateLogMapping(logLevel.Trace)
 	updateLogMapping(logLevel.Info)
 	updateLogMapping(logLevel.Warning)
@@ -239,4 +246,100 @@ func InitError(level string)  {
 		Error.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[31m ERROR:   \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
 		break
 	}
+}
+
+// 开启定时器，传入日志切分函数，日至等级对象
+func startTimer(F func(LogLevel), logLevel LogLevel) {
+	// 如果没有设置日志切分，则直接返回，不设置定时任务
+	if logLevel.TimeRoll == "" {
+		return
+	}
+	var ch chan int
+	//定时任务
+	timeRollingFrequency := getTimeRollingFrequency(logLevel)
+	ticker := time.NewTicker(timeRollingFrequency)
+	go func() {
+		for range ticker.C {
+			F(logLevel)
+		}
+		ch <- 1
+	}()
+	<-ch
+}
+
+// 解析time_roll配置文件，获取定时任务运行频率
+// time_roll格式必须为:
+//   - D*intN: 每N天切分一次日志
+//   - H*intN: 每N小时切分一次日志
+//   - M*intN: 每N分钟切分一次日志
+//   - S*intN: 每N秒钟切分一次日志
+func getTimeRollingFrequency(logLevel LogLevel) time.Duration {
+	rollingMap := map[string] time.Duration {
+		"D": time.Hour * 24,
+		"H": time.Hour,
+		"M": time.Minute,
+		"S": time.Second,
+	}
+	dateMap := map[string] string {
+		"D": ".2006-01-02",
+		"H": ".2006-01-02_15",
+		"M": ".2006-01-02_15:04",
+		"S": ".2006-01-02_15:04:05",
+	}
+	rollingStr := logLevel.TimeRoll
+	rollingArr := strings.Split(rollingStr, "*")
+	if len(rollingArr) != 2 {
+		println("time rolling string error")
+		os.Exit(1)
+	}
+	timeFlag, isOk := rollingMap[rollingArr[0]]
+	if !isOk {
+		println("time rolling flag error")
+		os.Exit(1)
+	}
+	timeOffset, err := strconv.Atoi(rollingArr[1])
+	if err != nil {
+		println(err.Error())
+		os.Exit(1)
+	}
+	// 设置格式化日期字符串
+	dateFormatter = dateMap[rollingArr[0]]
+	return timeFlag * time.Duration(timeOffset)
+}
+
+// 日志切分函数
+func sliceLog(logLevel LogLevel)  {
+	// 获取上一个切分节点的日志对象
+	TraceLogFile, isTraceExisted := logFileMapping[logLevel.Trace]
+	InfoLogFile, isInfoExisted := logFileMapping[logLevel.Info]
+	WarningLogFile, isWarningExisted := logFileMapping[logLevel.Warning]
+	ErrorLogFile, isErrorExisted := logFileMapping[logLevel.Error]
+	// 获取当前切分节点的日志名称
+	nowTimeStr := time.Now().Format(dateFormatter)
+	logLevel.Trace += nowTimeStr
+	logLevel.Info += nowTimeStr
+	logLevel.Warning += nowTimeStr
+	logLevel.Error += nowTimeStr
+	updateLogMapping(logLevel.Trace)
+	updateLogMapping(logLevel.Info)
+	updateLogMapping(logLevel.Warning)
+	updateLogMapping(logLevel.Error)
+	// 如果上一份日志文件没有关闭则进行关闭
+	if isTraceExisted && TraceLogFile != nil {
+		TraceLogFile.Close()
+	}
+	if isInfoExisted && InfoLogFile != nil {
+		InfoLogFile.Close()
+	}
+	if isWarningExisted && WarningLogFile != nil {
+		WarningLogFile.Close()
+	}
+	if isErrorExisted && ErrorLogFile != nil {
+		ErrorLogFile.Close()
+	}
+	// 重新初始化当前日志
+	InitTrace(logLevel.Trace)
+	InitInfo(logLevel.Info)
+	InitWarning(logLevel.Warning)
+	InitError(logLevel.Error)
 }
