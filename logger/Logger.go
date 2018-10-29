@@ -259,7 +259,8 @@ func startTimer(F func(LogLevel), logLevel LogLevel) {
 	timeRollingFrequency := getTimeRollingFrequency(logLevel)
 	ticker := time.NewTicker(timeRollingFrequency)
 	go func() {
-		for range ticker.C {
+		for i := range ticker.C {
+			println(i)
 			F(logLevel)
 		}
 		ch <- 1
