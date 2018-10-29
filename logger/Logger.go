@@ -260,7 +260,7 @@ func startTimer(F func(LogLevel), logLevel LogLevel) {
 	ticker := time.NewTicker(timeRollingFrequency)
 	go func() {
 		for i := range ticker.C {
-			println(i)
+			fmt.Printf("log sliced: %s\n", i.String())
 			F(logLevel)
 		}
 		ch <- 1
