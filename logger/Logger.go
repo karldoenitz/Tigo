@@ -249,7 +249,7 @@ func InitError(level string)  {
 }
 
 // 开启定时器，传入日志切分函数，日至等级对象
-func startTimer(F func(LogLevel), logLevel LogLevel) {
+func startTimer(F func(LogLevel, time.Time), logLevel LogLevel) {
 	// 如果没有设置日志切分，则直接返回，不设置定时任务
 	if logLevel.TimeRoll == "" {
 		return
@@ -259,9 +259,8 @@ func startTimer(F func(LogLevel), logLevel LogLevel) {
 	timeRollingFrequency := getTimeRollingFrequency(logLevel)
 	ticker := time.NewTicker(timeRollingFrequency)
 	go func() {
-		for i := range ticker.C {
-			fmt.Printf("log sliced: %s\n", i.String())
-			F(logLevel)
+		for currentTime := range ticker.C {
+			F(logLevel, currentTime)
 		}
 		ch <- 1
 	}()
@@ -309,14 +308,14 @@ func getTimeRollingFrequency(logLevel LogLevel) time.Duration {
 }
 
 // 日志切分函数
-func sliceLog(logLevel LogLevel)  {
+func sliceLog(logLevel LogLevel, current time.Time)  {
 	// 获取上一个切分节点的日志对象
 	TraceLogFile, isTraceExisted := logFileMapping[logLevel.Trace]
 	InfoLogFile, isInfoExisted := logFileMapping[logLevel.Info]
 	WarningLogFile, isWarningExisted := logFileMapping[logLevel.Warning]
 	ErrorLogFile, isErrorExisted := logFileMapping[logLevel.Error]
 	// 获取当前切分节点的日志名称
-	nowTimeStr := time.Now().Format(dateFormatter)
+	nowTimeStr := current.Format(dateFormatter)
 	logLevel.Trace += nowTimeStr
 	logLevel.Info += nowTimeStr
 	logLevel.Warning += nowTimeStr
