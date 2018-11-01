@@ -388,7 +388,8 @@ func main() {
     "trace": "stdout",  // trace的内容只在终端输出，不在文件内保留
     "info": "/Users/karllee/Desktop/run-info.log",  // info的内容存在run-info.log文件中
     "warning": "/Users/karllee/Desktop/run.log",  // warning与error的日志存在同一个文件内
-    "error": "/Users/karllee/Desktop/run.log"
+    "error": "/Users/karllee/Desktop/run.log",
+    "time_roll": "H*2"  // 表示每两个小时切分一次日志
   }
 }
 ```
@@ -402,15 +403,22 @@ log模块所包含的结构体。
 //   - Info     信息
 //   - Warning  预警
 //   - Error    错误
+//   - TimeRoll 日志切分时长
 // discard: 丢弃，stdout: 终端输出，文件路径表示log具体输出的位置
 type LogLevel struct {
     Trace    string   `json:"trace"`
     Info     string   `json:"info"`
     Warning  string   `json:"warning"`
     Error    string   `json:"error"`
+    TimeRoll string   `json:"time_roll"`
 }
 ```
-初始化此结构体，将此结构体作为参数传入```InitLoggerWithObject```中，初始化logger模块。
+初始化此结构体，将此结构体作为参数传入```InitLoggerWithObject```中，初始化logger模块。  
+TimeRoll：
+- D：表示按天切分日志，例如："D*6"则表示每6天切分一次日志
+- H：表示按小时切分日志，例如："H*6"则表示每6小时切分一次日志
+- M：表示按分钟切分日志，例如："M*6"则表示每6分钟切分一次日志
+- S：表示按秒切分日志，例如："S*6"则表示每6秒切分一次日志
 ## logger模块内置方法<a name="loggerFunctions"></a>
 ### func SetLogPath<a name="SetLogPath"></a>
 设置log文件的路径
