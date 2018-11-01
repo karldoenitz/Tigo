@@ -400,15 +400,22 @@ The structure in logger package:
 //   - Info
 //   - Warning
 //   - Error
+//   - TimeRoll
 // discard: discard, stdout: print in console; the path of log file
 type LogLevel struct {
     Trace    string   `json:"trace"`
     Info     string   `json:"info"`
     Warning  string   `json:"warning"`
     Error    string   `json:"error"`
+    TimeRoll string   `json:"time_roll"`
 }
 ```
-Initialize this structure and pass the instance to ```InitLoggerWithObject``` to init logger package.
+Initialize this structure and pass the instance to ```InitLoggerWithObject``` to init logger package.  
+TimeRoll:
+- D: slice log file by Day, E.g: "D*6" slice log file every six days.
+- H: slice log file by Hour, E.g: "H*6" slice log file every six hours.
+- M: slice log file by Minute, E.g: "M*6" slice log file every six minutes.
+- S: slice log file by Second, E.g: "S*6" slice log file every six seconds.
 ## logger inner functions<a name="loggerFunctions"></a>
 ### func SetLogPath<a name="SetLogPath"></a>
 Set Log file's Path<a name="SetLogPath"></a>
