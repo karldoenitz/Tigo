@@ -386,7 +386,8 @@ func main() {
     "trace": "stdout",  // only print trace message in console
     "info": "/Users/karllee/Desktop/run-info.log",  // print info message in run-info.log file
     "warning": "/Users/karllee/Desktop/run.log",  // print warning info and error info in same file
-    "error": "/Users/karllee/Desktop/run.log"
+    "error": "/Users/karllee/Desktop/run.log",
+    "time_roll": "H*2"  // slice log file every 2 hours
   }
 }
 ```
