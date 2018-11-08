@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"reflect"
 	"github.com/karldoenitz/Tigo/logger"
+	"time"
 )
 
 // URL路由中间件
@@ -20,6 +21,7 @@ type UrlPatternMidWare struct {
 //  - 4、调用handler中的功能方法；
 //  - 5、进行HTTP请求结束处理。
 func (urlPatternMidWare UrlPatternMidWare)Handle(responseWriter http.ResponseWriter, request *http.Request) {
+	requestStart := time.Now().Nanosecond() / 1e6
 	// 加载handler
 	handler := reflect.ValueOf(urlPatternMidWare.Handler)
 	// 获取init方法
@@ -28,7 +30,6 @@ func (urlPatternMidWare UrlPatternMidWare)Handle(responseWriter http.ResponseWri
 	paramPasser := handler.MethodByName("PassJson")
 	// 获取HTTP请求方式
 	requestMethod := MethodMapping[request.Method]
-	logger.Trace.Printf("%s %s", requestMethod, urlPatternMidWare.requestUrl)
 	function := handler.MethodByName(requestMethod)
 	initParams := []reflect.Value{reflect.ValueOf(responseWriter), reflect.ValueOf(request)}
 	var functionParams []reflect.Value
@@ -41,6 +42,8 @@ func (urlPatternMidWare UrlPatternMidWare)Handle(responseWriter http.ResponseWri
 	if function.IsValid() {
 		function.Call(functionParams)
 	}
+	requestEnd := time.Now().Nanosecond() / 1e6
+	logger.Trace.Printf("%s %s %dms", requestMethod, urlPatternMidWare.requestUrl, requestEnd-requestStart)
 }
 
 // URL路由，此处存储URL映射。
