@@ -1,15 +1,17 @@
 package TigoWeb
 
 import (
-	"time"
-	"net/http"
 	"encoding/json"
 	"fmt"
-	"os"
-	"io/ioutil"
 	"github.com/karldoenitz/Tigo/logger"
-	"strings"
 	"gopkg.in/yaml.v2"
+	"io/ioutil"
+	"net/http"
+	"os"
+	"reflect"
+	"strconv"
+	"strings"
+	"time"
 )
 
 //////////////////////////////////////Structure Cookie//////////////////////////////////////////////////////////////////
@@ -192,16 +194,21 @@ type JsonParams struct {
 	Value interface{}
 }
 
-// 将json中的参数值转换为string
+// 将json中解析出的参数格式化为string类型，失败则返回空字符串
 func (jsonParam *JsonParams)ToString() string {
-	if jsonParam.Value == nil {
-		return ""
+	valueType := reflect.TypeOf(jsonParam.Value).Name()
+	switch valueType {
+	case "string":
+		return jsonParam.Value.(string)
+	case "int":
+		return strconv.Itoa(jsonParam.Value.(int))
+	case "int64":
+		return strconv.FormatInt(jsonParam.Value.(int64),10)
+	case "float64":
+		return strconv.FormatFloat(jsonParam.Value.(float64),'E',-1,32)
 	}
-	result, success := jsonParam.Value.(string)
-	if !success {
-		return ""
-	}
-	return result
+	logger.Warning.Println("format to string failed")
+	return ""
 }
 
 // 将json中的参数值转换为bool
@@ -267,13 +274,21 @@ func (jsonParam *JsonParams)ToInt32() int32 {
 	return result
 }
 
-// 将json中的参数值转换为int64
+// 将json中解析出来的参数格式化为int64类型，失败则返回0
 func (jsonParam *JsonParams)ToInt64() int64 {
-	if jsonParam.Value == nil {
-		return 0
+	valueType := reflect.TypeOf(jsonParam.Value).Name()
+	switch valueType {
+	case "string":
+		val, err := strconv.ParseInt(jsonParam.Value.(string), 10, 64)
+		if err != nil {
+			logger.Warning.Println("parse value to int64 failed")
+			return 0
+		}
+		return val
 	}
 	result, success := jsonParam.Value.(int64)
 	if !success {
+		logger.Warning.Println("convert value to int64 failed")
 		return 0
 	}
 	return result
@@ -351,13 +366,21 @@ func (jsonParam *JsonParams)ToFloat32() float32 {
 	return result
 }
 
-// 将json中的参数值转换为float64
+// 将json中解析出的参数格式化为float64类型，失败则返回0
 func (jsonParam *JsonParams)ToFloat64() float64 {
-	if jsonParam.Value == nil {
-		return 0
+	valueType := reflect.TypeOf(jsonParam.Value).Name()
+	switch valueType {
+	case "string":
+		val, err := strconv.ParseFloat(jsonParam.Value.(string), 64)
+		if err != nil {
+			logger.Warning.Println("parse value to float64 failed")
+			return 0
+		}
+		return val
 	}
 	result, success := jsonParam.Value.(float64)
 	if !success {
+		logger.Warning.Println("convert value to float64 failed")
 		return 0
 	}
 	return result
