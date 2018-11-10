@@ -78,9 +78,10 @@ func (baseHandler *BaseHandler)GetJsonValue(key string) (interface{})
 ```GetJsonValue```方法是根据key获取客户端传递的json对象。客户端发送的请求的Content-Type必须是application/json。
 ### func (*BaseHandler)GetParameter<a name="GetParameter"></a>
 ```go
-func (baseHandler *BaseHandler)GetParameter(key string) (value string)
+func (baseHandler *BaseHandler)GetParameter(key string) (value *JsonParams)
 ```
 ```GetParameter```方法是根据key获取客户端传递的参数值。
+- 也可以从`baseHandler.Request`对象中调用`Request`的相关函数获取参数；
 - 可以从URL上获取参数值，或是form中；如果http的body是json，也可以从中解析出参数值。
 ### func (*BaseHandler)GetHeader<a name="GetHeader"></a>
 ```go
@@ -327,6 +328,18 @@ func (globalConfig *GlobalConfig)Init(configPath string)
     "cookie": "thisiscookiekey"
 }
 ```
+## type ReqParams<a name="ReqParams"></a>
+```go
+type JsonParams struct {
+	Value interface{}
+}
+```
+`BaseHandler.GetParameter`返回此类型的实例，`Value`为`interface`类型，可以按照具体需求转换为自己需要的类型。
+- `ToBool`: 将Value转换为bool类型
+- `ToFloat64`: 将Value转换为float64类型
+- `ToInt64`: 将Value转换为int64类型
+- `ToString`: 将Value转换为string类型
+- `To`: 将Value转换为自定义类型
 ## utils<a name="utils"></a>
 加密方法<a name="Encrypt"></a>
 ```go

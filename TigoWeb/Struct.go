@@ -190,12 +190,12 @@ func (globalConfig *GlobalConfig)initWithJson(configPath string) {
 
 //////////////////////////////////////Json Param Structure /////////////////////////////////////////////////////////////
 
-type JsonParams struct {
+type ReqParams struct {
 	Value interface{}
 }
 
 // 将json中解析出的参数格式化为string类型，失败则返回空字符串
-func (jsonParam *JsonParams)ToString() string {
+func (jsonParam *ReqParams)ToString() string {
 	valueType := reflect.TypeOf(jsonParam.Value).Name()
 	switch valueType {
 	case "string":
@@ -216,7 +216,7 @@ func (jsonParam *JsonParams)ToString() string {
 }
 
 // 将json中的参数值转换为bool
-func (jsonParam *JsonParams)ToBool(defaultValue ...bool) bool {
+func (jsonParam *ReqParams)ToBool(defaultValue ...bool) bool {
 	if jsonParam.Value == nil {
 		if len(defaultValue) > 0 {
 			return defaultValue[0]
@@ -250,7 +250,7 @@ func (jsonParam *JsonParams)ToBool(defaultValue ...bool) bool {
 }
 
 // 将json中解析出来的参数格式化为int64类型，失败则返回0
-func (jsonParam *JsonParams)ToInt64() int64 {
+func (jsonParam *ReqParams)ToInt64() int64 {
 	valueType := reflect.TypeOf(jsonParam.Value).Name()
 	switch valueType {
 	case "string":
@@ -276,7 +276,7 @@ func (jsonParam *JsonParams)ToInt64() int64 {
 }
 
 // 将json中解析出的参数格式化为float64类型，失败则返回0
-func (jsonParam *JsonParams)ToFloat64() float64 {
+func (jsonParam *ReqParams)ToFloat64() float64 {
 	valueType := reflect.TypeOf(jsonParam.Value).Name()
 	switch valueType {
 	case "string":
@@ -300,7 +300,7 @@ func (jsonParam *JsonParams)ToFloat64() float64 {
 }
 
 // 将json中的参数值转换为目标对象
-func (jsonParam *JsonParams)To(result interface{}) {
+func (jsonParam *ReqParams)To(result interface{}) {
 	if jsonParam.Value == nil {
 		return
 	}
