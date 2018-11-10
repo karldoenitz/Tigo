@@ -223,6 +223,25 @@ func (jsonParam *JsonParams)ToBool(defaultValue ...bool) bool {
 		}
 		return false
 	}
+	valueType := reflect.TypeOf(jsonParam.Value).Name()
+	switch valueType {
+	case "string":
+		val := jsonParam.Value.(string)
+		if strings.ToLower(val) == "true" { return true }
+		return false
+	case "int":
+		val := jsonParam.Value.(int)
+		if val > 0 { return true }
+		return false
+	case "int64":
+		val := jsonParam.Value.(int64)
+		if val > 0 { return true }
+		return false
+	case "float64":
+		val := jsonParam.Value.(float64)
+		if val > 0 { return true }
+		return false
+	}
 	result, success := jsonParam.Value.(bool)
 	if !success {
 		return false
