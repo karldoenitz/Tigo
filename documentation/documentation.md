@@ -40,6 +40,7 @@ API目录：
     - [func ToJson](#user-content-ResponseToJson)
   - [type GlobalConfig](#user-content-GlobalConfig)
     - [func Init](#user-content-GlobalInit)
+  - [type ReqParams](#user-content-ReqParams)
   - [utils](#user-content-utils)
     - [func Encrypt](#user-content-Encrypt)
     - [func Decrypt](#user-content-Decrypt)
