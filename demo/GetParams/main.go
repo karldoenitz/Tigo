@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/karldoenitz/Tigo/TigoWeb"
 	"fmt"
+	"github.com/karldoenitz/Tigo/TigoWeb"
 )
 
 type TestHandler struct {
