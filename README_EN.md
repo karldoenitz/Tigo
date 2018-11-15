@@ -32,7 +32,7 @@ var urls = map[string]interface{}{
 // 主函数
 func main() {
     application := TigoWeb.Application{
-        IPAddress:  "0.0.0.0",
+        IPAddress:  "127.0.0.1",
         Port:       8888,
         UrlPattern: urls,
     }

@@ -41,7 +41,7 @@ func (baseHandler *BaseHandler)PassJson() {
 
 // 将对象转化为Json字符串，转换失败则返回空字符串。
 // 传入参数Response为一个interface，必须有成员函数Print。
-func (baseHandler *BaseHandler)ToJson(response Response) (result string) {
+func (baseHandler *BaseHandler)ToJson(response interface{}) (result string) {
 	// 将该对象转换为byte字节数组
 	jsonResult, jsonErr := json.Marshal(response)
 	if jsonErr != nil {
@@ -52,7 +52,7 @@ func (baseHandler *BaseHandler)ToJson(response Response) (result string) {
 }
 
 // 向客户端响应一个Json结果
-func (baseHandler *BaseHandler)ResponseAsJson(response Response) {
+func (baseHandler *BaseHandler)ResponseAsJson(response interface{}) {
 	// 将对象转换为Json字符串
 	jsonResult := baseHandler.ToJson(response)
 	// 设置http报文头内的Content-Type
