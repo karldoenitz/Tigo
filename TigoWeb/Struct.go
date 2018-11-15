@@ -190,12 +190,12 @@ func (globalConfig *GlobalConfig)initWithJson(configPath string) {
 
 //////////////////////////////////////Json Param Structure /////////////////////////////////////////////////////////////
 
-type JsonParams struct {
+type ReqParams struct {
 	Value interface{}
 }
 
 // 将json中解析出的参数格式化为string类型，失败则返回空字符串
-func (jsonParam *JsonParams)ToString() string {
+func (jsonParam *ReqParams)ToString() string {
 	valueType := reflect.TypeOf(jsonParam.Value).Name()
 	switch valueType {
 	case "string":
@@ -206,17 +206,40 @@ func (jsonParam *JsonParams)ToString() string {
 		return strconv.FormatInt(jsonParam.Value.(int64),10)
 	case "float64":
 		return strconv.FormatFloat(jsonParam.Value.(float64),'E',-1,32)
+	case "bool":
+		val := jsonParam.Value.(bool)
+		if val { return "true" }
+		return "false"
 	}
 	logger.Warning.Println("format to string failed")
 	return ""
 }
 
 // 将json中的参数值转换为bool
-func (jsonParam *JsonParams)ToBool(defaultValue ...bool) bool {
+func (jsonParam *ReqParams)ToBool(defaultValue ...bool) bool {
 	if jsonParam.Value == nil {
 		if len(defaultValue) > 0 {
 			return defaultValue[0]
 		}
+		return false
+	}
+	valueType := reflect.TypeOf(jsonParam.Value).Name()
+	switch valueType {
+	case "string":
+		val := jsonParam.Value.(string)
+		if strings.ToLower(val) == "true" { return true }
+		return false
+	case "int":
+		val := jsonParam.Value.(int)
+		if val > 0 { return true }
+		return false
+	case "int64":
+		val := jsonParam.Value.(int64)
+		if val > 0 { return true }
+		return false
+	case "float64":
+		val := jsonParam.Value.(float64)
+		if val > 0 { return true }
 		return false
 	}
 	result, success := jsonParam.Value.(bool)
@@ -226,56 +249,8 @@ func (jsonParam *JsonParams)ToBool(defaultValue ...bool) bool {
 	return result
 }
 
-// 将json中的参数值转换为int
-func (jsonParam *JsonParams)ToInt() int {
-	if jsonParam.Value == nil {
-		return 0
-	}
-	result, success := jsonParam.Value.(int)
-	if !success {
-		return 0
-	}
-	return result
-}
-
-// 将json中的参数值转换为int8
-func (jsonParam *JsonParams)ToInt8() int8 {
-	if jsonParam.Value == nil {
-		return 0
-	}
-	result, success := jsonParam.Value.(int8)
-	if !success {
-		return 0
-	}
-	return result
-}
-
-// 将json中的参数值转换为int16
-func (jsonParam *JsonParams)ToInt16() int16 {
-	if jsonParam.Value == nil {
-		return 0
-	}
-	result, success := jsonParam.Value.(int16)
-	if !success {
-		return 0
-	}
-	return result
-}
-
-// 将json中的参数值转换为int32
-func (jsonParam *JsonParams)ToInt32() int32 {
-	if jsonParam.Value == nil {
-		return 0
-	}
-	result, success := jsonParam.Value.(int32)
-	if !success {
-		return 0
-	}
-	return result
-}
-
 // 将json中解析出来的参数格式化为int64类型，失败则返回0
-func (jsonParam *JsonParams)ToInt64() int64 {
+func (jsonParam *ReqParams)ToInt64() int64 {
 	valueType := reflect.TypeOf(jsonParam.Value).Name()
 	switch valueType {
 	case "string":
@@ -285,6 +260,12 @@ func (jsonParam *JsonParams)ToInt64() int64 {
 			return 0
 		}
 		return val
+	case "float64":
+		return int64(jsonParam.Value.(float64))
+	case "bool":
+		val := jsonParam.Value.(bool)
+		if val { return 1 }
+		return 0
 	}
 	result, success := jsonParam.Value.(int64)
 	if !success {
@@ -294,80 +275,8 @@ func (jsonParam *JsonParams)ToInt64() int64 {
 	return result
 }
 
-// 将json中的参数值转换为int
-func (jsonParam *JsonParams)ToUint() uint {
-	if jsonParam.Value == nil {
-		return 0
-	}
-	result, success := jsonParam.Value.(uint)
-	if !success {
-		return 0
-	}
-	return result
-}
-
-// 将json中的参数值转换为int8
-func (jsonParam *JsonParams)ToUint8() uint8 {
-	if jsonParam.Value == nil {
-		return 0
-	}
-	result, success := jsonParam.Value.(uint8)
-	if !success {
-		return 0
-	}
-	return result
-}
-
-// 将json中的参数值转换为int16
-func (jsonParam *JsonParams)ToUint16() uint16 {
-	if jsonParam.Value == nil {
-		return 0
-	}
-	result, success := jsonParam.Value.(uint16)
-	if !success {
-		return 0
-	}
-	return result
-}
-
-// 将json中的参数值转换为int32
-func (jsonParam *JsonParams)ToUint32() uint32 {
-	if jsonParam.Value == nil {
-		return 0
-	}
-	result, success := jsonParam.Value.(uint32)
-	if !success {
-		return 0
-	}
-	return result
-}
-
-// 将json中的参数值转换为int64
-func (jsonParam *JsonParams)ToUint64() uint64 {
-	if jsonParam.Value == nil {
-		return 0
-	}
-	result, success := jsonParam.Value.(uint64)
-	if !success {
-		return 0
-	}
-	return result
-}
-
-// 将json中的参数值转换为float32
-func (jsonParam *JsonParams)ToFloat32() float32 {
-	if jsonParam.Value == nil {
-		return 0
-	}
-	result, success := jsonParam.Value.(float32)
-	if !success {
-		return 0
-	}
-	return result
-}
-
 // 将json中解析出的参数格式化为float64类型，失败则返回0
-func (jsonParam *JsonParams)ToFloat64() float64 {
+func (jsonParam *ReqParams)ToFloat64() float64 {
 	valueType := reflect.TypeOf(jsonParam.Value).Name()
 	switch valueType {
 	case "string":
@@ -377,6 +286,10 @@ func (jsonParam *JsonParams)ToFloat64() float64 {
 			return 0
 		}
 		return val
+	case "bool":
+		val := jsonParam.Value.(bool)
+		if val { return 1 }
+		return 0
 	}
 	result, success := jsonParam.Value.(float64)
 	if !success {
@@ -387,7 +300,7 @@ func (jsonParam *JsonParams)ToFloat64() float64 {
 }
 
 // 将json中的参数值转换为目标对象
-func (jsonParam *JsonParams)To(result interface{}) {
+func (jsonParam *ReqParams)To(result interface{}) {
 	if jsonParam.Value == nil {
 		return
 	}

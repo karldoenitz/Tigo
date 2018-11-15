@@ -232,8 +232,8 @@ func (baseHandler *BaseHandler)SetHeader(name string, value string) {
 // 根据key获取对应的参数值
 //   - 如果Content-Type是application/json，则直接从http的body中解析出key对应的value
 //   - 否则，根据key直接获取value
-func (baseHandler *BaseHandler)GetParameter(key string) (value *JsonParams) {
-	jsonValue := &JsonParams{}
+func (baseHandler *BaseHandler)GetParameter(key string) (value *ReqParams) {
+	jsonValue := &ReqParams{}
 	if baseHandler.GetHeader("Content-Type") == "application/json" {
 		if value, ok := baseHandler.JsonParams[key]; ok {
 			jsonValue.Value = value

@@ -2,9 +2,9 @@
 package TigoWeb
 
 import (
+	"github.com/karldoenitz/Tigo/logger"
 	"net/http"
 	"reflect"
-	"github.com/karldoenitz/Tigo/logger"
 	"time"
 )
 

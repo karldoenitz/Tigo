@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/karldoenitz/Tigo/TigoWeb"
 	"fmt"
+	"github.com/karldoenitz/Tigo/TigoWeb"
 )
 
 type TestHandler struct {
@@ -16,11 +16,12 @@ func (testHandler *TestHandler) Post() {
 		Gender int `json:"gender"`
 	}{}
 	paramOne := testHandler.GetParameter("one").ToBool(false)
-	paramTwo := testHandler.GetParameter("two")
+	paramTwo := testHandler.GetParameter("two").ToFloat64()
 	testHandler.GetParameter("info").To(params)
 	fmt.Println(params.Name)
 	fmt.Println(params.Age)
 	fmt.Println(params.Gender)
+	fmt.Println(paramTwo)
 	if paramOne {
 		testHandler.Response(paramTwo)
 	}
