@@ -56,6 +56,18 @@ API目录：
     - [func InitInfo](#InitInfo)
     - [func InitWarning](#InitWarning)
     - [func InitError](#InitError)
+- [request](#request)
+  - [type Response](#httpResponse)
+    - [ToContentStr](#ToContentStr)
+  - [functions](#requestFunctions)
+    - [func Request](#Request)
+    - [func Get](#Get)
+    - [func Post](#Post)
+    - [func Put](#Put)
+    - [func Patch](#Patch)
+    - [func Head](#Head)
+    - [func Options](#Options)
+    - [func Delete](#Delete)
 # Tigo.TigoWeb<a name="TigoWeb"></a>
 TigoWeb是Tigo框架中的核心部分，Handler、URLpattern以及Application三大核心组件包含于此。
 ## type BaseHandler<a name="BaseHandler"></a>
@@ -493,3 +505,59 @@ func InitError(level string)
 - discard：不处理；
 - stdout： 终端输出，不打印到文件；
 - 文件具体路径：存储log的文件的路径。
+# Tigo.request<a name="request"></a>
+request模块是Tigo框架中用来进行http request请求的模块，可使用此模块内的方法对目标连接发送http请求。
+## type Response<a name="httpResponse"></a>
+```go
+type Response struct {
+    *http.Response
+    Content []byte
+}
+```
+HTTP请求返回的对象。
+### func (response *Response)ToContentStr<a name="InitWarning"></a>
+```go
+func (response *Response)ToContentStr() string
+```
+将Response对象的Content转换为string类型。
+## request模块内置方法<a name="requestFunctions"></a>
+### func Request<a name="Request"></a>
+```go
+func Request(method string, requestUrl string, postParams map[string]interface{}, headers ...map[string]string) (*Response, error)
+```
+向一个连接发送请求。
+### func Get<a name="Get"></a>
+```go
+func Get(requestUrl string, headers ...map[string]string) (*Response, error)
+```
+向一个连接发送Get请求。
+### func Post<a name="Post"></a>
+```go
+func Post(requestUrl string, postParams map[string]interface{}, headers ...map[string]string) (*Response, error)
+```
+向一个连接发送Post请求。
+### func Put<a name="Put"></a>
+```go
+func Put(requestUrl string, postParams map[string]interface{}, headers ...map[string]string) (*Response, error)
+```
+向一个连接发送Put请求。
+### func Patch<a name="Patch"></a>
+```go
+func Patch(requestUrl string, postParams map[string]interface{}, headers ...map[string]string) (*Response, error)
+```
+向一个连接发送Patch请求。
+### func Head<a name="Head"></a>
+```go
+func Head(requestUrl string, headers ...map[string]string) (*Response, error)
+```
+向一个连接发送Head请求。
+### func Options<a name="Options"></a>
+```go
+func Options(requestUrl string, headers ...map[string]string) (*Response, error)
+```
+向一个连接发送Options请求。
+### func Delete<a name="Delete"></a>
+```go
+func Delete(requestUrl string, headers ...map[string]string) (*Response, error)
+```
+向一个连接发送Delete请求。

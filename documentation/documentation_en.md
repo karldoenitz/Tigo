@@ -55,6 +55,18 @@ API index:
     - [func InitInfo](#InitInfo)
     - [func InitWarning](#InitWarning)
     - [func InitError](#InitError)
+- [request](#request)
+  - [type Response](#httpResponse)
+    - [ToContentStr](#ToContentStr)
+  - [functions](#requestFunctions)
+    - [func Request](#Request)
+    - [func Get](#Get)
+    - [func Post](#Post)
+    - [func Put](#Put)
+    - [func Patch](#Patch)
+    - [func Head](#Head)
+    - [func Options](#Options)
+    - [func Delete](#Delete)
 # Tigo.TigoWeb<a name="TigoWeb"></a>
 TigoWeb is the core part of Tigo framework, it contains Handler,URLpattern and Application.
 ## type BaseHandler<a name="BaseHandler"></a>
@@ -478,3 +490,59 @@ Parameter values:
 - discard: discard log message;
 - stdout: print log message in console;
 - real file path: the path of log file.
+# Tigo.request<a name="request"></a>
+Tigo.request provides some functions to request an url.
+## type Response<a name="httpResponse"></a>
+```go
+type Response struct {
+    *http.Response
+    Content []byte
+}
+```
+HTTP Response Instance.
+### func (response *Response)ToContentStr<a name="InitWarning"></a>
+```go
+func (response *Response)ToContentStr() string
+```
+Convert `Response.Content` to string type.
+## request module<a name="requestFunctions"></a>
+### func Request<a name="Request"></a>
+```go
+func Request(method string, requestUrl string, postParams map[string]interface{}, headers ...map[string]string) (*Response, error)
+```
+Make requestion to an url
+### func Get<a name="Get"></a>
+```go
+func Get(requestUrl string, headers ...map[string]string) (*Response, error)
+```
+Http Get method.
+### func Post<a name="Post"></a>
+```go
+func Post(requestUrl string, postParams map[string]interface{}, headers ...map[string]string) (*Response, error)
+```
+Http Post method.
+### func Put<a name="Put"></a>
+```go
+func Put(requestUrl string, postParams map[string]interface{}, headers ...map[string]string) (*Response, error)
+```
+Http Put method.
+### func Patch<a name="Patch"></a>
+```go
+func Patch(requestUrl string, postParams map[string]interface{}, headers ...map[string]string) (*Response, error)
+```
+Http Patch method.
+### func Head<a name="Head"></a>
+```go
+func Head(requestUrl string, headers ...map[string]string) (*Response, error)
+```
+Http Head method.
+### func Options<a name="Options"></a>
+```go
+func Options(requestUrl string, headers ...map[string]string) (*Response, error)
+```
+Http Options method.
+### func Delete<a name="Delete"></a>
+```go
+func Delete(requestUrl string, headers ...map[string]string) (*Response, error)
+```
+Http Delete method.
