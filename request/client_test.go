@@ -36,21 +36,3 @@ func TestPost(t *testing.T)  {
 	contentStr := response.ToContentStr()
 	fmt.Println(contentStr)
 }
-
-func TestPostForm(t *testing.T)  {
-	requestUrl := "http://captcha.qq.com/mcheck"
-	postData := map[string] interface {} {
-		"aid": "9288506",
-		"AppSecretKey": "1aXd6Sj_iUbBpKd8u99joPA",
-		"SceneType": "3",
-		"AccountType": "2",
-		"AccountId": "oelUQ5XXDC08aJqMOgRyUEsP2hwQ",
-		"AccountAppid": "wx304df47a4abc2a7f",
-		"UserIP": "121.206.165.104",
-	}
-	headers := map[string] string {
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
-	response, _ := Post(requestUrl, postData, headers)
-	fmt.Println(response.ToContentStr())
-}
