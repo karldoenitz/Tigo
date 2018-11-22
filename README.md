@@ -57,7 +57,7 @@ INFO: 2018/07/09 15:02:36 Application.go:22: Server run on: 0.0.0.0:8888
 
 # 文档
 [点击此处](https://github.com/karldoenitz/Tigo/blob/master/documentation/documentation.md)
-
+[文档站点](https://karldoenitz.github.io/Tigo/)
 # 注意
 这个框架在Linux版本的 [CubeBackup for Google Apps](http://www.cubebackup.com) 中有所使用。  
 如果你对此框架感兴趣，可以加入我们一同开发。
