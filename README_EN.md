@@ -1,4 +1,6 @@
-[![Build Status](https://travis-ci.org/karldoenitz/Tigo.svg?branch=master)](https://travis-ci.org/karldoenitz/Tigo)  
+[![Build Status](https://travis-ci.org/karldoenitz/Tigo.svg?branch=master)](https://travis-ci.org/karldoenitz/Tigo)
+[![GoDoc](https://godoc.org/github.com/karldoenitz/Tigo?status.svg)](https://godoc.org/github.com/karldoenitz/Tigo)
+[![Release](https://img.shields.io/github/release/karldoenitz/Tigo.svg?style=flat-square)](https://github.com/karldoenitz/Tigo/releases)  
 ![Tigo logo](https://github.com/karldoenitz/Tigo/blob/master/documentation/tigo_logo.jpg "this is Tigo logo")
 # Tigo([中文文档点击此处](https://github.com/karldoenitz/Tigo/blob/master/README.md))
 A web framework developed in go language.
