@@ -6,10 +6,12 @@ import (
 	"github.com/karldoenitz/Tigo/logger"
 )
 
+// Demo HelloHandler
 type HelloHandler struct {
 	TigoWeb.BaseHandler
 }
 
+// Http Get
 func (helloHandler *HelloHandler) Get() {
 	helloHandler.DumpHttpRequestMsg(logger.TraceLevel)
 	value := helloHandler.GetParameter("hello").ToString()
@@ -32,18 +34,22 @@ func (helloHandler *HelloHandler) Get() {
 	helloHandler.ResponseAsHtml("<p1 style='color: red'>Hello Go!</p1>")
 }
 
+// Demo RedirectHandler
 type RedirectHandler struct {
 	TigoWeb.BaseHandler
 }
 
+// Http Get
 func (redirectHandler *RedirectHandler) Get() {
 	redirectHandler.Redirect("http://www.tencent.com")
 }
 
+// Demo TestCookieHandler
 type TestCookieHandler struct {
 	TigoWeb.BaseHandler
 }
 
+// Http Get
 func (testCookieHandler *TestCookieHandler) Get() {
 	testCookieHandler.SetSecureCookie("name", "value")
 	cookie := testCookieHandler.GetSecureCookie("name")

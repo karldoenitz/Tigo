@@ -1,4 +1,4 @@
-// Copyright 2018 The Tigo Authors. All rights reserved.
+// Package logger Copyright 2018 The Tigo Authors. All rights reserved.
 package logger
 
 import (

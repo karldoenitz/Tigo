@@ -5,10 +5,12 @@ import (
 	"github.com/karldoenitz/Tigo/TigoWeb"
 )
 
+// Demo TestHandler
 type TestHandler struct {
 	TigoWeb.BaseHandler
 }
 
+// Http Post
 func (testHandler *TestHandler) Post() {
 	params := &struct {
 		Name   string `json:"name"`
