@@ -14,21 +14,21 @@ import (
 
 // Handler的基础类，开发者开发的handler继承此类
 type BaseHandler struct {
-	ResponseWriter  http.ResponseWriter
+	ResponseWriter http.ResponseWriter
 	Request        *http.Request
-	JsonParams      map[string] interface{}
-	ctxValMap       map[string] interface{}
+	JsonParams     map[string]interface{}
+	ctxValMap      map[string]interface{}
 }
 
 // 初始化Handler的方法
-func (baseHandler *BaseHandler)InitHandler(responseWriter http.ResponseWriter, request *http.Request) {
+func (baseHandler *BaseHandler) InitHandler(responseWriter http.ResponseWriter, request *http.Request) {
 	baseHandler.Request = request
 	baseHandler.ResponseWriter = responseWriter
 	baseHandler.Request.ParseForm()
 }
 
 // 解析json中的值
-func (baseHandler *BaseHandler)PassJson() {
+func (baseHandler *BaseHandler) PassJson() {
 	if baseHandler.GetHeader("Content-Type") == "application/json" {
 		jsonData, _ := ioutil.ReadAll(baseHandler.Request.Body)
 		defer baseHandler.Request.Body.Close()
@@ -41,7 +41,7 @@ func (baseHandler *BaseHandler)PassJson() {
 
 // 将对象转化为Json字符串，转换失败则返回空字符串。
 // 传入参数Response为一个interface，必须有成员函数Print。
-func (baseHandler *BaseHandler)ToJson(response interface{}) (result string) {
+func (baseHandler *BaseHandler) ToJson(response interface{}) (result string) {
 	// 将该对象转换为byte字节数组
 	jsonResult, jsonErr := json.Marshal(response)
 	if jsonErr != nil {
@@ -52,7 +52,7 @@ func (baseHandler *BaseHandler)ToJson(response interface{}) (result string) {
 }
 
 // 向客户端响应一个Json结果
-func (baseHandler *BaseHandler)ResponseAsJson(response interface{}) {
+func (baseHandler *BaseHandler) ResponseAsJson(response interface{}) {
 	// 将对象转换为Json字符串
 	jsonResult := baseHandler.ToJson(response)
 	// 设置http报文头内的Content-Type
@@ -61,18 +61,18 @@ func (baseHandler *BaseHandler)ResponseAsJson(response interface{}) {
 }
 
 // 向客户端响应一个Text结果
-func (baseHandler *BaseHandler)ResponseAsText(result string) {
+func (baseHandler *BaseHandler) ResponseAsText(result string) {
 	fmt.Fprintf(baseHandler.ResponseWriter, result)
 }
 
 // 向客户端响应一个html结果
-func (baseHandler *BaseHandler)ResponseAsHtml(result string) {
+func (baseHandler *BaseHandler) ResponseAsHtml(result string) {
 	baseHandler.ResponseWriter.Header().Set("Content-Type", "text/html")
 	fmt.Fprintf(baseHandler.ResponseWriter, result)
 }
 
 // 向客户端响应一个结果
-func (baseHandler *BaseHandler)Response(result ...interface{}) {
+func (baseHandler *BaseHandler) Response(result ...interface{}) {
 	fmt.Fprintf(baseHandler.ResponseWriter, "%v", result)
 }
 
@@ -80,7 +80,7 @@ func (baseHandler *BaseHandler)Response(result ...interface{}) {
 // 参数解析如下：
 //   - data：表示传入的待渲染的数据
 //   - templates：表示模板文件的路径，接受多个模板文件
-func (baseHandler *BaseHandler)Render(data interface{}, templates ...string) {
+func (baseHandler *BaseHandler) Render(data interface{}, templates ...string) {
 	templateBasePath := globalConfig.Template
 	var templatePath []string
 	for _, value := range templates {
@@ -92,14 +92,14 @@ func (baseHandler *BaseHandler)Render(data interface{}, templates ...string) {
 }
 
 // 向客户端永久重定向一个地址
-func (baseHandler *BaseHandler)RedirectPermanently(url string) {
+func (baseHandler *BaseHandler) RedirectPermanently(url string) {
 	baseHandler.ResponseWriter.WriteHeader(301)
 	baseHandler.SetHeader("Location", url)
 	fmt.Fprintf(baseHandler.ResponseWriter, "")
 }
 
 // 向客户端暂时重定向一个地址
-func (baseHandler *BaseHandler)Redirect(url string, expire ...time.Time)  {
+func (baseHandler *BaseHandler) Redirect(url string, expire ...time.Time) {
 	baseHandler.SetHeader("Location", url)
 	baseHandler.ResponseWriter.WriteHeader(302)
 	if len(expire) > 0 {
@@ -113,19 +113,19 @@ func (baseHandler *BaseHandler)Redirect(url string, expire ...time.Time)  {
 /////////////////////////////////////////////////////cookie/////////////////////////////////////////////////////////////
 
 // 设置cookie
-func (baseHandler *BaseHandler)SetCookie(name string, value string) {
-	cookie := http.Cookie{Name:name, Value:value}
+func (baseHandler *BaseHandler) SetCookie(name string, value string) {
+	cookie := http.Cookie{Name: name, Value: value}
 	http.SetCookie(baseHandler.ResponseWriter, &cookie)
 }
 
 // 设置高级cookie选项
-func (baseHandler *BaseHandler)SetCookieObject(cookie Cookie) {
+func (baseHandler *BaseHandler) SetCookieObject(cookie Cookie) {
 	responseCookie := cookie.ToHttpCookie()
 	http.SetCookie(baseHandler.ResponseWriter, &responseCookie)
 }
 
 // 设置加密cookie
-func (baseHandler *BaseHandler)SetSecureCookie(name string, value string, key ...string) {
+func (baseHandler *BaseHandler) SetSecureCookie(name string, value string, key ...string) {
 	securityKey := ""
 	if len(key) > 0 {
 		securityKey = key[0]
@@ -142,7 +142,7 @@ func (baseHandler *BaseHandler)SetSecureCookie(name string, value string, key ..
 }
 
 // 获取cookie值，如果获取失败则返回空字符串
-func (baseHandler *BaseHandler)GetCookie(name string) (value string) {
+func (baseHandler *BaseHandler) GetCookie(name string) (value string) {
 	cookie, err := baseHandler.Request.Cookie(name)
 	if err != nil {
 		return ""
@@ -152,7 +152,7 @@ func (baseHandler *BaseHandler)GetCookie(name string) (value string) {
 }
 
 // 获取加密cookie值，如果获取失败则返回空
-func (baseHandler *BaseHandler)GetSecureCookie(name string, key ...string) (value string) {
+func (baseHandler *BaseHandler) GetSecureCookie(name string, key ...string) (value string) {
 	securityKey := ""
 	if len(key) > 0 {
 		securityKey = key[0]
@@ -175,7 +175,7 @@ func (baseHandler *BaseHandler)GetSecureCookie(name string, key ...string) (valu
 //   - 无参数：默认cookieName为空字符串
 //   - 一个参数：传入的参数为cookieName
 //   - 多个参数：传入的第一个参数为cookieName，第二个参数为加密/解密cookie所用的Key，此时认为cookie是需要进行加密/解密处理的
-func (baseHandler *BaseHandler)GetCookieObject(name ...string) (Cookie, error) {
+func (baseHandler *BaseHandler) GetCookieObject(name ...string) (Cookie, error) {
 	cookie := Cookie{}
 	var cookieName, key string
 	length := len(name)
@@ -200,16 +200,16 @@ func (baseHandler *BaseHandler)GetCookieObject(name ...string) (Cookie, error) {
 }
 
 // 清除当前path下的指定的cookie
-func (baseHandler *BaseHandler)ClearCookie(name string) {
+func (baseHandler *BaseHandler) ClearCookie(name string) {
 	cookie := Cookie{
-		Name: name,
+		Name:    name,
 		Expires: time.Now(),
 	}
 	baseHandler.SetCookieObject(cookie)
 }
 
 // 清除当前path下所有的cookie
-func (baseHandler *BaseHandler)ClearAllCookie() {
+func (baseHandler *BaseHandler) ClearAllCookie() {
 	cookies := baseHandler.Request.Cookies()
 	for _, cookie := range cookies {
 		baseHandler.ClearCookie(cookie.Name)
@@ -219,20 +219,20 @@ func (baseHandler *BaseHandler)ClearAllCookie() {
 /////////////////////////////////////////////////////input//////////////////////////////////////////////////////////////
 
 // 获取header
-func (baseHandler *BaseHandler)GetHeader(name string) (value string) {
+func (baseHandler *BaseHandler) GetHeader(name string) (value string) {
 	value = baseHandler.Request.Header.Get(name)
 	return value
 }
 
 // 设置header
-func (baseHandler *BaseHandler)SetHeader(name string, value string) {
+func (baseHandler *BaseHandler) SetHeader(name string, value string) {
 	baseHandler.ResponseWriter.Header().Set(name, value)
 }
 
 // 根据key获取对应的参数值
 //   - 如果Content-Type是application/json，则直接从http的body中解析出key对应的value
 //   - 否则，根据key直接获取value
-func (baseHandler *BaseHandler)GetParameter(key string) (value *ReqParams) {
+func (baseHandler *BaseHandler) GetParameter(key string) (value *ReqParams) {
 	jsonValue := &ReqParams{}
 	if baseHandler.GetHeader("Content-Type") == "application/json" {
 		if value, ok := baseHandler.JsonParams[key]; ok {
@@ -247,7 +247,7 @@ func (baseHandler *BaseHandler)GetParameter(key string) (value *ReqParams) {
 }
 
 // 根据key获取对应的参数值，解析json数据，返回对应的value
-func (baseHandler *BaseHandler)GetJsonValue(key string) (interface{}) {
+func (baseHandler *BaseHandler) GetJsonValue(key string) (interface{}) {
 	var mapResult map[string]interface{}
 	jsonData, _ := ioutil.ReadAll(baseHandler.Request.Body)
 	baseHandler.Request.Body.Close()
@@ -262,48 +262,48 @@ func (baseHandler *BaseHandler)GetJsonValue(key string) (interface{}) {
 //////////////////////////////////////////////////HTTP Method///////////////////////////////////////////////////////////
 
 // 请求方法不合法
-func (baseHandler *BaseHandler)methodNotAllowed() {
+func (baseHandler *BaseHandler) methodNotAllowed() {
 	baseHandler.ResponseWriter.WriteHeader(405)
 }
 
-func (baseHandler *BaseHandler)Get() {
+func (baseHandler *BaseHandler) Get() {
 	baseHandler.methodNotAllowed()
 }
 
-func (baseHandler *BaseHandler)Put() {
+func (baseHandler *BaseHandler) Put() {
 	baseHandler.methodNotAllowed()
 }
 
-func (baseHandler *BaseHandler)Post() {
+func (baseHandler *BaseHandler) Post() {
 	baseHandler.methodNotAllowed()
 }
 
-func (baseHandler *BaseHandler)Connect() {
+func (baseHandler *BaseHandler) Connect() {
 	baseHandler.methodNotAllowed()
 }
 
-func (baseHandler *BaseHandler)Trace() {
+func (baseHandler *BaseHandler) Trace() {
 	baseHandler.methodNotAllowed()
 }
 
-func (baseHandler *BaseHandler)Head() {
+func (baseHandler *BaseHandler) Head() {
 }
 
-func (baseHandler *BaseHandler)Delete() {
+func (baseHandler *BaseHandler) Delete() {
 	baseHandler.methodNotAllowed()
 }
 
-func (baseHandler *BaseHandler)Options() {
+func (baseHandler *BaseHandler) Options() {
 	baseHandler.methodNotAllowed()
 }
 
 //////////////////////////////////////////////////Context Method////////////////////////////////////////////////////////
 
-func (baseHandler *BaseHandler)SetCtxVal(key string, val interface{}) {
+func (baseHandler *BaseHandler) SetCtxVal(key string, val interface{}) {
 	baseHandler.ctxValMap[key] = val
 }
 
-func (baseHandler *BaseHandler)GetCtxVal(key string) interface{} {
+func (baseHandler *BaseHandler) GetCtxVal(key string) interface{} {
 	if val, isExisted := baseHandler.ctxValMap[key]; isExisted {
 		return val
 	} else {
@@ -314,7 +314,7 @@ func (baseHandler *BaseHandler)GetCtxVal(key string) interface{} {
 //////////////////////////////////////////////////http message dump/////////////////////////////////////////////////////
 
 // 获取http请求报文
-func (baseHandler *BaseHandler)getHttpRequestMsg() string {
+func (baseHandler *BaseHandler) getHttpRequestMsg() string {
 	req, err := httputil.DumpRequest(baseHandler.Request, true)
 	if err != nil {
 		return err.Error()
@@ -328,7 +328,7 @@ func (baseHandler *BaseHandler)getHttpRequestMsg() string {
 //  - 3: 将http报文输出到warning级别日志中
 //  - 4: 将http报文输出到error级别日志中
 //  - others: 将http报文输出到控制台
-func (baseHandler *BaseHandler)DumpHttpRequestMsg(logLevel int) {
+func (baseHandler *BaseHandler) DumpHttpRequestMsg(logLevel int) {
 	reqMsg := baseHandler.getHttpRequestMsg()
 	switch logLevel {
 	case logger.TraceLevel:

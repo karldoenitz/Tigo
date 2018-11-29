@@ -71,14 +71,14 @@ type Response struct {
 	Content []byte
 }
 
-func (response *Response)ToContentStr() string {
+func (response *Response) ToContentStr() string {
 	return string(response.Content)
 }
 
 // 发送指定的Request请求
 func Request(method string, requestUrl string, postParams map[string]interface{}, headers ...map[string]string) (*Response, error) {
 	client := &HttpClient{http.DefaultClient}
-	var requestHeaders map[string] string
+	var requestHeaders map[string]string
 	if len(headers) > 0 {
 		requestHeaders = headers[0]
 	}
@@ -88,7 +88,7 @@ func Request(method string, requestUrl string, postParams map[string]interface{}
 	contentType := requestHeaders["Content-Type"]
 	var response *Response
 	var err error
-	switch  {
+	switch {
 	case strings.HasPrefix(contentType, "application/x-www-form-urlencoded"):
 		postValues := url.Values{}
 		for key, value := range postParams {
@@ -120,7 +120,7 @@ func Request(method string, requestUrl string, postParams map[string]interface{}
 // 向指定url发送get请求
 func Get(requestUrl string, headers ...map[string]string) (*Response, error) {
 	client := &HttpClient{http.DefaultClient}
-	var requestHeaders map[string] string
+	var requestHeaders map[string]string
 	if len(headers) > 0 {
 		requestHeaders = headers[0]
 	}
@@ -150,7 +150,7 @@ func Patch(requestUrl string, postParams map[string]interface{}, headers ...map[
 // 向指定url发送head请求
 func Head(requestUrl string, headers ...map[string]string) (*Response, error) {
 	client := &HttpClient{http.DefaultClient}
-	var requestHeaders map[string] string
+	var requestHeaders map[string]string
 	if len(headers) > 0 {
 		requestHeaders = headers[0]
 	}
@@ -165,7 +165,7 @@ func Head(requestUrl string, headers ...map[string]string) (*Response, error) {
 // 向指定url发送options请求
 func Options(requestUrl string, headers ...map[string]string) (*Response, error) {
 	client := &HttpClient{http.DefaultClient}
-	var requestHeaders map[string] string
+	var requestHeaders map[string]string
 	if len(headers) > 0 {
 		requestHeaders = headers[0]
 	}
@@ -180,7 +180,7 @@ func Options(requestUrl string, headers ...map[string]string) (*Response, error)
 // 向指定url发送delete请求
 func Delete(requestUrl string, headers ...map[string]string) (*Response, error) {
 	client := &HttpClient{http.DefaultClient}
-	var requestHeaders map[string] string
+	var requestHeaders map[string]string
 	if len(headers) > 0 {
 		requestHeaders = headers[0]
 	}

@@ -17,15 +17,15 @@ import (
 ////////////////////////////////////////////////////常量/////////////////////////////////////////////////////////////////
 
 var (
-	Trace        *TiLog
-	Info         *TiLog
-	Warning      *TiLog
-	Error        *TiLog
+	Trace   *TiLog
+	Info    *TiLog
+	Warning *TiLog
+	Error   *TiLog
 )
 
 const (
 	TraceLevel int = iota + 1
-    InfoLevel
+	InfoLevel
 	WarningLevel
 	ErrorLevel
 )
@@ -34,7 +34,7 @@ var dateFormatter = ".2006-01-02_15:04:05"
 
 var logPath = ""
 
-var formatter = map[int] string {
+var formatter = map[int]string{
 	TraceLevel:   "\x1b[32m %s \x1b[0m",
 	InfoLevel:    "\x1b[34m %s \x1b[0m",
 	WarningLevel: "\x1b[33m %s \x1b[0m",
@@ -50,11 +50,11 @@ var formatter = map[int] string {
 //   - Error    错误
 // discard: 丢弃，stdout: 终端输出，文件路径表示log具体输出的位置
 type LogLevel struct {
-	Trace    string   `json:"trace"`
-	Info     string   `json:"info"`
-	Warning  string   `json:"warning"`
-	Error    string   `json:"error"`
-	TimeRoll string   `json:"time_roll"`
+	Trace    string `json:"trace"`
+	Info     string `json:"info"`
+	Warning  string `json:"warning"`
+	Error    string `json:"error"`
+	TimeRoll string `json:"time_roll"`
 }
 
 type TiLog struct {
@@ -83,7 +83,7 @@ func (l *TiLog) Println(v ...interface{}) {
 ////////////////////////////////////////////////////初始化logger的方法集//////////////////////////////////////////////////
 
 // log文件路径与文件对象的关系映射
-var logFileMapping = map[string] *os.File{}
+var logFileMapping = map[string]*os.File{}
 
 // 更新log文件路径与log文件对象的映射关系
 func updateLogMapping(filePath string) {
@@ -169,7 +169,7 @@ func InitLoggerWithConfigFile(filePath string) {
 //   - Info     "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
 //   - Warning  "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
 //   - Error    "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
-func InitLoggerWithObject(logLevel LogLevel)  {
+func InitLoggerWithObject(logLevel LogLevel) {
 	go startTimer(sliceLog, logLevel)
 	updateLogMapping(logLevel.Trace)
 	updateLogMapping(logLevel.Info)
@@ -198,7 +198,7 @@ func InitTrace(level string) {
 }
 
 // 初始化Info，默认情况下输出到终端
-func InitInfo(level string)  {
+func InitInfo(level string) {
 	Info.Level = InfoLevel
 	switch {
 	case level == "" || level == "discard":
@@ -215,7 +215,7 @@ func InitInfo(level string)  {
 }
 
 // 初始化Warning，默认情况下输出到终端
-func InitWarning(level string)  {
+func InitWarning(level string) {
 	Warning.Level = WarningLevel
 	switch {
 	case level == "" || level == "discard":
@@ -232,7 +232,7 @@ func InitWarning(level string)  {
 }
 
 // 初始化Warning，默认情况下输出到文件
-func InitError(level string)  {
+func InitError(level string) {
 	Error.Level = ErrorLevel
 	switch {
 	case level == "" || level == "discard":
@@ -274,13 +274,13 @@ func startTimer(F func(LogLevel, time.Time), logLevel LogLevel) {
 //   - M*intN: 每N分钟切分一次日志
 //   - S*intN: 每N秒钟切分一次日志
 func getTimeRollingFrequency(logLevel LogLevel) time.Duration {
-	rollingMap := map[string] time.Duration {
+	rollingMap := map[string]time.Duration{
 		"D": time.Hour * 24,
 		"H": time.Hour,
 		"M": time.Minute,
 		"S": time.Second,
 	}
-	dateMap := map[string] string {
+	dateMap := map[string]string{
 		"D": ".2006-01-02",
 		"H": ".2006-01-02_15",
 		"M": ".2006-01-02_15:04",
@@ -308,7 +308,7 @@ func getTimeRollingFrequency(logLevel LogLevel) time.Duration {
 }
 
 // 日志切分函数
-func sliceLog(logLevel LogLevel, current time.Time)  {
+func sliceLog(logLevel LogLevel, current time.Time) {
 	// 获取上一个切分节点的日志对象
 	TraceLogFile, isTraceExisted := logFileMapping[logLevel.Trace]
 	InfoLogFile, isInfoExisted := logFileMapping[logLevel.Info]

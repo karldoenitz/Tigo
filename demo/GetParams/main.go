@@ -11,9 +11,9 @@ type TestHandler struct {
 
 func (testHandler *TestHandler) Post() {
 	params := &struct {
-		Name string `json:"name"`
-		Age int `json:"age"`
-		Gender int `json:"gender"`
+		Name   string `json:"name"`
+		Age    int    `json:"age"`
+		Gender int    `json:"gender"`
 	}{}
 	paramOne := testHandler.GetParameter("one").ToBool(false)
 	paramTwo := testHandler.GetParameter("two").ToFloat64()
@@ -27,15 +27,15 @@ func (testHandler *TestHandler) Post() {
 	}
 }
 
-var url = map[string] interface{} {
+var url = map[string]interface{}{
 	"/test": &TestHandler{},
 }
 
 func main() {
 	application := TigoWeb.Application{
-		IPAddress:"0.0.0.0",
-		Port:8080,
-		UrlPattern:url,
+		IPAddress:  "0.0.0.0",
+		Port:       8080,
+		UrlPattern: url,
 	}
 	application.Run()
 }

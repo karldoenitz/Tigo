@@ -18,37 +18,37 @@ import (
 
 // 自定义Cookie结构体，可参看http.Cookie
 type Cookie struct {
-	Name        string
-	Value       string
+	Name  string
+	Value string
 
-	IsSecurity  bool      // 是否对cookie值进行加密
-	SecurityKey string    // 加密cookie用到的key
+	IsSecurity  bool   // 是否对cookie值进行加密
+	SecurityKey string // 加密cookie用到的key
 
-	Path        string    // 可选
-	Domain      string    // 可选
-	Expires     time.Time // 可选
-	RawExpires  string    // 只有在读取Cookie时有效
+	Path       string    // 可选
+	Domain     string    // 可选
+	Expires    time.Time // 可选
+	RawExpires string    // 只有在读取Cookie时有效
 
 	// MaxAge=0 表示未指定“Max-Age”属性
 	// MaxAge<0 表示现在删除cookie，相当于'Max-Age：0'
 	// MaxAge>0 表示Max-Age属性存在并以秒为单位给出
-	MaxAge      int
-	Secure      bool
-	HttpOnly    bool
-	Raw         string
-	Unparsed  []string    // 原始文本中未解析的属性值
+	MaxAge   int
+	Secure   bool
+	HttpOnly bool
+	Raw      string
+	Unparsed []string // 原始文本中未解析的属性值
 }
 
 // 获取cookie加密值
 //   - IsSecurity如果设置为false，则返回原始值
 //   - IsSecurity如果设置为true，则返回加密后的值
 // 如果加密失败，则抛出异常
-func (cookie *Cookie)GetCookieEncodeValue()(result string) {
+func (cookie *Cookie) GetCookieEncodeValue() (result string) {
 	if !cookie.IsSecurity {
 		return cookie.Value
 	}
 	value := []byte(cookie.Value)
-	key   := []byte(cookie.SecurityKey)
+	key := []byte(cookie.SecurityKey)
 	result = Encrypt(value, key)
 	return result
 }
@@ -57,19 +57,19 @@ func (cookie *Cookie)GetCookieEncodeValue()(result string) {
 //   - IsSecurity如果设置为false，则返回原始值
 //   - IsSecurity如果设置为true，则返回加密后的值
 // 如果解密失败，则抛出异常
-func (cookie *Cookie)GetCookieDecodeValue()(result string) {
+func (cookie *Cookie) GetCookieDecodeValue() (result string) {
 	if !cookie.IsSecurity {
 		return cookie.Value
 	}
 	value := []byte(cookie.Value)
-	key   := []byte(cookie.SecurityKey)
+	key := []byte(cookie.SecurityKey)
 	securityValue := Decrypt(value, key)
 	result = string(securityValue)
 	return result
 }
 
 // 转换为http/Cookie对象
-func (cookie *Cookie)ToHttpCookie()(http.Cookie) {
+func (cookie *Cookie) ToHttpCookie() (http.Cookie) {
 	httpCookie := http.Cookie{
 		Name:       cookie.Name,
 		Value:      cookie.GetCookieEncodeValue(),
@@ -87,24 +87,24 @@ func (cookie *Cookie)ToHttpCookie()(http.Cookie) {
 }
 
 // 将http/Cookie转换为Cookie
-func (cookie *Cookie)ConvertFromHttpCookie(httpCookie http.Cookie) {
-	cookie.Name         = httpCookie.Name
-	cookie.Value        = httpCookie.Value
+func (cookie *Cookie) ConvertFromHttpCookie(httpCookie http.Cookie) {
+	cookie.Name = httpCookie.Name
+	cookie.Value = httpCookie.Value
 
-	cookie.Path         = httpCookie.Path
-	cookie.Domain       = httpCookie.Domain
-	cookie.Expires      = httpCookie.Expires
-	cookie.RawExpires   = httpCookie.RawExpires
+	cookie.Path = httpCookie.Path
+	cookie.Domain = httpCookie.Domain
+	cookie.Expires = httpCookie.Expires
+	cookie.RawExpires = httpCookie.RawExpires
 
-	cookie.MaxAge       = httpCookie.MaxAge
-	cookie.Secure       = httpCookie.Secure
-	cookie.HttpOnly     = httpCookie.HttpOnly
-	cookie.Raw          = httpCookie.Raw
-	cookie.Unparsed     = httpCookie.Unparsed
+	cookie.MaxAge = httpCookie.MaxAge
+	cookie.Secure = httpCookie.Secure
+	cookie.HttpOnly = httpCookie.HttpOnly
+	cookie.Raw = httpCookie.Raw
+	cookie.Unparsed = httpCookie.Unparsed
 }
 
 // 为Cookie设置SecurityKey
-func (cookie *Cookie)SetSecurityKey(key string) {
+func (cookie *Cookie) SetSecurityKey(key string) {
 	cookie.SecurityKey = key
 	cookie.IsSecurity = true
 }
@@ -113,16 +113,15 @@ func (cookie *Cookie)SetSecurityKey(key string) {
 
 // 定义BaseResponse类，其他Json数据类继承此类，用于BaseHandler.ResponseAsJson的参数。
 type BaseResponse struct {
-
 }
 
 // 打印Json数据
-func (baseResponse *BaseResponse)Print() {
+func (baseResponse *BaseResponse) Print() {
 	fmt.Println(baseResponse.ToJson())
 }
 
 // 序列化为Json字符串
-func (baseResponse *BaseResponse)ToJson() (string) {
+func (baseResponse *BaseResponse) ToJson() (string) {
 	// 将该对象转换为byte字节数组
 	jsonResult, jsonErr := json.Marshal(baseResponse)
 	if jsonErr != nil {
@@ -136,17 +135,17 @@ func (baseResponse *BaseResponse)ToJson() (string) {
 
 // 全局配置对象
 type GlobalConfig struct {
-	IP       string           `json:"ip"`        // IP地址
-	Port     int              `json:"port"`      // 端口
-	Cert     string           `json:"cert"`      // https证书路径
-	CertKey  string           `json:"cert_key"`  // https密钥路径
-	Cookie   string           `json:"cookie"`    // cookie加密解密的密钥
-	Template string           `json:"template"`  // 模板文件所在文件夹的路径
-	Log      logger.LogLevel  `json:"log"`       // log相关属性配置
+	IP       string          `json:"ip"`       // IP地址
+	Port     int             `json:"port"`     // 端口
+	Cert     string          `json:"cert"`     // https证书路径
+	CertKey  string          `json:"cert_key"` // https密钥路径
+	Cookie   string          `json:"cookie"`   // cookie加密解密的密钥
+	Template string          `json:"template"` // 模板文件所在文件夹的路径
+	Log      logger.LogLevel `json:"log"`      // log相关属性配置
 }
 
 // 根据配置文件初始化全局配置变量
-func (globalConfig *GlobalConfig)Init(configPath string) {
+func (globalConfig *GlobalConfig) Init(configPath string) {
 	if configPath == "" {
 		return
 	}
@@ -159,7 +158,7 @@ func (globalConfig *GlobalConfig)Init(configPath string) {
 }
 
 // 根据yaml文件进行配置
-func (globalConfig *GlobalConfig)initWithYaml(configPath string) {
+func (globalConfig *GlobalConfig) initWithYaml(configPath string) {
 	raw, err := ioutil.ReadFile(configPath)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -174,7 +173,7 @@ func (globalConfig *GlobalConfig)initWithYaml(configPath string) {
 }
 
 // 根据json文件进行配置
-func (globalConfig *GlobalConfig)initWithJson(configPath string) {
+func (globalConfig *GlobalConfig) initWithJson(configPath string) {
 	raw, err := ioutil.ReadFile(configPath)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -195,7 +194,7 @@ type ReqParams struct {
 }
 
 // 将json中解析出的参数格式化为string类型，失败则返回空字符串
-func (jsonParam *ReqParams)ToString() string {
+func (jsonParam *ReqParams) ToString() string {
 	valueType := reflect.TypeOf(jsonParam.Value).Name()
 	switch valueType {
 	case "string":
@@ -203,12 +202,14 @@ func (jsonParam *ReqParams)ToString() string {
 	case "int":
 		return strconv.Itoa(jsonParam.Value.(int))
 	case "int64":
-		return strconv.FormatInt(jsonParam.Value.(int64),10)
+		return strconv.FormatInt(jsonParam.Value.(int64), 10)
 	case "float64":
-		return strconv.FormatFloat(jsonParam.Value.(float64),'E',-1,32)
+		return strconv.FormatFloat(jsonParam.Value.(float64), 'E', -1, 32)
 	case "bool":
 		val := jsonParam.Value.(bool)
-		if val { return "true" }
+		if val {
+			return "true"
+		}
 		return "false"
 	}
 	logger.Warning.Println("format to string failed")
@@ -216,7 +217,7 @@ func (jsonParam *ReqParams)ToString() string {
 }
 
 // 将json中的参数值转换为bool
-func (jsonParam *ReqParams)ToBool(defaultValue ...bool) bool {
+func (jsonParam *ReqParams) ToBool(defaultValue ...bool) bool {
 	if jsonParam.Value == nil {
 		if len(defaultValue) > 0 {
 			return defaultValue[0]
@@ -227,19 +228,27 @@ func (jsonParam *ReqParams)ToBool(defaultValue ...bool) bool {
 	switch valueType {
 	case "string":
 		val := jsonParam.Value.(string)
-		if strings.ToLower(val) == "true" { return true }
+		if strings.ToLower(val) == "true" {
+			return true
+		}
 		return false
 	case "int":
 		val := jsonParam.Value.(int)
-		if val > 0 { return true }
+		if val > 0 {
+			return true
+		}
 		return false
 	case "int64":
 		val := jsonParam.Value.(int64)
-		if val > 0 { return true }
+		if val > 0 {
+			return true
+		}
 		return false
 	case "float64":
 		val := jsonParam.Value.(float64)
-		if val > 0 { return true }
+		if val > 0 {
+			return true
+		}
 		return false
 	}
 	result, success := jsonParam.Value.(bool)
@@ -250,7 +259,7 @@ func (jsonParam *ReqParams)ToBool(defaultValue ...bool) bool {
 }
 
 // 将json中解析出来的参数格式化为int64类型，失败则返回0
-func (jsonParam *ReqParams)ToInt64() int64 {
+func (jsonParam *ReqParams) ToInt64() int64 {
 	valueType := reflect.TypeOf(jsonParam.Value).Name()
 	switch valueType {
 	case "string":
@@ -264,7 +273,9 @@ func (jsonParam *ReqParams)ToInt64() int64 {
 		return int64(jsonParam.Value.(float64))
 	case "bool":
 		val := jsonParam.Value.(bool)
-		if val { return 1 }
+		if val {
+			return 1
+		}
 		return 0
 	}
 	result, success := jsonParam.Value.(int64)
@@ -276,7 +287,7 @@ func (jsonParam *ReqParams)ToInt64() int64 {
 }
 
 // 将json中解析出的参数格式化为float64类型，失败则返回0
-func (jsonParam *ReqParams)ToFloat64() float64 {
+func (jsonParam *ReqParams) ToFloat64() float64 {
 	valueType := reflect.TypeOf(jsonParam.Value).Name()
 	switch valueType {
 	case "string":
@@ -288,7 +299,9 @@ func (jsonParam *ReqParams)ToFloat64() float64 {
 		return val
 	case "bool":
 		val := jsonParam.Value.(bool)
-		if val { return 1 }
+		if val {
+			return 1
+		}
 		return 0
 	}
 	result, success := jsonParam.Value.(float64)
@@ -300,7 +313,7 @@ func (jsonParam *ReqParams)ToFloat64() float64 {
 }
 
 // 将json中的参数值转换为目标对象
-func (jsonParam *ReqParams)To(result interface{}) {
+func (jsonParam *ReqParams) To(result interface{}) {
 	if jsonParam.Value == nil {
 		return
 	}

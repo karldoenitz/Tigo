@@ -10,7 +10,7 @@ import (
 
 // URL路由中间件
 type UrlPatternMidWare struct {
-	Handler interface{}
+	Handler    interface{}
 	requestUrl string
 }
 
@@ -20,7 +20,7 @@ type UrlPatternMidWare struct {
 //  - 3、进行HTTP请求预处理，包括判断请求方式是否合法等；
 //  - 4、调用handler中的功能方法；
 //  - 5、进行HTTP请求结束处理。
-func (urlPatternMidWare UrlPatternMidWare)Handle(responseWriter http.ResponseWriter, request *http.Request) {
+func (urlPatternMidWare UrlPatternMidWare) Handle(responseWriter http.ResponseWriter, request *http.Request) {
 	requestStart := time.Now().Nanosecond() / 1e6
 	// 加载handler
 	handler := reflect.ValueOf(urlPatternMidWare.Handler)
@@ -48,21 +48,23 @@ func (urlPatternMidWare UrlPatternMidWare)Handle(responseWriter http.ResponseWri
 
 // URL路由，此处存储URL映射。
 type UrlPattern struct {
-	UrlMapping map[string] interface{}
+	UrlMapping map[string]interface{}
 }
 
 // 向http服务挂载单个handler，注意：
 //   - handler必须有一个Handle(http.ResponseWriter, *http.Request)函数
-func (urlPattern *UrlPattern)AppendUrlPattern(uri string, v interface{Handle(http.ResponseWriter, *http.Request)}) {
+func (urlPattern *UrlPattern) AppendUrlPattern(uri string, v interface {
+	Handle(http.ResponseWriter, *http.Request)
+}) {
 	http.HandleFunc(uri, v.Handle)
 }
 
 // 初始化url映射，遍历UrlMapping，将handler与对应的URL依次挂载到http服务上
-func (urlPattern *UrlPattern)Init() {
+func (urlPattern *UrlPattern) Init() {
 	for key, value := range urlPattern.UrlMapping {
 		urlPatternMidWare := UrlPatternMidWare{
-			Handler:value,
-			requestUrl:key,
+			Handler:    value,
+			requestUrl: key,
 		}
 		urlPattern.AppendUrlPattern(key, &urlPatternMidWare)
 	}

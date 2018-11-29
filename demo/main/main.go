@@ -10,7 +10,7 @@ type HelloHandler struct {
 	TigoWeb.BaseHandler
 }
 
-func (helloHandler *HelloHandler)Get() {
+func (helloHandler *HelloHandler) Get() {
 	helloHandler.DumpHttpRequestMsg(logger.TraceLevel)
 	value := helloHandler.GetParameter("hello").ToString()
 	fmt.Println(value)
@@ -36,7 +36,7 @@ type RedirectHandler struct {
 	TigoWeb.BaseHandler
 }
 
-func (redirectHandler *RedirectHandler)Get() {
+func (redirectHandler *RedirectHandler) Get() {
 	redirectHandler.Redirect("http://www.tencent.com")
 }
 
@@ -44,7 +44,7 @@ type TestCookieHandler struct {
 	TigoWeb.BaseHandler
 }
 
-func (testCookieHandler *TestCookieHandler)Get() {
+func (testCookieHandler *TestCookieHandler) Get() {
 	testCookieHandler.SetSecureCookie("name", "value")
 	cookie := testCookieHandler.GetSecureCookie("name")
 	fmt.Println(cookie)
@@ -57,7 +57,7 @@ func (testCookieHandler *TestCookieHandler)Get() {
 
 var urls = map[string]interface{}{
 	"/hello-world": &HelloHandler{},
-	"/redirect"   : &RedirectHandler{},
+	"/redirect":    &RedirectHandler{},
 	"/test-cookie": &TestCookieHandler{},
 }
 
