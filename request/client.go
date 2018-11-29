@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-// 自定义HTTPClient
+// HttpClient 是自定义HTTPClient
 type HttpClient struct {
 	*http.Client
 }
@@ -65,17 +65,18 @@ func (client HttpClient) request(method, uri string, headers map[string]string, 
 	return
 }
 
-// 自定义Http的Response
+// Response 自定义Http的Response
 type Response struct {
 	*http.Response
 	Content []byte
 }
 
+// ToContentStr 将Response实例的Content转换为字符串
 func (response *Response) ToContentStr() string {
 	return string(response.Content)
 }
 
-// 发送指定的Request请求
+// Request 发送指定的Request请求
 func Request(method string, requestUrl string, postParams map[string]interface{}, headers ...map[string]string) (*Response, error) {
 	client := &HttpClient{http.DefaultClient}
 	var requestHeaders map[string]string
@@ -117,7 +118,7 @@ func Request(method string, requestUrl string, postParams map[string]interface{}
 	return response, nil
 }
 
-// 向指定url发送get请求
+// Get 向指定url发送get请求
 func Get(requestUrl string, headers ...map[string]string) (*Response, error) {
 	client := &HttpClient{http.DefaultClient}
 	var requestHeaders map[string]string
@@ -132,22 +133,22 @@ func Get(requestUrl string, headers ...map[string]string) (*Response, error) {
 	return response, nil
 }
 
-// 向指定url发送post请求
+// Post 向指定url发送post请求
 func Post(requestUrl string, postParams map[string]interface{}, headers ...map[string]string) (*Response, error) {
 	return Request("POST", requestUrl, postParams, headers...)
 }
 
-// 向指定url发送put请求
+// Put 向指定url发送put请求
 func Put(requestUrl string, postParams map[string]interface{}, headers ...map[string]string) (*Response, error) {
 	return Request("PUT", requestUrl, postParams, headers...)
 }
 
-// 向指定url发送patch请求
+// Patch 向指定url发送patch请求
 func Patch(requestUrl string, postParams map[string]interface{}, headers ...map[string]string) (*Response, error) {
 	return Request("PATCH", requestUrl, postParams, headers...)
 }
 
-// 向指定url发送head请求
+// Head 向指定url发送head请求
 func Head(requestUrl string, headers ...map[string]string) (*Response, error) {
 	client := &HttpClient{http.DefaultClient}
 	var requestHeaders map[string]string
@@ -162,7 +163,7 @@ func Head(requestUrl string, headers ...map[string]string) (*Response, error) {
 	return response, nil
 }
 
-// 向指定url发送options请求
+// Options 向指定url发送options请求
 func Options(requestUrl string, headers ...map[string]string) (*Response, error) {
 	client := &HttpClient{http.DefaultClient}
 	var requestHeaders map[string]string
@@ -177,7 +178,7 @@ func Options(requestUrl string, headers ...map[string]string) (*Response, error)
 	return response, nil
 }
 
-// 向指定url发送delete请求
+// Delete 向指定url发送delete请求
 func Delete(requestUrl string, headers ...map[string]string) (*Response, error) {
 	client := &HttpClient{http.DefaultClient}
 	var requestHeaders map[string]string

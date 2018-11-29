@@ -16,15 +16,17 @@ import (
 
 ////////////////////////////////////////////////////常量/////////////////////////////////////////////////////////////////
 
+// Trace 等变量不同级别的log实例
 var (
-	Trace   *TiLog // Trace级别的log实例
-	Info    *TiLog // Info级别的log实例
-	Warning *TiLog // Warning级别的log实例
-	Error   *TiLog // Error级别的log实例
+	Trace   *TiLog
+	Info    *TiLog
+	Warning *TiLog
+	Error   *TiLog
 )
 
+// TraceLevel 等变量表示log实例的级别
 const (
-	TraceLevel int = iota + 1 // TraceLevel表示log级别中的Trace级别
+	TraceLevel int = iota + 1
 	InfoLevel
 	WarningLevel
 	ErrorLevel
@@ -43,7 +45,7 @@ var formatter = map[int]string{
 
 ////////////////////////////////////////////////////结构体///////////////////////////////////////////////////////////////
 
-// log分级结构体
+// LogLevel 是log分级结构体
 //   - Trace    跟踪
 //   - Info     信息
 //   - Warning  预警
@@ -57,23 +59,27 @@ type LogLevel struct {
 	TimeRoll string `json:"time_roll"`
 }
 
+// TiLog 是Tigo自定义的log结构体
 type TiLog struct {
 	*log.Logger
 	Level int
 }
 
+// Printf 格式化输出log
 func (l *TiLog) Printf(format string, v ...interface{}) {
 	formatStr := formatter[l.Level]
 	format = fmt.Sprintf(formatStr, format)
 	l.Output(2, fmt.Sprintf(format, v...))
 }
 
+// Print 打印log，不换行
 func (l *TiLog) Print(v ...interface{}) {
 	formatStr := formatter[l.Level]
 	logInfo := fmt.Sprintf(formatStr, fmt.Sprint(v...))
 	l.Output(2, logInfo)
 }
 
+// Println 打印log并且换行
 func (l *TiLog) Println(v ...interface{}) {
 	formatStr := formatter[l.Level]
 	logInfo := fmt.Sprintf(formatStr, fmt.Sprintln(v...))
@@ -132,13 +138,13 @@ func init() {
 	initLogger()
 }
 
-// 设置log输出路径，警告：若使用了InitLoggerWithConfigFile和InitLoggerWithObject请不要使用此方法，会覆盖原有的log输出结构。
+// SetLogPath 设置log输出路径，警告：若使用了InitLoggerWithConfigFile和InitLoggerWithObject请不要使用此方法，会覆盖原有的log输出结构。
 func SetLogPath(defineLogPath string) {
 	logPath = defineLogPath
 	initLogger()
 }
 
-// 根据配置文件路径初始化log模块；
+// InitLoggerWithConfigFile 根据配置文件路径初始化log模块；
 // 配置文件需要配置如下部分：
 //   - trace    "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
 //   - info     "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
@@ -163,7 +169,7 @@ func InitLoggerWithConfigFile(filePath string) {
 	InitLoggerWithObject(logLevel)
 }
 
-// 根据LogLevel结构体的实例初始化log模块；
+// InitLoggerWithObject 根据LogLevel结构体的实例初始化log模块；
 // 配置文件需要配置如下部分：
 //   - Trace    "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
 //   - Info     "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
@@ -181,7 +187,7 @@ func InitLoggerWithObject(logLevel LogLevel) {
 	InitError(logLevel.Error)
 }
 
-// 初始化Trace，默认情况下不输出
+// InitTrace 初始化Trace，默认情况下不输出
 func InitTrace(level string) {
 	Trace.Level = TraceLevel
 	switch {
@@ -197,7 +203,7 @@ func InitTrace(level string) {
 	}
 }
 
-// 初始化Info，默认情况下输出到终端
+// InitInfo 初始化Info，默认情况下输出到终端
 func InitInfo(level string) {
 	Info.Level = InfoLevel
 	switch {
@@ -214,7 +220,7 @@ func InitInfo(level string) {
 	}
 }
 
-// 初始化Warning，默认情况下输出到终端
+// InitWarning 初始化Warning，默认情况下输出到终端
 func InitWarning(level string) {
 	Warning.Level = WarningLevel
 	switch {
@@ -231,7 +237,7 @@ func InitWarning(level string) {
 	}
 }
 
-// 初始化Warning，默认情况下输出到文件
+// InitError 初始化Error，默认情况下输出到文件
 func InitError(level string) {
 	Error.Level = ErrorLevel
 	switch {

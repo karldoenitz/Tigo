@@ -1,5 +1,6 @@
 package TigoWeb
 
+// MethodMapping http请求方式的一个映射
 var MethodMapping = map[string]string{
 	"get":     "Get",
 	"head":    "Head",
