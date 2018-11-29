@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-// web容器
+// Application web容器
 type Application struct {
 	IPAddress  string                 // IP地址
 	Port       int                    // 端口
@@ -32,7 +32,7 @@ func (application *Application) runTLS(cert string, key string) {
 	http.ListenAndServeTLS(address, cert, key, nil)
 }
 
-// 服务启动函数
+// Run 服务启动函数
 func (application *Application) Run() {
 	// 初始化全局变量
 	InitGlobalConfig(application.ConfigPath)

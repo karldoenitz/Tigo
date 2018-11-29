@@ -16,7 +16,7 @@ import (
 
 //////////////////////////////////////Structure Cookie//////////////////////////////////////////////////////////////////
 
-// 自定义Cookie结构体，可参看http.Cookie
+// Cookie 是自定义Cookie结构体，可参看http.Cookie
 type Cookie struct {
 	Name  string
 	Value string
@@ -39,7 +39,7 @@ type Cookie struct {
 	Unparsed []string // 原始文本中未解析的属性值
 }
 
-// 获取cookie加密值
+// GetCookieEncodeValue 获取cookie加密值
 //   - IsSecurity如果设置为false，则返回原始值
 //   - IsSecurity如果设置为true，则返回加密后的值
 // 如果加密失败，则抛出异常
@@ -53,7 +53,7 @@ func (cookie *Cookie) GetCookieEncodeValue() (result string) {
 	return result
 }
 
-// 获取cookie解密值
+// GetCookieDecodeValue 获取cookie解密值
 //   - IsSecurity如果设置为false，则返回原始值
 //   - IsSecurity如果设置为true，则返回加密后的值
 // 如果解密失败，则抛出异常
@@ -68,7 +68,7 @@ func (cookie *Cookie) GetCookieDecodeValue() (result string) {
 	return result
 }
 
-// 转换为http/Cookie对象
+// ToHttpCookie 转换为http/Cookie对象
 func (cookie *Cookie) ToHttpCookie() (http.Cookie) {
 	httpCookie := http.Cookie{
 		Name:       cookie.Name,
@@ -86,7 +86,7 @@ func (cookie *Cookie) ToHttpCookie() (http.Cookie) {
 	return httpCookie
 }
 
-// 将http/Cookie转换为Cookie
+// ConvertFromHttpCookie 将http/Cookie转换为Cookie
 func (cookie *Cookie) ConvertFromHttpCookie(httpCookie http.Cookie) {
 	cookie.Name = httpCookie.Name
 	cookie.Value = httpCookie.Value
@@ -111,16 +111,16 @@ func (cookie *Cookie) SetSecurityKey(key string) {
 
 //////////////////////////////////////Structure BaseResponse////////////////////////////////////////////////////////////
 
-// 定义BaseResponse类，其他Json数据类继承此类，用于BaseHandler.ResponseAsJson的参数。
+// BaseResponse 定义BaseResponse类，其他Json数据类继承此类，用于BaseHandler.ResponseAsJson的参数。
 type BaseResponse struct {
 }
 
-// 打印Json数据
+// Print 打印Json数据
 func (baseResponse *BaseResponse) Print() {
 	fmt.Println(baseResponse.ToJson())
 }
 
-// 序列化为Json字符串
+// ToJson 序列化为Json字符串
 func (baseResponse *BaseResponse) ToJson() (string) {
 	// 将该对象转换为byte字节数组
 	jsonResult, jsonErr := json.Marshal(baseResponse)
@@ -133,7 +133,7 @@ func (baseResponse *BaseResponse) ToJson() (string) {
 
 //////////////////////////////////////Structure GlobalConfig////////////////////////////////////////////////////////////
 
-// 全局配置对象
+// GlobalConfig 全局配置对象
 type GlobalConfig struct {
 	IP       string          `json:"ip"`       // IP地址
 	Port     int             `json:"port"`     // 端口
@@ -144,7 +144,7 @@ type GlobalConfig struct {
 	Log      logger.LogLevel `json:"log"`      // log相关属性配置
 }
 
-// 根据配置文件初始化全局配置变量
+// Init 根据配置文件初始化全局配置变量
 func (globalConfig *GlobalConfig) Init(configPath string) {
 	if configPath == "" {
 		return
@@ -189,11 +189,12 @@ func (globalConfig *GlobalConfig) initWithJson(configPath string) {
 
 //////////////////////////////////////Json Param Structure /////////////////////////////////////////////////////////////
 
+// ReqParams 请求参数结构体
 type ReqParams struct {
 	Value interface{}
 }
 
-// 将json中解析出的参数格式化为string类型，失败则返回空字符串
+// ToString 将json中解析出的参数格式化为string类型，失败则返回空字符串
 func (jsonParam *ReqParams) ToString() string {
 	valueType := reflect.TypeOf(jsonParam.Value).Name()
 	switch valueType {
@@ -216,7 +217,7 @@ func (jsonParam *ReqParams) ToString() string {
 	return ""
 }
 
-// 将json中的参数值转换为bool
+// ToBool 将json中的参数值转换为bool
 func (jsonParam *ReqParams) ToBool(defaultValue ...bool) bool {
 	if jsonParam.Value == nil {
 		if len(defaultValue) > 0 {
@@ -258,7 +259,7 @@ func (jsonParam *ReqParams) ToBool(defaultValue ...bool) bool {
 	return result
 }
 
-// 将json中解析出来的参数格式化为int64类型，失败则返回0
+// ToInt64 将json中解析出来的参数格式化为int64类型，失败则返回0
 func (jsonParam *ReqParams) ToInt64() int64 {
 	valueType := reflect.TypeOf(jsonParam.Value).Name()
 	switch valueType {
@@ -286,7 +287,7 @@ func (jsonParam *ReqParams) ToInt64() int64 {
 	return result
 }
 
-// 将json中解析出的参数格式化为float64类型，失败则返回0
+// ToFloat64 将json中解析出的参数格式化为float64类型，失败则返回0
 func (jsonParam *ReqParams) ToFloat64() float64 {
 	valueType := reflect.TypeOf(jsonParam.Value).Name()
 	switch valueType {
@@ -312,7 +313,7 @@ func (jsonParam *ReqParams) ToFloat64() float64 {
 	return result
 }
 
-// 将json中的参数值转换为目标对象
+// To 将json中的参数值转换为目标对象
 func (jsonParam *ReqParams) To(result interface{}) {
 	if jsonParam.Value == nil {
 		return
