@@ -2,12 +2,12 @@ package main
 
 import "github.com/karldoenitz/Tigo/TigoWeb"
 
-// Demo HelloWorldHandler
+// HelloWorldHandler Demo
 type HelloWorldHandler struct {
 	TigoWeb.BaseHandler
 }
 
-// Http Get Method
+// Get Http Method
 func (helloWorldHandler *HelloWorldHandler) Get() {
 	helloWorldHandler.ResponseAsHtml("Hello World!")
 }
