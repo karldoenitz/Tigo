@@ -12,7 +12,7 @@ import (
 
 //////////////////////////////////////////////////数据加密工具////////////////////////////////////////////////////////////
 
-// Encrypt方法用来根据key对原始数据进行加密，并将加密结果进行base64编码，
+// Encrypt 方法用来根据key对原始数据进行加密，并将加密结果进行base64编码，
 // 加密失败则返回空
 //   - 此处以后会进行异常处理方面的优化
 func Encrypt(src []byte, key []byte) string {
@@ -20,7 +20,7 @@ func Encrypt(src []byte, key []byte) string {
 	return base64.StdEncoding.EncodeToString(encryptValue)
 }
 
-// Decrypt方法会先对原始数据进行base64解码，然后根据key进行解密，
+// Decrypt 方法会先对原始数据进行base64解码，然后根据key进行解密，
 // 解密失败则返回空
 //   - 此处以后会进行异常处理方面的优化
 func Decrypt(src []byte, key []byte) ([]byte) {
@@ -72,7 +72,7 @@ func decrypt(cipherText []byte, key []byte) ([]byte, error) {
 
 //////////////////////////////////////////////////初始化全局配置//////////////////////////////////////////////////////////
 
-// InitGlobalConfig方法用来初始化全局变量
+// InitGlobalConfig 方法用来初始化全局变量
 func InitGlobalConfig(configPath string) {
 	config := GlobalConfig{}
 	config.Init(configPath)
