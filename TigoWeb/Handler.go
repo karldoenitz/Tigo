@@ -316,9 +316,8 @@ func (baseHandler *BaseHandler) SetCtxVal(key string, val interface{}) {
 func (baseHandler *BaseHandler) GetCtxVal(key string) interface{} {
 	if val, isExisted := baseHandler.ctxValMap[key]; isExisted {
 		return val
-	} else {
-		return nil
 	}
+	return nil
 }
 
 //////////////////////////////////////////////////http message dump/////////////////////////////////////////////////////

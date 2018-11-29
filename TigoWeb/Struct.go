@@ -103,7 +103,7 @@ func (cookie *Cookie) ConvertFromHttpCookie(httpCookie http.Cookie) {
 	cookie.Unparsed = httpCookie.Unparsed
 }
 
-// 为Cookie设置SecurityKey
+// SetSecurityKey 为Cookie设置SecurityKey
 func (cookie *Cookie) SetSecurityKey(key string) {
 	cookie.SecurityKey = key
 	cookie.IsSecurity = true
@@ -318,9 +318,9 @@ func (jsonParam *ReqParams) To(result interface{}) {
 	if jsonParam.Value == nil {
 		return
 	}
-	if jsonData, err := json.Marshal(jsonParam.Value); err != nil {
-		return
-	} else {
+	if jsonData, err := json.Marshal(jsonParam.Value); err == nil {
 		json.Unmarshal(jsonData, &result)
+	} else {
+		logger.Warning.Println(err.Error())
 	}
 }
