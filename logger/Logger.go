@@ -17,14 +17,14 @@ import (
 ////////////////////////////////////////////////////常量/////////////////////////////////////////////////////////////////
 
 var (
-	Trace   *TiLog
-	Info    *TiLog
-	Warning *TiLog
-	Error   *TiLog
+	Trace   *TiLog // Trace级别的log实例
+	Info    *TiLog // Info级别的log实例
+	Warning *TiLog // Warning级别的log实例
+	Error   *TiLog // Error级别的log实例
 )
 
 const (
-	TraceLevel int = iota + 1
+	TraceLevel int = iota + 1 // TraceLevel表示log级别中的Trace级别
 	InfoLevel
 	WarningLevel
 	ErrorLevel
