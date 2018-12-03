@@ -23,7 +23,7 @@ func Encrypt(src []byte, key []byte) string {
 // Decrypt 方法会先对原始数据进行base64解码，然后根据key进行解密，
 // 解密失败则返回空
 //   - 此处以后会进行异常处理方面的优化
-func Decrypt(src []byte, key []byte) ([]byte) {
+func Decrypt(src []byte, key []byte) []byte {
 	result, _ := base64.StdEncoding.DecodeString(string(src))
 	value, _ := decrypt(result, key)
 	return value

@@ -69,7 +69,7 @@ func (cookie *Cookie) GetCookieDecodeValue() (result string) {
 }
 
 // ToHttpCookie 转换为http/Cookie对象
-func (cookie *Cookie) ToHttpCookie() (http.Cookie) {
+func (cookie *Cookie) ToHttpCookie() http.Cookie {
 	httpCookie := http.Cookie{
 		Name:       cookie.Name,
 		Value:      cookie.GetCookieEncodeValue(),
@@ -121,7 +121,7 @@ func (baseResponse *BaseResponse) Print() {
 }
 
 // ToJson 序列化为Json字符串
-func (baseResponse *BaseResponse) ToJson() (string) {
+func (baseResponse *BaseResponse) ToJson() string {
 	// 将该对象转换为byte字节数组
 	jsonResult, jsonErr := json.Marshal(baseResponse)
 	if jsonErr != nil {
