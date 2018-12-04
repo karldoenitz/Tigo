@@ -12,8 +12,8 @@ import (
 )
 
 // NewTagErr 提供了一个错误类型闭包
-func NewTagErr(formatStr string) (func(string) (error)) {
-	return func(fieldName string) (error) {
+func NewTagErr(formatStr string) func(string) error {
+	return func(fieldName string) error {
 		return errors.New(fmt.Sprintf(formatStr, fieldName))
 	}
 }
@@ -312,11 +312,16 @@ func checkObjBinding(element reflect.Type, vElement reflect.Value) (error) {
 }
 
 // ParseJsonToObject 将json转为structure对应的instance，并根据tag校验字段
-func ParseJsonToInstance(jsonBytes []byte, obj interface{}) (error) {
+func ParseJsonToInstance(jsonBytes []byte, obj interface{}) error {
 	err := json.Unmarshal(jsonBytes, &obj)
 	if err != nil {
 		return err
 	}
+	return ValidInstance(obj)
+}
+
+// ValidInstance 检查结构体实例化是否有效
+func ValidInstance(obj interface{}) error {
 	t := reflect.TypeOf(obj)
 	v := reflect.ValueOf(obj)
 	element := t.Elem()

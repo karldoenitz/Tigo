@@ -2,6 +2,7 @@
 package TigoWeb
 
 import (
+	"Tigo/binding"
 	"encoding/json"
 	"fmt"
 	"github.com/karldoenitz/Tigo/logger"
@@ -30,10 +31,17 @@ func (baseHandler *BaseHandler) InitHandler(responseWriter http.ResponseWriter, 
 // PassJson 用来解析json中的值
 func (baseHandler *BaseHandler) PassJson() {
 	if baseHandler.GetHeader("Content-Type") == "application/json" {
-		jsonData, _ := ioutil.ReadAll(baseHandler.Request.Body)
+		jsonData, err := ioutil.ReadAll(baseHandler.Request.Body)
+		if err != nil {
+			logger.Error.Println(err.Error())
+			return
+		}
 		defer baseHandler.Request.Body.Close()
 		//使用 json.Unmarshal(data []byte, v interface{})进行转换，返回 error 信息
-		json.Unmarshal([]byte(jsonData), &baseHandler.JsonParams)
+		er := json.Unmarshal(jsonData, &baseHandler.JsonParams)
+		if er != nil {
+			logger.Error.Println(err.Error())
+		}
 	}
 }
 
@@ -45,6 +53,7 @@ func (baseHandler *BaseHandler) ToJson(response interface{}) (result string) {
 	// 将该对象转换为byte字节数组
 	jsonResult, jsonErr := json.Marshal(response)
 	if jsonErr != nil {
+		logger.Error.Println(jsonErr.Error())
 		return ""
 	}
 	// 将byte数组转换为string
@@ -87,8 +96,15 @@ func (baseHandler *BaseHandler) Render(data interface{}, templates ...string) {
 		value = templateBasePath + value
 		templatePath = append(templatePath, value)
 	}
-	t, _ := template.ParseFiles(templatePath...)
-	t.Execute(baseHandler.ResponseWriter, data)
+	t, err := template.ParseFiles(templatePath...)
+	if err != nil {
+		logger.Error.Println(err.Error())
+		return
+	}
+	er := t.Execute(baseHandler.ResponseWriter, data)
+	if er != nil {
+		logger.Error.Println(er.Error())
+	}
 }
 
 // RedirectPermanently 向客户端永久重定向一个地址
@@ -351,4 +367,16 @@ func (baseHandler *BaseHandler) DumpHttpRequestMsg(logLevel int) {
 	default:
 		fmt.Println(reqMsg)
 	}
+}
+
+////////////////////////////////////////////////////////utils///////////////////////////////////////////////////////////
+
+// CheckJsonBinding 检查提交的json是否符合要求
+func (baseHandler *BaseHandler) CheckJsonBinding(obj interface{}) error {
+	jsonData, err := ioutil.ReadAll(baseHandler.Request.Body)
+	if err != nil {
+		logger.Error.Println(err.Error())
+		return err
+	}
+	return binding.ParseJsonToInstance(jsonData, obj)
 }
