@@ -378,5 +378,5 @@ func (baseHandler *BaseHandler) CheckJsonBinding(obj interface{}) error {
 		logger.Error.Println(err.Error())
 		return err
 	}
-	return binding.ParseJsonToInstance(jsonData, &obj)
+	return binding.ParseJsonToInstance(jsonData, obj)
 }

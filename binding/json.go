@@ -8,7 +8,7 @@ import (
 
 // ParseJsonToObject 将json转为structure对应的instance，并根据tag校验字段
 func ParseJsonToInstance(jsonBytes []byte, obj interface{}) error {
-	err := json.Unmarshal(jsonBytes, &obj)
+	err := json.Unmarshal(jsonBytes, obj)
 	if err != nil {
 		return err
 	}
