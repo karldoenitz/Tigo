@@ -26,20 +26,30 @@ func (baseHandler *BaseHandler) InitHandler(responseWriter http.ResponseWriter, 
 	baseHandler.Request = request
 	baseHandler.ResponseWriter = responseWriter
 	baseHandler.Request.ParseForm()
+	baseHandler.ctxValMap = map[string]interface{}{}
+}
+
+// GetBody 获取HTTP报文体
+func (baseHandler *BaseHandler) GetBody() []byte {
+	if _, ok := baseHandler.ctxValMap["body"]; !ok {
+		body, err := ioutil.ReadAll(baseHandler.Request.Body)
+		if err != nil {
+			logger.Error.Println(err.Error())
+			return nil
+		}
+		defer baseHandler.Request.Body.Close()
+		baseHandler.ctxValMap["body"] = body
+	}
+	return baseHandler.ctxValMap["body"].([]byte)
 }
 
 // PassJson 用来解析json中的值
 func (baseHandler *BaseHandler) PassJson() {
 	if baseHandler.GetHeader("Content-Type") == "application/json" {
-		jsonData, err := ioutil.ReadAll(baseHandler.Request.Body)
-		if err != nil {
-			logger.Error.Println(err.Error())
-			return
-		}
-		defer baseHandler.Request.Body.Close()
+		jsonData := baseHandler.GetBody()
 		//使用 json.Unmarshal(data []byte, v interface{})进行转换，返回 error 信息
-		er := json.Unmarshal(jsonData, &baseHandler.JsonParams)
-		if er != nil {
+		err := json.Unmarshal(jsonData, &baseHandler.JsonParams)
+		if err != nil {
 			logger.Error.Println(err.Error())
 		}
 	}
@@ -265,10 +275,9 @@ func (baseHandler *BaseHandler) GetParameter(key string) (value *ReqParams) {
 // GetJsonValue 根据key获取对应的参数值，解析json数据，返回对应的value
 func (baseHandler *BaseHandler) GetJsonValue(key string) interface{} {
 	var mapResult map[string]interface{}
-	jsonData, _ := ioutil.ReadAll(baseHandler.Request.Body)
-	baseHandler.Request.Body.Close()
+	jsonData := baseHandler.GetBody()
 	//使用 json.Unmarshal(data []byte, v interface{})进行转换，返回 error 信息
-	err := json.Unmarshal([]byte(jsonData), &mapResult)
+	err := json.Unmarshal(jsonData, &mapResult)
 	if err != nil {
 		return ""
 	}
@@ -373,10 +382,6 @@ func (baseHandler *BaseHandler) DumpHttpRequestMsg(logLevel int) {
 
 // CheckJsonBinding 检查提交的json是否符合要求
 func (baseHandler *BaseHandler) CheckJsonBinding(obj interface{}) error {
-	jsonData, err := ioutil.ReadAll(baseHandler.Request.Body)
-	if err != nil {
-		logger.Error.Println(err.Error())
-		return err
-	}
+	jsonData := baseHandler.GetBody()
 	return binding.ParseJsonToInstance(jsonData, obj)
 }
