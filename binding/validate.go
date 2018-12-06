@@ -287,6 +287,13 @@ func checkObjBinding(element reflect.Type, vElement reflect.Value) error {
 					return checkObjBinding(attrType, attrValue)
 				}
 			}
+			if fieldKind == reflect.Ptr {
+				if field.CanAddr() && field.Addr().CanInterface() {
+					attrType := field.Type().Elem()
+					attrValue := field.Elem()
+					return checkObjBinding(attrType, attrValue)
+				}
+			}
 		}
 	}
 	return nil
