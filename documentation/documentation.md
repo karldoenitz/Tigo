@@ -8,6 +8,8 @@ API目录：
     - [func GetParameter](#GetParameter)
     - [func GetHeader](#GetHeader)
     - [func SetHeader](#SetHeader)
+    - [func GetCtxVal](#SetCtxVal)
+    - [func SetCtxVal](#SetCtxVal)
     - [func GetCookie](#GetCookie)
     - [func SetCookie](#SetCookie)
     - [func GetSecureCookie](#GetSecureCookie)
@@ -24,6 +26,7 @@ API目录：
     - [func ResponseAsJson](#ResponseAsJson)
     - [func ToJson](#ToJson)
     - [func DumpHttpRequestMsg](#DumpHttpRequestMsg)
+    - [func CheckJsonBinding](#CheckJsonBinding)
   - [type UrlPattern](#UrlPattern)
     - [func AppendUrlPattern](#AppendUrlPattern)
     - [func Init](#Init)
@@ -68,6 +71,10 @@ API目录：
     - [func Head](#Head)
     - [func Options](#Options)
     - [func Delete](#Delete)
+- [binding](#binding)
+  - [functions](#bindingFunctions)
+    - [func ParseJsonToInstance](#ParseJsonToInstance)
+    - [func ValidateInstance](#ValidateInstance)
 # Tigo.TigoWeb<a name="TigoWeb"></a>
 TigoWeb是Tigo框架中的核心部分，Handler、URLpattern以及Application三大核心组件包含于此。
 ## type BaseHandler<a name="BaseHandler"></a>
@@ -105,6 +112,16 @@ func (baseHandler *BaseHandler)GetHeader(name string) (value string)
 func (baseHandler *BaseHandler)SetHeader(name string, value string)
 ```
 ```SetHeader```方法是根据name设置http的header值。
+### func (*BaseHandler)GetCtxVal<a name="GetCtxVal"></a>
+```go
+func (baseHandler *BaseHandler)GetCtxVal(key string) interface{}
+```
+```GetCtxVal```方法是根据key从http上下文中获取值。
+### func (*BaseHandler)SetCtxVal<a name="SetCtxVal"></a>
+```go
+func (baseHandler *BaseHandler) SetCtxVal(key string, val interface{})
+```
+```SetCtxVal```方法是根据key设置在http上下文中设置值。
 ### func (*BaseHandler)GetCookie<a name="GetCookie"></a>
 ```go
 func (baseHandler *BaseHandler)GetCookie(name string) (value string)
@@ -202,6 +219,48 @@ func (baseHandler *BaseHandler)DumpHttpRequestMsg(logLevel int) (result string)
 - 3: 将http报文输出到warning级别日志中 // logger.WarningLevel
 - 4: 将http报文输出到error级别日志中   // logger.ErrorLevel
 - others: 将http报文输出到控制台
+### func (*BaseHandler)CheckJsonBinding<a name="CheckJsonBinding"></a>
+```go
+func (baseHandler *BaseHandler) CheckJsonBinding(obj interface{}) error
+```
+```CheckJsonBinding```校验客户端发送的json是否符合要求。  
+tag如下：
+- required: 是否需要校验，true为校验，false为忽略此字段的校验
+- default: 设置字段的默认值，只有required设置为true时此tag生效
+- regex: 正则表达式匹配，只有required设置为true时此tag生效
+示例：
+```go
+type TestParamCheckHandler struct {
+    TigoWeb.BaseHandler
+}
+
+func (t *TestParamCheckHandler)Post() {
+    params := struct{
+        Username string `json:"username" required:"true" regex:"^[0-9a-zA-Z_]{1,}$"`
+        Password string `json:"password" required:"true"`
+        Age      int    `json:"age" required:"true" default:"18"`
+    }{}
+    if err := t.CheckJsonBinding(&params); err != nil {
+        t.ResponseAsJson(struct{
+            Msg string
+        }{err.Error()})
+        return
+    }
+    // 校验通过后的具体逻辑
+}
+```
+Post的json：
+```javascript
+{
+    "username": "wo&ni",
+    "password": "tihs si wrodpssa"
+} // 此json校验后返回"username regex can not match"
+{
+    "username": "wo_ni",
+} // 此json校验后会返回"password is required"
+// 以上两个json都没有填写age，但不会报错，age会被设置为默认值18
+```
+其他规则可参考`Tigo.binding.ValidateInstance`
 ## type UrlPattern<a name="UrlPattern"></a>
 ```go
 type UrlPattern struct {
@@ -561,3 +620,43 @@ func Options(requestUrl string, headers ...map[string]string) (*Response, error)
 func Delete(requestUrl string, headers ...map[string]string) (*Response, error)
 ```
 向一个连接发送Delete请求。
+# Tigo.binding<a name="binding"></a>
+binding模块是Tigo框架中用来校验结构体实例是否符合规范工具包。
+## binding模块内置方法<a name="bindingFunctions"></a>
+### func ParseJsonToInstance<a name="ParseJsonToInstance"><a/>
+```go
+func ParseJsonToInstance(jsonBytes []byte, obj interface{}) error
+```
+将json的byte数组转化成对象，并根据tag进行校验。
+### func ValidateInstance<a name="ValidateInstance"><a/>
+```go
+func ValidateInstance(obj interface{}) error
+```
+根绝tag对结构体实例进行校验。
+```go
+type Company struct {
+    Name string `json:"name" required:"false"`
+    Addr string `json:"name" required:"false"`
+}
+
+type Boss struct {
+    Name    string  `json:"name" required:"true"`
+    Age     int     `json:"age" required:"true" default:"18"`
+    Company Company `json:"company" required:"true"`
+}
+/*以上这种方式OK👌*/
+
+type Stuff struct {
+    Name    string   `json:"name" required:"true"`
+    Age     int      `json:"age" required:"true" default:"18"`
+    Company *Company `json:"company" required:"true"`  // OK
+}
+/*以上这种方式OK👌*/
+
+type Others struct {
+    Name    string   `json:"name" required:"true"`
+    Age     *int     `json:"age" required:"true" default:"18"`  // Not Support
+    Company Company  `json:"company" required:"true"`
+}
+/*以上这种方式暂时不支持，后期会支持*/
+```
