@@ -632,7 +632,7 @@ func ParseJsonToInstance(jsonBytes []byte, obj interface{}) error
 ```go
 func ValidateInstance(obj interface{}) error
 ```
-根绝tag对结构体实例进行校验。
+根据tag对结构体实例进行校验。
 ```go
 type Company struct {
     Name string `json:"name" required:"false"`

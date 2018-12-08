@@ -8,6 +8,8 @@ API index:
     - [func GetParameter](#GetParameter)
     - [func GetHeader](#GetHeader)
     - [func SetHeader](#SetHeader)
+    - [func GetCtxVal](#SetCtxVal)
+    - [func SetCtxVal](#SetCtxVal)
     - [func GetCookie](#GetCookie)
     - [func SetCookie](#SetCookie)
     - [func GetSecureCookie](#GetSecureCookie)
@@ -23,6 +25,7 @@ API index:
     - [func ResponseAsJson](#ResponseAsJson)
     - [func ToJson](#ToJson)
     - [func DumpHttpRequestMsg](#DumpHttpRequestMsg)
+    - [func CheckJsonBinding](#CheckJsonBinding)
   - [type UrlPattern](#UrlPattern)
     - [func AppendUrlPattern](#AppendUrlPattern)
     - [func Init](#Init)
@@ -67,6 +70,10 @@ API index:
     - [func Head](#Head)
     - [func Options](#Options)
     - [func Delete](#Delete)
+- [binding](#binding)
+  - [functions](#bindingFunctions)
+    - [func ParseJsonToInstance](#ParseJsonToInstance)
+    - [func ValidateInstance](#ValidateInstance)
 # Tigo.TigoWeb<a name="TigoWeb"></a>
 TigoWeb is the core part of Tigo framework, it contains Handler,URLpattern and Application.
 ## type BaseHandler<a name="BaseHandler"></a>
@@ -103,6 +110,16 @@ func (baseHandler *BaseHandler)GetHeader(name string) (value string)
 func (baseHandler *BaseHandler)SetHeader(name string, value string)
 ```
 ```SetHeader``` is the method to set http header.
+### func (*BaseHandler)GetCtxVal<a name="GetCtxVal"></a>
+```go
+func (baseHandler *BaseHandler)GetCtxVal(key string) interface{}
+```
+```GetCtxVal``` get value from http context.
+### func (*BaseHandler)SetCtxVal<a name="SetCtxVal"></a>
+```go
+func (baseHandler *BaseHandler) SetCtxVal(key string, val interface{})
+```
+```SetCtxVal``` set value to http context.
 ### func (*BaseHandler)GetCookie<a name="GetCookie"></a>
 ```go
 func (baseHandler *BaseHandler)GetCookie(name string) (value string)
@@ -200,6 +217,48 @@ The parameter `logLevel`'s value:
 - 3: dump message to warning level  // logger.WarningLevel
 - 4: dump message to error level    // logger.ErrorLevel
 - others: dump message to console
+### func (*BaseHandler)CheckJsonBinding<a name="CheckJsonBinding"></a>
+```go
+func (baseHandler *BaseHandler) CheckJsonBinding(obj interface{}) error
+```
+```CheckJsonBinding``` check the json from http request.  
+tag:
+- required: check this field if tag's value is `true`
+- default: set default value on this field only `required` is true
+- regex: use regular express to check the value of this field
+example:
+```go
+type TestParamCheckHandler struct {
+    TigoWeb.BaseHandler
+}
+
+func (t *TestParamCheckHandler)Post() {
+    params := struct{
+        Username string `json:"username" required:"true" regex:"^[0-9a-zA-Z_]{1,}$"`
+        Password string `json:"password" required:"true"`
+        Age      int    `json:"age" required:"true" default:"18"`
+    }{}
+    if err := t.CheckJsonBinding(&params); err != nil {
+        t.ResponseAsJson(struct{
+            Msg string
+        }{err.Error()})
+        return
+    }
+    // your program
+}
+```
+Post的json：
+```javascript
+{
+    "username": "wo&ni",
+    "password": "tihs si wrodpssa"
+} // error "username regex can not match"
+{
+    "username": "wo_ni",
+} // error "password is required"
+// age default value is 18
+```
+reference `Tigo.binding.ValidateInstance`
 ## type UrlPattern<a name="UrlPattern"></a>
 ```go
 type UrlPattern struct {
@@ -546,3 +605,43 @@ Http Options method.
 func Delete(requestUrl string, headers ...map[string]string) (*Response, error)
 ```
 Http Delete method.
+# Tigo.binding<a name="binding"></a>
+binding provides some functions to verify structure instance.
+## binding functions<a name="bindingFunctions"></a>
+### func ParseJsonToInstance<a name="ParseJsonToInstance"><a/>
+```go
+func ParseJsonToInstance(jsonBytes []byte, obj interface{}) error
+```
+Verify the instance unmarshal from the `jsonBytes`.
+### func ValidateInstance<a name="ValidateInstance"><a/>
+```go
+func ValidateInstance(obj interface{}) error
+```
+Use this method to verify the `obj` with tag.
+```go
+type Company struct {
+    Name string `json:"name" required:"false"`
+    Addr string `json:"name" required:"false"`
+}
+
+type Boss struct {
+    Name    string  `json:"name" required:"true"`
+    Age     int     `json:"age" required:"true" default:"18"`
+    Company Company `json:"company" required:"true"`
+}
+/*This is OK👌*/
+
+type Stuff struct {
+    Name    string   `json:"name" required:"true"`
+    Age     int      `json:"age" required:"true" default:"18"`
+    Company *Company `json:"company" required:"true"`  // OK
+}
+/*This is OK👌*/
+
+type Others struct {
+    Name    string   `json:"name" required:"true"`
+    Age     *int     `json:"age" required:"true" default:"18"`  // Not Support
+    Company Company  `json:"company" required:"true"`
+}
+/*We will support in the furture*/
+```
