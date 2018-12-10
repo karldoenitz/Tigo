@@ -1,6 +1,7 @@
 package binding
 
 import (
+	"fmt"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -8,22 +9,22 @@ import (
 
 // checkField 检查字段是否有效
 func checkField(element reflect.Type, vElement reflect.Value, i int) error {
-	fieldType := element.Field(i).Type.Name()
-	fieldValue := vElement.Field(i).Interface()
-	fieldName := element.Field(i).Name
 	var isRequired bool
 	required, isRequiredExisted := element.Field(i).Tag.Lookup("required")
 	if isRequiredExisted && (required == "true" || required == "TRUE") {
 		isRequired = true
 	}
+	fieldType := element.Field(i).Type.Kind()
+	fieldValue := vElement.Field(i).Interface()
+	fieldName := element.Field(i).Name
 	defaultValue, isDefaultExisted := element.Field(i).Tag.Lookup("default")
 	regexStr, isRegexExisted := element.Field(i).Tag.Lookup("regex")
 	switch fieldType {
-	case "bool":
+	case reflect.Bool:
 		break
-	case "string":
+	case reflect.String:
 		value := fieldValue.(string)
-		if isRequired && value == "" && (!isDefaultExisted || defaultValue == "") {
+		if isRequired && value == "" && (!isDefaultExisted || defaultValue=="") {
 			return RequiredErr(fieldName)
 		}
 		if value == "" && defaultValue != "" {
@@ -34,14 +35,17 @@ func checkField(element reflect.Type, vElement reflect.Value, i int) error {
 		}
 		vElement.Field(i).SetString(value)
 		break
-	case "int":
-		value := fieldValue.(int)
-		if isRequired && value == 0 && (!isDefaultExisted || defaultValue == "") {
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		value, e := strconv.ParseInt(fmt.Sprint(fieldValue), 10, 64)
+		if e != nil {
+			return e
+		}
+		if isRequired && value == 0 && (!isDefaultExisted || defaultValue=="") {
 			return RequiredErr(fieldName)
 		}
 		if value == 0 && defaultValue != "" {
 			var err error
-			value, err = strconv.Atoi(defaultValue)
+			value, err = strconv.ParseInt(defaultValue, 10, 64)
 			if err != nil {
 				return DefaultErr(fieldName)
 			}
@@ -52,191 +56,37 @@ func checkField(element reflect.Type, vElement reflect.Value, i int) error {
 				return RegexErr(fieldName)
 			}
 		}
-		vElement.Field(i).SetInt(int64(value))
+		vElement.Field(i).SetInt(value)
 		break
-	case "int8":
-		value := fieldValue.(int8)
-		if isRequired && value == 0 && (!isDefaultExisted || defaultValue == "") {
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		value, e := strconv.ParseUint(fmt.Sprint(fieldValue), 10, 64)
+		if e != nil {
+			return e
+		}
+		if isRequired && value == 0 && (!isDefaultExisted || defaultValue=="") {
 			return RequiredErr(fieldName)
 		}
 		if value == 0 && defaultValue != "" {
-			val, err := strconv.Atoi(defaultValue)
+			val, err := strconv.ParseUint(defaultValue, 10, 64)
 			if err != nil {
 				return DefaultErr(fieldName)
 			}
-			value = int8(val)
+			value = val
 		}
 		if isRegexExisted {
-			valueStr := strconv.FormatInt(int64(value), 10)
+			valueStr := strconv.FormatUint(value, 10)
 			if !isMatchRegex(valueStr, regexStr) {
 				return RegexErr(fieldName)
 			}
 		}
-		vElement.Field(i).SetInt(int64(value))
+		vElement.Field(i).SetUint(value)
 		break
-	case "int16":
-		value := fieldValue.(int16)
-		if isRequired && value == 0 && (!isDefaultExisted || defaultValue == "") {
-			return RequiredErr(fieldName)
+	case reflect.Float32, reflect.Float64:
+		value, e := strconv.ParseFloat(fmt.Sprint(fieldValue), 64)
+		if e != nil {
+			return e
 		}
-		if value == 0 && defaultValue != "" {
-			val, err := strconv.Atoi(defaultValue)
-			if err != nil {
-				return DefaultErr(fieldName)
-			}
-			value = int16(val)
-		}
-		if isRegexExisted {
-			valueStr := strconv.FormatInt(int64(value), 10)
-			if !isMatchRegex(valueStr, regexStr) {
-				return RegexErr(fieldName)
-			}
-		}
-		vElement.Field(i).SetInt(int64(value))
-		break
-	case "int32":
-		value := fieldValue.(int32)
-		if isRequired && value == 0 && (!isDefaultExisted || defaultValue == "") {
-			return RequiredErr(fieldName)
-		}
-		if value == 0 && defaultValue != "" {
-			val, err := strconv.Atoi(defaultValue)
-			if err != nil {
-				return DefaultErr(fieldName)
-			}
-			value = int32(val)
-		}
-		if isRegexExisted {
-			valueStr := strconv.FormatInt(int64(value), 10)
-			if !isMatchRegex(valueStr, regexStr) {
-				return RegexErr(fieldName)
-			}
-		}
-		vElement.Field(i).SetInt(int64(value))
-		break
-	case "int64":
-		value := fieldValue.(int64)
-		if isRequired && value == 0 && (!isDefaultExisted || defaultValue == "") {
-			return RequiredErr(fieldName)
-		}
-		if value == 0 && defaultValue != "" {
-			val, err := strconv.Atoi(defaultValue)
-			if err != nil {
-				return DefaultErr(fieldName)
-			}
-			value = int64(val)
-		}
-		if isRegexExisted {
-			valueStr := strconv.FormatInt(int64(value), 10)
-			if !isMatchRegex(valueStr, regexStr) {
-				return RegexErr(fieldName)
-			}
-		}
-		vElement.Field(i).SetInt(int64(value))
-		break
-	case "uint":
-		value := fieldValue.(uint)
-		if isRequired && value == 0 && (!isDefaultExisted || defaultValue == "") {
-			return RequiredErr(fieldName)
-		}
-		if value == 0 && defaultValue != "" {
-			val, err := strconv.Atoi(defaultValue)
-			if err != nil {
-				return DefaultErr(fieldName)
-			}
-			value = uint(val)
-		}
-		if isRegexExisted {
-			valueStr := strconv.FormatUint(uint64(value), 10)
-			if !isMatchRegex(valueStr, regexStr) {
-				return RegexErr(fieldName)
-			}
-		}
-		vElement.Field(i).SetUint(uint64(value))
-		break
-	case "uint8":
-		value := fieldValue.(uint8)
-		if isRequired && value == 0 && (!isDefaultExisted || defaultValue == "") {
-			return RequiredErr(fieldName)
-		}
-		if value == 0 && defaultValue != "" {
-			val, err := strconv.Atoi(defaultValue)
-			if err != nil {
-				return DefaultErr(fieldName)
-			}
-			value = uint8(val)
-		}
-		if isRegexExisted {
-			valueStr := strconv.FormatUint(uint64(value), 10)
-			if !isMatchRegex(valueStr, regexStr) {
-				return RegexErr(fieldName)
-			}
-		}
-		vElement.Field(i).SetUint(uint64(value))
-		break
-	case "uint16":
-		value := fieldValue.(uint16)
-		if isRequired && value == 0 && (!isDefaultExisted || defaultValue == "") {
-			return RequiredErr(fieldName)
-		}
-		if value == 0 && defaultValue != "" {
-			val, err := strconv.Atoi(defaultValue)
-			if err != nil {
-				return DefaultErr(fieldName)
-			}
-			value = uint16(val)
-		}
-		if isRegexExisted {
-			valueStr := strconv.FormatUint(uint64(value), 10)
-			if !isMatchRegex(valueStr, regexStr) {
-				return RegexErr(fieldName)
-			}
-		}
-		vElement.Field(i).SetUint(uint64(value))
-		break
-	case "uint32":
-		value := fieldValue.(uint32)
-		if isRequired && value == 0 && (!isDefaultExisted || defaultValue == "") {
-			return RequiredErr(fieldName)
-		}
-		if value == 0 && defaultValue != "" {
-			val, err := strconv.Atoi(defaultValue)
-			if err != nil {
-				return DefaultErr(fieldName)
-			}
-			value = uint32(val)
-		}
-		if isRegexExisted {
-			valueStr := strconv.FormatUint(uint64(value), 10)
-			if !isMatchRegex(valueStr, regexStr) {
-				return RegexErr(fieldName)
-			}
-		}
-		vElement.Field(i).SetUint(uint64(value))
-		break
-	case "uint64":
-		value := fieldValue.(uint64)
-		if isRequired && value == 0 && (!isDefaultExisted || defaultValue == "") {
-			return RequiredErr(fieldName)
-		}
-		if value == 0 && defaultValue != "" {
-			val, err := strconv.Atoi(defaultValue)
-			if err != nil {
-				return DefaultErr(fieldName)
-			}
-			value = uint64(val)
-		}
-		if isRegexExisted {
-			valueStr := strconv.FormatUint(uint64(value), 10)
-			if !isMatchRegex(valueStr, regexStr) {
-				return RegexErr(fieldName)
-			}
-		}
-		vElement.Field(i).SetUint(uint64(value))
-		break
-	case "float32":
-		value := fieldValue.(float32)
-		if isRequired && value == 0 && (!isDefaultExisted || defaultValue == "") {
+		if isRequired && value == 0 && (!isDefaultExisted || defaultValue=="") {
 			return RequiredErr(fieldName)
 		}
 		if value == 0 && defaultValue != "" {
@@ -244,35 +94,15 @@ func checkField(element reflect.Type, vElement reflect.Value, i int) error {
 			if err != nil {
 				return DefaultErr(fieldName)
 			}
-			value = float32(val)
+			value = val
 		}
 		if isRegexExisted {
-			valueStr := strconv.FormatFloat(float64(value), 'E', -1, 32)
+			valueStr := strconv.FormatFloat(value, 'E', -1, 32)
 			if !isMatchRegex(valueStr, regexStr) {
 				return RegexErr(fieldName)
 			}
 		}
-		vElement.Field(i).SetFloat(float64(value))
-		break
-	case "float64":
-		value := fieldValue.(float64)
-		if isRequired && value == 0 && (!isDefaultExisted || defaultValue == "") {
-			return RequiredErr(fieldName)
-		}
-		if value == 0 && defaultValue != "" {
-			val, err := strconv.ParseFloat(defaultValue, 64)
-			if err != nil {
-				return DefaultErr(fieldName)
-			}
-			value = float64(val)
-		}
-		if isRegexExisted {
-			valueStr := strconv.FormatFloat(float64(value), 'E', -1, 32)
-			if !isMatchRegex(valueStr, regexStr) {
-				return RegexErr(fieldName)
-			}
-		}
-		vElement.Field(i).SetFloat(float64(value))
+		vElement.Field(i).SetFloat(value)
 		break
 	default:
 		field := vElement.Field(i)
