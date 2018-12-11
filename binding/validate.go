@@ -2,29 +2,131 @@ package binding
 
 import (
 	"fmt"
+	"github.com/karldoenitz/Tigo/logger"
 	"reflect"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
-// checkField 检查字段是否有效
-func checkField(element reflect.Type, vElement reflect.Value, i int) error {
+// checkField 对字段类型进行校验
+func checkField(field reflect.StructField, vField reflect.Value) error {
+	fieldKind := vField.Kind()
+	switch fieldKind {
+	case reflect.Ptr:
+		if err := checkField(field, vField.Elem()); err != nil {
+			return err
+		}
+	case reflect.Interface:
+		if !vField.IsNil() {
+			if err := checkField(field, vField.Elem()); err != nil {
+				return err
+			}
+		} else {
+			//vField.Set()
+		}
+	case reflect.Struct:
+		if err := checkStructureField(field, vField); err != nil {
+			return err
+		}
+	case reflect.Slice:
+		break
+	case reflect.Array:
+		break
+	case reflect.Map:
+		if err := checkMapField(field, vField); err != nil {
+			return err
+		}
+	case reflect.Invalid:
+		if err := checkInvalidField(field, vField); err != nil {
+			return err
+		}
+	case reflect.Uintptr, reflect.UnsafePointer, reflect.Chan, reflect.Func:
+		logger.Warning.Printf("%s's kind is: %s", field.Name, fieldKind)
+		logger.Warning.Printf("%s is unsupported field kind", field.Name)
+		break
+	default:
+		if err := checkBasicField(field, vField); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// checkInvalidField 对无效字段进行校验
+func checkInvalidField(field reflect.StructField, vField reflect.Value) error {
+	required, isRequiredExisted := field.Tag.Lookup("required")
+	if !isRequiredExisted || strings.ToLower(required) != "true" {
+		return nil
+	}
+	defaultValue, isDefaultExisted := field.Tag.Lookup("default")
+	regexStr, isRegexExisted := field.Tag.Lookup("regex")
+	if isDefaultExisted {
+		logger.Error.Printf("default value `%s` is invalid for nil field", defaultValue)
+	}
+	if isRegexExisted {
+		logger.Error.Printf("regex `%s` is invalid for nil field", regexStr)
+	}
+	return fmt.Errorf("%s is a required field, can not be nil", field.Name)
+}
+
+// checkMapField 对Map类型的字段进行校验
+func checkMapField(field reflect.StructField, vField reflect.Value) error {
+	if vField.IsNil() {
+		vField.Set(reflect.MakeMap(vField.Type()))
+	}
+
+	return nil
+}
+
+// checkSliceField 对切片类型的字段进行校验
+func checkSliceField(field reflect.StructField, vField reflect.Value) error {
+	return nil
+}
+
+// checkArrayField 对数组类型的字段进行校验
+func checkArrayField(field reflect.StructField, vField reflect.Value) error {
+	return nil
+}
+
+// checkStructureField 对结构体类型的字段进行校验
+func checkStructureField(field reflect.StructField, vField reflect.Value) error {
+	required, isRequiredExisted := field.Tag.Lookup("required")
+	if !isRequiredExisted || strings.ToLower(required) != "true" {
+		return nil
+	}
+	if vField.CanAddr() && vField.Addr().CanInterface() {
+		attrType := vField.Type()
+		attrValue := vField
+		for i := 0; i < attrType.NumField(); i++ {
+			if err := checkField(attrType.Field(i), attrValue.Field(i)); err != nil {
+				return err
+			}
+		}
+	} else {
+		return fmt.Errorf("%s's address can not be obtained with Addr", field.Name)
+	}
+	return nil
+}
+
+// checkBasicField 对基本数据类型的字段进行校验
+func checkBasicField(field reflect.StructField, vField reflect.Value) error {
 	var isRequired bool
-	required, isRequiredExisted := element.Field(i).Tag.Lookup("required")
-	if isRequiredExisted && (required == "true" || required == "TRUE") {
+	required, isRequiredExisted := field.Tag.Lookup("required")
+	if isRequiredExisted && strings.ToLower(required) == "true" {
 		isRequired = true
 	}
-	fieldType := element.Field(i).Type.Kind()
-	fieldValue := vElement.Field(i).Interface()
-	fieldName := element.Field(i).Name
-	defaultValue, isDefaultExisted := element.Field(i).Tag.Lookup("default")
-	regexStr, isRegexExisted := element.Field(i).Tag.Lookup("regex")
-	switch fieldType {
+	defaultValue, isDefaultExisted := field.Tag.Lookup("default")
+	regexStr, isRegexExisted := field.Tag.Lookup("regex")
+	fieldKind := vField.Type().Kind()
+	fieldValue := vField.Interface()
+	fieldName := field.Name
+	switch fieldKind {
 	case reflect.Bool:
 		break
 	case reflect.String:
 		value := fieldValue.(string)
-		if isRequired && value == "" && (!isDefaultExisted || defaultValue=="") {
+		if isRequired && value == "" && (!isDefaultExisted || defaultValue == "") {
 			return RequiredErr(fieldName)
 		}
 		if value == "" && defaultValue != "" {
@@ -33,14 +135,14 @@ func checkField(element reflect.Type, vElement reflect.Value, i int) error {
 		if isRegexExisted && !isMatchRegex(value, regexStr) {
 			return RegexErr(fieldName)
 		}
-		vElement.Field(i).SetString(value)
+		vField.SetString(value)
 		break
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		value, e := strconv.ParseInt(fmt.Sprint(fieldValue), 10, 64)
 		if e != nil {
 			return e
 		}
-		if isRequired && value == 0 && (!isDefaultExisted || defaultValue=="") {
+		if isRequired && value == 0 && (!isDefaultExisted || defaultValue == "") {
 			return RequiredErr(fieldName)
 		}
 		if value == 0 && defaultValue != "" {
@@ -56,14 +158,14 @@ func checkField(element reflect.Type, vElement reflect.Value, i int) error {
 				return RegexErr(fieldName)
 			}
 		}
-		vElement.Field(i).SetInt(value)
+		vField.SetInt(value)
 		break
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 		value, e := strconv.ParseUint(fmt.Sprint(fieldValue), 10, 64)
 		if e != nil {
 			return e
 		}
-		if isRequired && value == 0 && (!isDefaultExisted || defaultValue=="") {
+		if isRequired && value == 0 && (!isDefaultExisted || defaultValue == "") {
 			return RequiredErr(fieldName)
 		}
 		if value == 0 && defaultValue != "" {
@@ -79,14 +181,14 @@ func checkField(element reflect.Type, vElement reflect.Value, i int) error {
 				return RegexErr(fieldName)
 			}
 		}
-		vElement.Field(i).SetUint(value)
+		vField.SetUint(value)
 		break
 	case reflect.Float32, reflect.Float64:
 		value, e := strconv.ParseFloat(fmt.Sprint(fieldValue), 64)
 		if e != nil {
 			return e
 		}
-		if isRequired && value == 0 && (!isDefaultExisted || defaultValue=="") {
+		if isRequired && value == 0 && (!isDefaultExisted || defaultValue == "") {
 			return RequiredErr(fieldName)
 		}
 		if value == 0 && defaultValue != "" {
@@ -102,25 +204,8 @@ func checkField(element reflect.Type, vElement reflect.Value, i int) error {
 				return RegexErr(fieldName)
 			}
 		}
-		vElement.Field(i).SetFloat(value)
+		vField.SetFloat(value)
 		break
-	default:
-		field := vElement.Field(i)
-		fieldKind := field.Kind()
-		if fieldKind == reflect.Struct {
-			if field.CanAddr() && field.Addr().CanInterface() {
-				attrType := field.Type()
-				attrValue := field
-				return checkObjBinding(attrType, attrValue)
-			}
-		}
-		if fieldKind == reflect.Ptr {
-			if field.CanAddr() && field.Addr().CanInterface() {
-				attrType := field.Type().Elem()
-				attrValue := field.Elem()
-				return checkObjBinding(attrType, attrValue)
-			}
-		}
 	}
 	return nil
 }
@@ -128,7 +213,7 @@ func checkField(element reflect.Type, vElement reflect.Value, i int) error {
 // checkObjBinding 检查实例的字段
 func checkObjBinding(element reflect.Type, vElement reflect.Value) error {
 	for i := 0; i < element.NumField(); i++ {
-		if err := checkField(element, vElement, i); err != nil {
+		if err := checkField(element.Field(i), vElement.Field(i)); err != nil {
 			return err
 		}
 	}
