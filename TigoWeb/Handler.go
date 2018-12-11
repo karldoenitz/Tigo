@@ -2,9 +2,9 @@
 package TigoWeb
 
 import (
-	"Tigo/binding"
 	"encoding/json"
 	"fmt"
+	"github.com/karldoenitz/Tigo/binding"
 	"github.com/karldoenitz/Tigo/logger"
 	"html/template"
 	"io/ioutil"
