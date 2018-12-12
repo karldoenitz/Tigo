@@ -22,17 +22,19 @@ func checkField(field reflect.StructField, vField reflect.Value) error {
 			if err := checkField(field, vField.Elem()); err != nil {
 				return err
 			}
-		} else {
-			//vField.Set()
 		}
 	case reflect.Struct:
 		if err := checkStructureField(field, vField); err != nil {
 			return err
 		}
 	case reflect.Slice:
-		break
+		if err := checkSliceField(field, vField); err != nil {
+			return err
+		}
 	case reflect.Array:
-		break
+		if err := checkArrayField(field, vField); err != nil {
+			return err
+		}
 	case reflect.Map:
 		if err := checkMapField(field, vField); err != nil {
 			return err
@@ -67,25 +69,24 @@ func checkInvalidField(field reflect.StructField, vField reflect.Value) error {
 	if isRegexExisted {
 		logger.Error.Printf("regex `%s` is invalid for nil field", regexStr)
 	}
-	return fmt.Errorf("%s is a required field, can not be nil", field.Name)
+	return fmt.Errorf("%s is a required field, can not be nil, value: %s", field.Name, vField.String())
 }
 
 // checkMapField 对Map类型的字段进行校验
 func checkMapField(field reflect.StructField, vField reflect.Value) error {
-	if vField.IsNil() {
-		vField.Set(reflect.MakeMap(vField.Type()))
-	}
-
+	logger.Warning.Printf("Do not support map kind field: %s value: %s", field.Name, vField.String())
 	return nil
 }
 
 // checkSliceField 对切片类型的字段进行校验
 func checkSliceField(field reflect.StructField, vField reflect.Value) error {
+	logger.Warning.Printf("Do not support slice kind field: %s value: %s", field.Name, vField.String())
 	return nil
 }
 
 // checkArrayField 对数组类型的字段进行校验
 func checkArrayField(field reflect.StructField, vField reflect.Value) error {
+	logger.Warning.Printf("Do not support array kind field: %s value: %s", field.Name, vField.String())
 	return nil
 }
 
