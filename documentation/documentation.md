@@ -658,5 +658,5 @@ type Others struct {
     Age     *int     `json:"age" required:"true" default:"18"`  // Not Support
     Company Company  `json:"company" required:"true"`
 }
-/*以上这种方式暂时不支持，后期会支持*/
+/*以上这种方式OK👌*/
 ```
