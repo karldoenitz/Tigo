@@ -416,12 +416,12 @@ type JsonParams struct {
 ```go
 func Encrypt(src[]byte, key []byte) string
 ```
-使用此方法对字符数组进行aes加密。
+使用此方法对字符数组进行aes加密。  
 解密方法<a name="Decrypt"></a>
 ```go
 func Decrypt(src[]byte, key []byte) ([]byte)
 ```
-使用此方法对已加密的字符数组进行aes解密。
+使用此方法对已加密的字符数组进行aes解密。  
 初始化全局变量方法<a name="InitGlobalConfig"></a>
 ```go
 func InitGlobalConfig(configPath string)
