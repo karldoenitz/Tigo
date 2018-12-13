@@ -91,3 +91,22 @@ func parseTag(tag string) (string, tagOptions) {
 	s := strings.Split(tag, ",")
 	return s[0], s[1:]
 }
+
+// bytesToQuery 将bytes转换为url的values值
+func bytesToQuery(urlParam []byte) (url.Values, error) {
+	formatUrl := "http://www.query.com/param?"+string(urlParam)
+	u, err := url.Parse(formatUrl)
+	if err != nil {
+		return nil, err
+	}
+	return url.ParseQuery(u.RawQuery)
+}
+
+// FormBytesToStructure 将x-www-form-urlencoded转换为struct实例
+func FormBytesToStructure(form []byte, obj interface{}) error {
+	values, err := bytesToQuery(form)
+	if err != nil {
+		return err
+	}
+	return Unmarshal(values, obj)
+}
