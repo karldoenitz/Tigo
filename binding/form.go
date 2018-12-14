@@ -109,3 +109,12 @@ func FormBytesToStructure(form []byte, obj interface{}) error {
 	}
 	return Unmarshal(values, obj)
 }
+
+// ParseFormToInstance 将json转为structure对应的instance，并根据tag校验字段
+func ParseFormToInstance(jsonBytes []byte, obj interface{}) error {
+	err := FormBytesToStructure(jsonBytes, obj)
+	if err != nil {
+		return err
+	}
+	return ValidateInstance(obj)
+}

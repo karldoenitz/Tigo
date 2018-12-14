@@ -385,3 +385,20 @@ func (baseHandler *BaseHandler) CheckJsonBinding(obj interface{}) error {
 	jsonData := baseHandler.GetBody()
 	return binding.ParseJsonToInstance(jsonData, obj)
 }
+
+// CheckFormBinding 检查提交的form是否符合要求
+func (baseHandler *BaseHandler) CheckFormBinding(obj interface{}) error {
+	bodyData := baseHandler.GetBody()
+	return binding.ParseFormToInstance(bodyData, obj)
+}
+
+// CheckParamBinding 检查提交的参数是否符合要求
+func (baseHandler *BaseHandler) CheckParamBinding(obj interface{}) error {
+	if baseHandler.GetHeader("Content-Type") == "application/json" {
+		return baseHandler.CheckJsonBinding(obj)
+	}
+	if baseHandler.GetHeader("Content-Type") == "application/x-www-form-urlencoded" {
+		return baseHandler.CheckFormBinding(obj)
+	}
+	return nil
+}
