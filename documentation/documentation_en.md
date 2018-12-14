@@ -26,6 +26,8 @@ API index:
     - [func ToJson](#ToJson)
     - [func DumpHttpRequestMsg](#DumpHttpRequestMsg)
     - [func CheckJsonBinding](#CheckJsonBinding)
+    - [func CheckFormBinding](#CheckFormBinding)
+    - [func CheckParamBinding](#CheckParamBinding)
   - [type UrlPattern](#UrlPattern)
     - [func AppendUrlPattern](#AppendUrlPattern)
     - [func Init](#Init)
@@ -74,6 +76,8 @@ API index:
   - [functions](#bindingFunctions)
     - [func ParseJsonToInstance](#ParseJsonToInstance)
     - [func ValidateInstance](#ValidateInstance)
+    - [func FormBytesToStructure](#FormBytesToStructure)
+    - [func ParseFormToInstance](#ParseFormToInstance)
 # Tigo.TigoWeb<a name="TigoWeb"></a>
 TigoWeb is the core part of Tigo framework, it contains Handler,URLpattern and Application.
 ## type BaseHandler<a name="BaseHandler"></a>
@@ -259,6 +263,16 @@ Post的json：
 // age default value is 18
 ```
 reference `Tigo.binding.ValidateInstance`
+### func (*BaseHandler)CheckFormBinding<a name="CheckFormBinding"></a>
+```go
+func (baseHandler *BaseHandler) CheckFormBinding(obj interface{}) error
+```
+```CheckFormBinding``` check the form from http request.
+### func (*BaseHandler)CheckParamBinding<a name="CheckParamBinding"></a>
+```go
+func (baseHandler *BaseHandler) CheckParamBinding(obj interface{}) error
+```
+```CheckParamBinding``` check the param from http request, form or json.
 ## type UrlPattern<a name="UrlPattern"></a>
 ```go
 type UrlPattern struct {
@@ -621,7 +635,7 @@ Use this method to verify the `obj` with tag.
 ```go
 type Company struct {
     Name string `json:"name" required:"false"`
-    Addr string `json:"name" required:"false"`
+    Addr string `json:"addr" required:"false"`
 }
 
 type Boss struct {
@@ -645,3 +659,13 @@ type Others struct {
 }
 /*This is OK👌*/
 ```
+### func FormBytesToStructure<a name="FormBytesToStructure"><a/>
+```go
+func FormBytesToStructure(form []byte, obj interface{}) error
+```
+Use this method to convert form to structure instance.
+### func ParseFormToInstance<a name="ParseFormToInstance"><a/>
+```go
+func ParseFormToInstance(form []byte, obj interface{}) error
+```
+Verify the instance unmarshal from the `form`.
