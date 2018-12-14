@@ -265,6 +265,16 @@ Post的json：
 // 以上两个json都没有填写age，但不会报错，age会被设置为默认值18
 ```
 其他规则可参考`Tigo.binding.ValidateInstance`
+### func (*BaseHandler)CheckFormBinding<a name="CheckFormBinding"></a>
+```go
+func (baseHandler *BaseHandler) CheckFormBinding(obj interface{}) error
+```
+```CheckFormBinding```校验客户端发送的form表单是否符合要求。
+### func (*BaseHandler)CheckParamBinding<a name="CheckParamBinding"></a>
+```go
+func (baseHandler *BaseHandler) CheckParamBinding(obj interface{}) error
+```
+```CheckParamBinding```校验客户端发送的form或json是否符合要求。
 ## type UrlPattern<a name="UrlPattern"></a>
 ```go
 type UrlPattern struct {
