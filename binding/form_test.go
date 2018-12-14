@@ -13,7 +13,7 @@ type UserForm struct {
 }
 
 func TestForm(t *testing.T) {
-	formData := ""
+	formData := "name=king%E5%BB%96&age=23&vip=true&cash=12.89"
 	userForm := UserForm{}
 	err := FormBytesToStructure([]byte(formData), &userForm)
 	if err != nil {
