@@ -8,11 +8,12 @@ import (
 	"strconv"
 )
 
+// ErrStructure 值类型不合法的错误
 var (
-	ErrStructure = errors.New("Unmarshal() expects struct input. ")
+	ErrStructure = errors.New("UnmarshalForm() expects struct input. ")
 )
 
-// Unmarshal 将url.Values转为struct
+// UnmarshalForm 将url.Values转为struct
 func UnmarshalForm(values url.Values, s interface{}) error {
 	val := reflect.ValueOf(s)
 	for val.Kind() == reflect.Ptr {
