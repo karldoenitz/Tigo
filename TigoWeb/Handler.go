@@ -2,6 +2,7 @@
 package TigoWeb
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/karldoenitz/Tigo/binding"
@@ -37,7 +38,10 @@ func (baseHandler *BaseHandler) GetBody() []byte {
 			logger.Error.Println(err.Error())
 			return nil
 		}
-		defer baseHandler.Request.Body.Close()
+		defer func() {
+			ioReader := ioutil.NopCloser(bytes.NewBuffer(body))
+			baseHandler.Request.Body = ioReader
+		}()
 		baseHandler.ctxValMap["body"] = body
 	}
 	return baseHandler.ctxValMap["body"].([]byte)
