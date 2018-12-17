@@ -388,8 +388,7 @@ func (baseHandler *BaseHandler) CheckJsonBinding(obj interface{}) error {
 
 // CheckFormBinding 检查提交的form是否符合要求
 func (baseHandler *BaseHandler) CheckFormBinding(obj interface{}) error {
-	bodyData := baseHandler.getFormData()
-	return binding.ParseFormToInstance([]byte(bodyData), obj)
+	return binding.UnmarshalForm(baseHandler.Request.Form, obj)
 }
 
 // CheckParamBinding 检查提交的参数是否符合要求
@@ -401,17 +400,4 @@ func (baseHandler *BaseHandler) CheckParamBinding(obj interface{}) error {
 		return baseHandler.CheckFormBinding(obj)
 	}
 	return nil
-}
-
-// getFormData 获取http报文体中的form信息
-func (baseHandler *BaseHandler) getFormData() string {
-	formData := ""
-	for key, value := range baseHandler.Request.Form {
-		v := ""
-		if len(value) > 0 {
-			v = value[0]
-		}
-		formData += fmt.Sprintf("%s=%s&", key, v)
-	}
-	return formData
 }

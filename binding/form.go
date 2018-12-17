@@ -13,7 +13,7 @@ var (
 )
 
 // Unmarshal 将url.Values转为struct
-func Unmarshal(values url.Values, s interface{}) error {
+func UnmarshalForm(values url.Values, s interface{}) error {
 	val := reflect.ValueOf(s)
 	for val.Kind() == reflect.Ptr {
 		if val.IsNil() {
@@ -107,7 +107,7 @@ func FormBytesToStructure(form []byte, obj interface{}) error {
 	if err != nil {
 		return err
 	}
-	return Unmarshal(values, obj)
+	return UnmarshalForm(values, obj)
 }
 
 // ParseFormToInstance 将form转为structure对应的instance，并根据tag校验字段
