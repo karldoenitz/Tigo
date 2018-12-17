@@ -27,6 +27,8 @@ API目录：
     - [func ToJson](#ToJson)
     - [func DumpHttpRequestMsg](#DumpHttpRequestMsg)
     - [func CheckJsonBinding](#CheckJsonBinding)
+    - [func CheckFormBinding](#CheckFormBinding)
+    - [func CheckParamBinding](#CheckParamBinding)
   - [type UrlPattern](#UrlPattern)
     - [func AppendUrlPattern](#AppendUrlPattern)
     - [func Init](#Init)
@@ -75,6 +77,8 @@ API目录：
   - [functions](#bindingFunctions)
     - [func ParseJsonToInstance](#ParseJsonToInstance)
     - [func ValidateInstance](#ValidateInstance)
+    - [func FormBytesToStructure](#FormBytesToStructure)
+    - [func ParseFormToInstance](#ParseFormToInstance)
 # Tigo.TigoWeb<a name="TigoWeb"></a>
 TigoWeb是Tigo框架中的核心部分，Handler、URLpattern以及Application三大核心组件包含于此。
 ## type BaseHandler<a name="BaseHandler"></a>
@@ -261,6 +265,16 @@ Post的json：
 // 以上两个json都没有填写age，但不会报错，age会被设置为默认值18
 ```
 其他规则可参考`Tigo.binding.ValidateInstance`
+### func (*BaseHandler)CheckFormBinding<a name="CheckFormBinding"></a>
+```go
+func (baseHandler *BaseHandler) CheckFormBinding(obj interface{}) error
+```
+```CheckFormBinding```校验客户端发送的form表单是否符合要求。
+### func (*BaseHandler)CheckParamBinding<a name="CheckParamBinding"></a>
+```go
+func (baseHandler *BaseHandler) CheckParamBinding(obj interface{}) error
+```
+```CheckParamBinding```校验客户端发送的form或json是否符合要求。
 ## type UrlPattern<a name="UrlPattern"></a>
 ```go
 type UrlPattern struct {
@@ -636,7 +650,7 @@ func ValidateInstance(obj interface{}) error
 ```go
 type Company struct {
     Name string `json:"name" required:"false"`
-    Addr string `json:"name" required:"false"`
+    Addr string `json:"addr" required:"false"`
 }
 
 type Boss struct {
@@ -660,3 +674,20 @@ type Others struct {
 }
 /*以上这种方式OK👌*/
 ```
+### func FormBytesToStructure<a name="FormBytesToStructure"><a/>
+```go
+func FormBytesToStructure(form []byte, obj interface{}) error
+```
+使用此方法将form转换为结构体。
+```go
+type User struct {
+    Name string `form:"name" required:"false"`
+    Age  int    `form:"age" required:"false"`
+}
+```
+在tag中设置`form`，即可以从form中解析出对应的字段值。
+### func ParseFormToInstance<a name="ParseFormToInstance"><a/>
+```go
+func ParseFormToInstance(form []byte, obj interface{}) error
+```
+使用此方法将form转换为结构体并且对结构体进行校验。

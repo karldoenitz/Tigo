@@ -2,6 +2,7 @@
 package TigoWeb
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/karldoenitz/Tigo/binding"
@@ -37,7 +38,10 @@ func (baseHandler *BaseHandler) GetBody() []byte {
 			logger.Error.Println(err.Error())
 			return nil
 		}
-		defer baseHandler.Request.Body.Close()
+		defer func() {
+			ioReader := ioutil.NopCloser(bytes.NewBuffer(body))
+			baseHandler.Request.Body = ioReader
+		}()
 		baseHandler.ctxValMap["body"] = body
 	}
 	return baseHandler.ctxValMap["body"].([]byte)
@@ -384,4 +388,20 @@ func (baseHandler *BaseHandler) DumpHttpRequestMsg(logLevel int) {
 func (baseHandler *BaseHandler) CheckJsonBinding(obj interface{}) error {
 	jsonData := baseHandler.GetBody()
 	return binding.ParseJsonToInstance(jsonData, obj)
+}
+
+// CheckFormBinding 检查提交的form是否符合要求
+func (baseHandler *BaseHandler) CheckFormBinding(obj interface{}) error {
+	return binding.UnmarshalForm(baseHandler.Request.Form, obj)
+}
+
+// CheckParamBinding 检查提交的参数是否符合要求
+func (baseHandler *BaseHandler) CheckParamBinding(obj interface{}) error {
+	if baseHandler.GetHeader("Content-Type") == "application/json" {
+		return baseHandler.CheckJsonBinding(obj)
+	}
+	if baseHandler.GetHeader("Content-Type") == "application/x-www-form-urlencoded" {
+		return baseHandler.CheckFormBinding(obj)
+	}
+	return nil
 }
