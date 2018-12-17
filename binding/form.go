@@ -94,7 +94,7 @@ func getVal(values url.Values, tag string) string {
 
 // bytesToQuery 将bytes转换为url的values值
 func bytesToQuery(urlParam []byte) (url.Values, error) {
-	formatUrl := "http://www.query.com/param?"+string(urlParam)
+	formatUrl := "http://www.query.com/param?" + string(urlParam)
 	u, err := url.Parse(formatUrl)
 	if err != nil {
 		return nil, err
