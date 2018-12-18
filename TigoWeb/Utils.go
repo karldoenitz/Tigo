@@ -7,7 +7,10 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"io"
+	"net/url"
+	"strings"
 )
 
 //////////////////////////////////////////////////数据加密工具////////////////////////////////////////////////////////////
@@ -77,4 +80,21 @@ func InitGlobalConfig(configPath string) {
 	config := GlobalConfig{}
 	config.Init(configPath)
 	globalConfig = &config
+}
+
+//////////////////////////////////////////////////HTTP相关工具///////////////////////////////////////////////////////////
+
+// getFormDataStr 获取报文体中的Form信息
+// 将url.Values中的数据迭代取出，存入一个数组中，
+// 并将字符串拼接成一个字符串
+func getFormDataStr(form url.Values) string {
+	var params []string
+	for k, v := range form {
+		value := ""
+		if len(v) > 0 {
+			value = v[0]
+		}
+		params = append(params, fmt.Sprintf("%s=%s", k, value))
+	}
+	return strings.Join(params, "&")
 }
