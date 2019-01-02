@@ -396,7 +396,10 @@ func (baseHandler *BaseHandler) CheckJsonBinding(obj interface{}) error {
 
 // CheckFormBinding 检查提交的form是否符合要求
 func (baseHandler *BaseHandler) CheckFormBinding(obj interface{}) error {
-	return binding.UnmarshalForm(baseHandler.Request.Form, obj)
+	if err := binding.UnmarshalForm(baseHandler.Request.Form, obj); err != nil {
+		return err
+	}
+	return binding.ValidateInstance(obj)
 }
 
 // CheckParamBinding 检查提交的参数是否符合要求
