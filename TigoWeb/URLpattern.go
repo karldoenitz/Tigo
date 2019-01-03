@@ -43,7 +43,7 @@ func (urlPatternMidWare UrlPatternMidWare) Handle(responseWriter http.ResponseWr
 		function.Call(functionParams)
 	}
 	requestEnd := time.Now().Nanosecond() / 1e6
-	logger.Trace.Printf("%s %s %dms \n", requestMethod, urlPatternMidWare.requestUrl, requestEnd-requestStart)
+	logger.Trace.Printf("%s %s %dms", requestMethod, urlPatternMidWare.requestUrl, requestEnd-requestStart)
 }
 
 // UrlPattern 是URL路由，此处存储URL映射。
