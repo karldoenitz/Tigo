@@ -288,6 +288,16 @@ func (baseHandler *BaseHandler) GetJsonValue(key string) interface{} {
 	return mapResult[key]
 }
 
+// BeforeRequest 在每次响应HTTP请求之前执行此函数
+func (baseHandler *BaseHandler) BeforeRequest() {
+	return
+}
+
+// TeardownRequest 在每次响应HTTP请求之后执行此函数
+func (baseHandler *BaseHandler) TeardownRequest() {
+	return
+}
+
 //////////////////////////////////////////////////HTTP Method///////////////////////////////////////////////////////////
 
 // 请求方法不合法

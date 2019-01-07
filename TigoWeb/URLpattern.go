@@ -28,9 +28,13 @@ func (urlPatternMidWare UrlPatternMidWare) Handle(responseWriter http.ResponseWr
 	init := handler.MethodByName("InitHandler")
 	// 解析参数
 	paramPasser := handler.MethodByName("PassJson")
+	// 获取BeforeRequest方法
+	beforeRequest := handler.MethodByName("BeforeRequest")
 	// 获取HTTP请求方式
 	requestMethod := MethodMapping[request.Method]
 	function := handler.MethodByName(requestMethod)
+	// 获取TeardownRequest方法
+	teardownRequest := handler.MethodByName("TeardownRequest")
 	initParams := []reflect.Value{reflect.ValueOf(responseWriter), reflect.ValueOf(request)}
 	var functionParams []reflect.Value
 	if init.IsValid() {
@@ -39,8 +43,14 @@ func (urlPatternMidWare UrlPatternMidWare) Handle(responseWriter http.ResponseWr
 	if paramPasser.IsValid() {
 		paramPasser.Call(functionParams)
 	}
+	if beforeRequest.IsValid() {
+		beforeRequest.Call(functionParams)
+	}
 	if function.IsValid() {
 		function.Call(functionParams)
+	}
+	if teardownRequest.IsValid() {
+		teardownRequest.Call(functionParams)
 	}
 	requestEnd := time.Now().Nanosecond() / 1e6
 	logger.Trace.Printf("%s %s %dms", requestMethod, urlPatternMidWare.requestUrl, requestEnd-requestStart)
