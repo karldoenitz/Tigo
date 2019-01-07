@@ -28,11 +28,11 @@ func UnmarshalForm(values url.Values, s interface{}) error {
 	return reflectValueFromTag(values, val)
 }
 
-func validateTag(tag string) bool {
+func isIgnoreTag(tag string) bool {
 	if tag == "" || tag == "-" {
-		return false
+		return true
 	}
-	return true
+	return false
 }
 
 func reflectValueFromTag(values url.Values, val reflect.Value) error {
@@ -40,7 +40,7 @@ func reflectValueFromTag(values url.Values, val reflect.Value) error {
 	for i := 0; i < val.NumField(); i++ {
 		field := fieldType.Field(i)
 		tag := field.Tag.Get("form")
-		if !validateTag(tag) {
+		if isIgnoreTag(tag) {
 			continue
 		}
 		vField := val.Field(i)
