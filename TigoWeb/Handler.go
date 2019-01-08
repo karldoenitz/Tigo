@@ -92,7 +92,7 @@ func (baseHandler *BaseHandler) ResponseAsText(result string) {
 	fmt.Fprintf(baseHandler.ResponseWriter, result)
 }
 
-// ResponseAsHtml 向客户端响应一个html结果
+// ResponseAsHtml 向客户端响应一个html结果，默认字符集为utf-8
 func (baseHandler *BaseHandler) ResponseAsHtml(result string, charset ...string) {
 	if len(charset) > 0 {
 		baseHandler.ResponseWriter.Header().Set("Content-Type", fmt.Sprintf("text/html; %s", charset[0]))
