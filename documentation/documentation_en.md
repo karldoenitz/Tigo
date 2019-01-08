@@ -273,6 +273,16 @@ func (baseHandler *BaseHandler) CheckFormBinding(obj interface{}) error
 func (baseHandler *BaseHandler) CheckParamBinding(obj interface{}) error
 ```
 ```CheckParamBinding``` check the param from http request, form or json.
+### func (*BaseHandler)BeforeRequest<a name="BeforeRequest"></a>
+```go
+func (baseHandler *BaseHandler) BeforeRequest()
+```
+```BeforeRequest``` run this function before processing http request.
+### func (*BaseHandler)TeardownRequest<a name="TeardownRequest"></a>
+```go
+func (baseHandler *BaseHandler) TeardownRequest()
+```
+```TeardownRequest```run this function when teardown http request.
 ## type UrlPattern<a name="UrlPattern"></a>
 ```go
 type UrlPattern struct {

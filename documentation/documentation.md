@@ -29,6 +29,8 @@ API目录：
     - [func CheckJsonBinding](#CheckJsonBinding)
     - [func CheckFormBinding](#CheckFormBinding)
     - [func CheckParamBinding](#CheckParamBinding)
+    - [func BeforeRequest](#BeforeRequest)
+    - [func TeardownRequest](#TeardownRequest)
   - [type UrlPattern](#UrlPattern)
     - [func AppendUrlPattern](#AppendUrlPattern)
     - [func Init](#Init)
@@ -275,6 +277,16 @@ func (baseHandler *BaseHandler) CheckFormBinding(obj interface{}) error
 func (baseHandler *BaseHandler) CheckParamBinding(obj interface{}) error
 ```
 ```CheckParamBinding```校验客户端发送的form或json是否符合要求。
+### func (*BaseHandler)BeforeRequest<a name="BeforeRequest"></a>
+```go
+func (baseHandler *BaseHandler) BeforeRequest()
+```
+```BeforeRequest```在处理request之前会先执行此方法。
+### func (*BaseHandler)TeardownRequest<a name="TeardownRequest"></a>
+```go
+func (baseHandler *BaseHandler) TeardownRequest()
+```
+```TeardownRequest```在处理request请求之后执行此函数。
 ## type UrlPattern<a name="UrlPattern"></a>
 ```go
 type UrlPattern struct {
