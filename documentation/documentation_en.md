@@ -192,9 +192,9 @@ parameters:
 If not configure base path of templates in configuration, this method will use relative path.
 ### func (*BaseHandler)ResponseAsHtml<a name="ResponseAsHtml"></a>
 ```go
-func (baseHandler *BaseHandler)ResponseAsHtml(result string)
+func (baseHandler *BaseHandler)ResponseAsHtml(result string, charset ...string)
 ```
-```ResponseAsHtml``` is the method to response with html.
+```ResponseAsHtml``` is the method to response with html, charset default `utf-8`.
 ### func (*BaseHandler)ResponseAsText<a name="ResponseAsText"></a>
 ```go
 func (baseHandler *BaseHandler)ResponseAsText(result string)
@@ -202,9 +202,9 @@ func (baseHandler *BaseHandler)ResponseAsText(result string)
 ```ResponseAsText``` is the method to response with text.
 ### func (*BaseHandler)ResponseAsJson<a name="ResponseAsJson"></a>
 ```go
-func (baseHandler *BaseHandler)ResponseAsJson(response interface{})
+func (baseHandler *BaseHandler)ResponseAsJson(response interface{}, charset ...string)
 ```
-```ResponseAsJson``` is the method to response with json, this method will response empty string if convert response object to json failed.
+```ResponseAsJson``` is the method to response with json, this method will response empty string if convert response object to json failed, charset default `utf-8`.
 ### func (*BaseHandler)ToJson<a name="ToJson"></a>
 ```go
 func (baseHandler *BaseHandler)ToJson(response interface{}) (result string)
