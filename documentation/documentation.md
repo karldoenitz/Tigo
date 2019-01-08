@@ -194,9 +194,9 @@ func (baseHandler *BaseHandler)Render(data interface{}, templates ...string)
 如果在配置文件中没有配置template的路径，则此函数选择模板时将会使用相对路径。
 ### func (*BaseHandler)ResponseAsHtml<a name="ResponseAsHtml"></a>
 ```go
-func (baseHandler *BaseHandler)ResponseAsHtml(result string)
+func (baseHandler *BaseHandler)ResponseAsHtml(result string, charset ...string)
 ```
-```ResponseAsHtml```方法是将传入的字符串以html文本类型响应给客户端。
+```ResponseAsHtml```方法是将传入的字符串以html文本类型响应给客户端，默认字符集为utf-8。
 ### func (*BaseHandler)ResponseAsText<a name="ResponseAsText"></a>
 ```go
 func (baseHandler *BaseHandler)ResponseAsText(result string)
@@ -204,9 +204,9 @@ func (baseHandler *BaseHandler)ResponseAsText(result string)
 ```ResponseAsText```方法是将传入的字符串以text文本类型响应给客户端。
 ### func (*BaseHandler)ResponseAsJson<a name="ResponseAsJson"></a>
 ```go
-func (baseHandler *BaseHandler)ResponseAsJson(response interface{})
+func (baseHandler *BaseHandler)ResponseAsJson(response interface{}, charset ...string)
 ```
-```ResponseAsJson```方法是将传入的对象转换成json字符串，然后响应给客户端，如果转换失败则会向客户端响应空字符串。
+```ResponseAsJson```方法是将传入的对象转换成json字符串，然后响应给客户端，如果转换失败则会向客户端响应空字符串，默认字符集为utf-8。
 ### func (*BaseHandler)ToJson<a name="ToJson"></a>
 ```go
 func (baseHandler *BaseHandler)ToJson(response interface{}) (result string)

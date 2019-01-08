@@ -75,11 +75,15 @@ func (baseHandler *BaseHandler) ToJson(response interface{}) (result string) {
 }
 
 // ResponseAsJson 向客户端响应一个Json结果
-func (baseHandler *BaseHandler) ResponseAsJson(response interface{}) {
+func (baseHandler *BaseHandler) ResponseAsJson(response interface{}, charset ...string) {
 	// 将对象转换为Json字符串
 	jsonResult := baseHandler.ToJson(response)
 	// 设置http报文头内的Content-Type
-	baseHandler.ResponseWriter.Header().Set("Content-Type", "application/json")
+	if len(charset) > 0 {
+		baseHandler.ResponseWriter.Header().Set("Content-Type", fmt.Sprintf("application/json; %s", charset[0]))
+	} else {
+		baseHandler.ResponseWriter.Header().Set("Content-Type", "application/json; charset=utf-8")
+	}
 	fmt.Fprintf(baseHandler.ResponseWriter, jsonResult)
 }
 
@@ -89,8 +93,12 @@ func (baseHandler *BaseHandler) ResponseAsText(result string) {
 }
 
 // ResponseAsHtml 向客户端响应一个html结果
-func (baseHandler *BaseHandler) ResponseAsHtml(result string) {
-	baseHandler.ResponseWriter.Header().Set("Content-Type", "text/html")
+func (baseHandler *BaseHandler) ResponseAsHtml(result string, charset ...string) {
+	if len(charset) > 0 {
+		baseHandler.ResponseWriter.Header().Set("Content-Type", fmt.Sprintf("text/html; %s", charset[0]))
+	} else {
+		baseHandler.ResponseWriter.Header().Set("Content-Type", "text/html; charset=utf-8")
+	}
 	fmt.Fprintf(baseHandler.ResponseWriter, result)
 }
 
