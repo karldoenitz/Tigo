@@ -74,7 +74,7 @@ func (baseHandler *BaseHandler) ToJson(response interface{}) (result string) {
 	return string(jsonResult)
 }
 
-// ResponseAsJson 向客户端响应一个Json结果
+// ResponseAsJson 向客户端响应一个Json结果，默认字符集为utf-8
 func (baseHandler *BaseHandler) ResponseAsJson(response interface{}, charset ...string) {
 	// 将对象转换为Json字符串
 	jsonResult := baseHandler.ToJson(response)
