@@ -12,6 +12,7 @@ type Application struct {
 	IPAddress  string                 // IP地址
 	Port       int                    // 端口
 	UrlPattern map[string]interface{} // url路由配置
+	UrlRouters []Router               // url路由配置
 	ConfigPath string                 // 全局配置
 }
 
@@ -43,7 +44,7 @@ func (application *Application) Run() {
 		application.Port = globalConfig.Port
 	}
 	// url挂载
-	urlPattern := UrlPattern{UrlMapping: application.UrlPattern}
+	urlPattern := UrlPattern{UrlMapping: application.UrlPattern, UrlRouters: application.UrlRouters}
 	urlPattern.Init()
 	// 获取证书与密钥，判断是否启动https服务
 	cert, certKey := globalConfig.Cert, globalConfig.CertKey

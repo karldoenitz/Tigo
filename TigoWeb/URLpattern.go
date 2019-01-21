@@ -56,9 +56,17 @@ func (urlPatternMidWare UrlPatternMidWare) Handle(responseWriter http.ResponseWr
 	logger.Trace.Printf("%s %s %dms", requestMethod, urlPatternMidWare.requestUrl, requestEnd-requestStart)
 }
 
+// Router 路由对象
+type Router struct {
+	Url        string
+	Handler    interface{}
+	Middleware []Middleware
+}
+
 // UrlPattern 是URL路由，此处存储URL映射。
 type UrlPattern struct {
 	UrlMapping map[string]interface{}
+	UrlRouters []Router
 }
 
 // AppendUrlPattern 向http服务挂载单个handler，注意：
@@ -69,6 +77,14 @@ func (urlPattern *UrlPattern) AppendUrlPattern(uri string, v interface {
 	http.HandleFunc(uri, v.Handle)
 }
 
+// AppendRouterPattern 向http服务挂载单个Router，Router中配置有url对应的handler以及对应的中间件
+func (urlPattern *UrlPattern) AppendRouterPattern(router Router, v interface {
+	Handle(http.ResponseWriter, *http.Request)
+}) {
+	middleware := chainMiddleware(router.Middleware...)
+	http.HandleFunc(router.Url, middleware(v.Handle))
+}
+
 // Init 初始化url映射，遍历UrlMapping，将handler与对应的URL依次挂载到http服务上
 func (urlPattern *UrlPattern) Init() {
 	for key, value := range urlPattern.UrlMapping {
@@ -77,5 +93,12 @@ func (urlPattern *UrlPattern) Init() {
 			requestUrl: key,
 		}
 		urlPattern.AppendUrlPattern(key, &urlPatternMidWare)
+	}
+	for _, router := range urlPattern.UrlRouters {
+		urlPatternMidWare := UrlPatternMidWare{
+			Handler:    router.Handler,
+			requestUrl: router.Url,
+		}
+		urlPattern.AppendRouterPattern(router, &urlPatternMidWare)
 	}
 }
