@@ -33,6 +33,7 @@ API目录：
     - [func TeardownRequest](#TeardownRequest)
   - [type UrlPattern](#UrlPattern)
     - [func AppendUrlPattern](#AppendUrlPattern)
+    - [func AppendRouterPattern](#AppendRouterPattern)
     - [func Init](#Init)
   - [type Application](#Application)
     - [func Run](#Run)
@@ -291,6 +292,7 @@ func (baseHandler *BaseHandler) TeardownRequest()
 ```go
 type UrlPattern struct {
     UrlMapping map[string] interface{Handle(http.ResponseWriter, *http.Request)}
+    UrlRouters []Router
 }
 ```
 URL路由设置，使用这个结构体在应用中配置URL与对应的handler。
@@ -299,6 +301,32 @@ URL路由设置，使用这个结构体在应用中配置URL与对应的handler�
 func (urlPattern *UrlPattern)AppendUrlPattern(uri string, v interface{Handle(http.ResponseWriter, *http.Request)})
 ```
 此方法是向指定URL上挂载一个Handler。
+### func (urlPattern *UrlPattern) AppendRouterPattern<a name="AppendRouterPattern"></a>
+```go
+func (urlPattern *UrlPattern) AppendRouterPattern(router Router, v interface {
+	Handle(http.ResponseWriter, *http.Request)
+})
+```
+此方法是向指定URL上挂载一个Handler，并可以配置中间件。  
+示例如下：
+```go
+// WithTracing 中间件用来获取访问地址
+func WithTracing(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("Tracing request for %s", r.RequestURI)
+		next.ServeHTTP(w, r)
+	}
+}
+
+var routers = []TigoWeb.Router{
+	{Url: "/test", Handler: &TestHandler{}, Middleware: []TigoWeb.Middleware{WithTracing}},
+}
+
+func main() {
+	application := TigoWeb.Application{IPAddress: "0.0.0.0", Port: 8080, UrlRouters: routers}
+	application.Run()
+}
+```
 ### func (urlPattern *UrlPattern)Init<a name="Init"></a>
 ```go
 func (urlPattern *UrlPattern)Init()
