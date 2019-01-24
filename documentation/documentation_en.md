@@ -30,6 +30,7 @@ API index:
     - [func CheckParamBinding](#CheckParamBinding)
   - [type UrlPattern](#UrlPattern)
     - [func AppendUrlPattern](#AppendUrlPattern)
+    - [func AppendRouterPattern](#AppendRouterPattern)
     - [func Init](#Init)
   - [type Application](#Application)
     - [func Run](#Run)
@@ -295,6 +296,32 @@ URL mapping structure.
 func (urlPattern *UrlPattern)AppendUrlPattern(uri string, v interface{Handle(http.ResponseWriter, *http.Request)})
 ```
 Use this method to append a handler to an url.
+### func (urlPattern *UrlPattern) AppendRouterPattern<a name="AppendRouterPattern"></a>
+```go
+func (urlPattern *UrlPattern) AppendRouterPattern(router Router, v interface {
+	Handle(http.ResponseWriter, *http.Request)
+})
+```
+Use this method to append a handler to an url and setup middleware to the handler.  
+Example:
+```go
+// WithTracing get request uri
+func WithTracing(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("Tracing request for %s", r.RequestURI)
+		next.ServeHTTP(w, r)
+	}
+}
+
+var routers = []TigoWeb.Router{
+	{Url: "/test", Handler: &TestHandler{}, Middleware: []TigoWeb.Middleware{WithTracing}},
+}
+
+func main() {
+	application := TigoWeb.Application{IPAddress: "0.0.0.0", Port: 8080, UrlRouters: routers}
+	application.Run()
+}
+```
 ### func (urlPattern *UrlPattern)Init<a name="Init"></a>
 ```go
 func (urlPattern *UrlPattern)Init()
