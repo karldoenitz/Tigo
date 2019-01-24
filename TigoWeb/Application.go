@@ -1,4 +1,4 @@
-// Package TigoWeb Copyright 2018 The Tigo Authors. All rights reserved.
+// Package TigoWeb 框架的基本功能包，此包包含了搭建服务的基础功能
 package TigoWeb
 
 import (

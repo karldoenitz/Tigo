@@ -1,5 +1,5 @@
 // Package binding 字段校验功能包
-// 提供了一个非常简单的json校验功能，目前功能有限，仅支持几种基本类型的校验。
+// 提供了一个非常简单的json以及form的校验功能，支持多种类型的校验。
 package binding
 
 import (

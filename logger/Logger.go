@@ -1,4 +1,4 @@
-// Package logger Copyright 2018 The Tigo Authors. All rights reserved.
+// Package logger 提供Tigo框架自带的log纪录功能
 package logger
 
 import (
