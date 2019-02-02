@@ -18,30 +18,40 @@ go get github.com/karldoenitz/Tigo/...
 ```go
 package main
 
-import "github.com/karldoenitz/Tigo/TigoWeb"
+import (
+	"github.com/karldoenitz/Tigo/TigoWeb"
+	"net/http"
+)
 
 // handler
-type HelloHandler struct {
-    TigoWeb.BaseHandler
+type DemoHandler struct {
+	TigoWeb.BaseHandler
 }
 
-func (helloHandler *HelloHandler)Get() {
-    helloHandler.ResponseAsHtml("<p1 style='color: red'>Hello Tigo!</p1>")
+func (demoHandler *DemoHandler) Get() {
+	demoHandler.ResponseAsText("Hello Demo!")
 }
 
-// url路由配置
-var urls = map[string]interface{}{
-    "/hello-tigo": &HelloHandler{},
+// 中间件
+func Authorize(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// 此处授权认证逻辑
+		next.ServeHTTP(w, r)
+	}
 }
 
-// 主函数
+// 路由
+var urls = []TigoWeb.Router{
+	{"/demo", &DemoHandler{}, []TigoWeb.Middleware{Authorize}},
+}
+
 func main() {
-    application := TigoWeb.Application{
-        IPAddress:  "127.0.0.1",
-        Port:       8888,
-        UrlPattern: urls,
-    }
-    application.Run()
+	application := TigoWeb.Application{
+		IPAddress:  "127.0.0.1",
+		Port:       8888,
+		UrlRouters: urls,
+	}
+	application.Run()
 }
 ```
 ### 编译
@@ -62,7 +72,6 @@ INFO: 2018/07/09 15:02:36 Application.go:22: Server run on: 0.0.0.0:8888
 
 # 文档
 [点击此处](https://github.com/karldoenitz/Tigo/blob/master/documentation/documentation.md)
-[文档站点](https://karldoenitz.github.io/Tigo/)
 # 注意
 这个框架在Linux版本的 [CubeBackup for Google Apps](http://www.cubebackup.com) 中有所使用。  
 如果你对此框架感兴趣，可以加入我们一同开发。
