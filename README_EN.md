@@ -19,39 +19,39 @@ go get github.com/karldoenitz/Tigo/...
 package main
 
 import (
-	"github.com/karldoenitz/Tigo/TigoWeb"
-	"net/http"
+    "github.com/karldoenitz/Tigo/TigoWeb"
+    "net/http"
 )
 
 // handler
 type DemoHandler struct {
-	TigoWeb.BaseHandler
+    TigoWeb.BaseHandler
 }
 
 func (demoHandler *DemoHandler) Get() {
-	demoHandler.ResponseAsText("Hello Demo!")
+    demoHandler.ResponseAsText("Hello Demo!")
 }
 
 // Middleware
 func Authorize(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		// 此处授权认证逻辑
-		next.ServeHTTP(w, r)
-	}
+    return func(w http.ResponseWriter, r *http.Request) {
+        // 此处授权认证逻辑
+        next.ServeHTTP(w, r)
+    }
 }
 
 // Router
 var urls = []TigoWeb.Router{
-	{"/demo", &DemoHandler{}, []TigoWeb.Middleware{Authorize}},
+    {"/demo", &DemoHandler{}, []TigoWeb.Middleware{Authorize}},
 }
 
 func main() {
-	application := TigoWeb.Application{
-		IPAddress:  "127.0.0.1",
-		Port:       8888,
-		UrlRouters: urls,
-	}
-	application.Run()
+    application := TigoWeb.Application{
+        IPAddress:  "127.0.0.1",
+        Port:       8888,
+        UrlRouters: urls,
+    }
+    application.Run()
 }
 ```
 ### Compile
