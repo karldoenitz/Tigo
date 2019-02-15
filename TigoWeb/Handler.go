@@ -107,6 +107,16 @@ func (baseHandler *BaseHandler) Response(result ...interface{}) {
 	fmt.Fprintf(baseHandler.ResponseWriter, "%v", result)
 }
 
+// ResponseFmt 向客户端响应一个字符串，支持format格式化字符串
+func (baseHandler *BaseHandler) ResponseFmt(format string, values... interface{}) {
+	fmt.Fprintf(baseHandler.ResponseWriter, format, values...)
+}
+
+// ServerError 将服务器端发生的错误返回给客户端
+func (baseHandler *BaseHandler) ServerError(err error) {
+	http.Error(baseHandler.ResponseWriter, err.Error(), http.StatusInternalServerError)
+}
+
 // Render 渲染模板，返回数据
 // 参数解析如下：
 //   - data：表示传入的待渲染的数据

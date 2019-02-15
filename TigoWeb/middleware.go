@@ -1,6 +1,9 @@
 package TigoWeb
 
-import "net/http"
+import (
+	"errors"
+	"net/http"
+)
 
 // Middleware http中间件
 type Middleware func(next http.HandlerFunc) http.HandlerFunc
@@ -16,4 +19,25 @@ func chainMiddleware(mw ...Middleware) Middleware {
 			last(w, r)
 		}
 	}
+}
+
+func InternalServerErrorMiddleware(h http.HandlerFunc) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var err error
+		defer func() {
+			r := recover()
+			if r != nil {
+				switch t := r.(type) {
+				case string:
+					err = errors.New(t)
+				case error:
+					err = t
+				default:
+					err = errors.New("unknown error")
+				}
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+			}
+		}()
+		h.ServeHTTP(w, r)
+	})
 }

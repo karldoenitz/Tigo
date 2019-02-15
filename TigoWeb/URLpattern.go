@@ -81,7 +81,9 @@ func (urlPattern *UrlPattern) AppendUrlPattern(uri string, v interface {
 func (urlPattern *UrlPattern) AppendRouterPattern(router Router, v interface {
 	Handle(http.ResponseWriter, *http.Request)
 }) {
-	middleware := chainMiddleware(router.Middleware...)
+	baseMiddleware := []Middleware{InternalServerErrorMiddleware}
+	baseMiddleware = append(baseMiddleware, router.Middleware...)
+	middleware := chainMiddleware(baseMiddleware...)
 	http.HandleFunc(router.Url, middleware(v.Handle))
 }
 
