@@ -22,7 +22,7 @@ func chainMiddleware(mw ...Middleware) Middleware {
 }
 
 // InternalServerErrorMiddleware 用来处理控制层出现的异常的中间件
-func InternalServerErrorMiddleware(h http.HandlerFunc) http.HandlerFunc {
+func InternalServerErrorMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var err error
 		defer func() {
@@ -39,6 +39,6 @@ func InternalServerErrorMiddleware(h http.HandlerFunc) http.HandlerFunc {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
 		}()
-		h.ServeHTTP(w, r)
+		next.ServeHTTP(w, r)
 	})
 }
