@@ -24,6 +24,8 @@ API index:
     - [func ResponseAsHtml](#func-basehandlerresponseashtml)
     - [func ResponseAsText](#func-basehandlerresponseastext)
     - [func ResponseAsJson](#func-basehandlerresponseasjson)
+    - [func ResponseFmt](#func-basehandler-responsefmt)
+    - [func ServerError](#func-basehandler-servererror)
     - [func ToJson](#func-basehandlertojson)
     - [func DumpHttpRequestMsg](#func-basehandlerdumphttprequestmsg)
     - [func CheckJsonBinding](#func-basehandlercheckjsonbinding)
@@ -209,6 +211,16 @@ func (baseHandler *BaseHandler)ResponseAsText(result string)
 func (baseHandler *BaseHandler)ResponseAsJson(response interface{}, charset ...string)
 ```
 ```ResponseAsJson``` is the method to response with json, this method will response empty string if convert response object to json failed, charset default `utf-8`.
+### func (*BaseHandler) ResponseFmt
+```go
+func (baseHandler *BaseHandler) ResponseFmt(format string, values... interface{})
+```
+```ResponseFmt``` is the method to format the result and response to client.
+### func (*BaseHandler) ServerError
+```go
+func (baseHandler *BaseHandler) ServerError(err error)
+```
+```ServerError``` is the method to response 500 error to client.
 ### func (*BaseHandler)ToJson<a name="ToJson"></a>
 ```go
 func (baseHandler *BaseHandler)ToJson(response interface{}) (result string)

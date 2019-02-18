@@ -24,6 +24,8 @@ API目录：
     - [func ResponseAsHtml](#func-basehandlerresponseashtml)
     - [func ResponseAsText](#func-basehandlerresponseastext)
     - [func ResponseAsJson](#func-basehandlerresponseasjson)
+    - [func ResponseFmt](#func-basehandler-responsefmt)
+    - [func ServerError](#func-basehandler-servererror)
     - [func ToJson](#func-basehandlertojson)
     - [func DumpHttpRequestMsg](#func-basehandlerdumphttprequestmsg)
     - [func CheckJsonBinding](#func-basehandlercheckjsonbinding)
@@ -210,6 +212,16 @@ func (baseHandler *BaseHandler)ResponseAsText(result string)
 func (baseHandler *BaseHandler)ResponseAsJson(response interface{}, charset ...string)
 ```
 ```ResponseAsJson```方法是将传入的对象转换成json字符串，然后响应给客户端，如果转换失败则会向客户端响应空字符串，默认字符集为utf-8。
+### func (*BaseHandler) ResponseFmt
+```go
+func (baseHandler *BaseHandler) ResponseFmt(format string, values... interface{})
+```
+```ResponseFmt```方法是将传入的参数格式化输出给客户端。
+### func (*BaseHandler) ServerError
+```go
+func (baseHandler *BaseHandler) ServerError(err error)
+```
+```ServerError```方法将error返回给客户端并提示500。
 ### func (*BaseHandler)ToJson<a name="ToJson"></a>
 ```go
 func (baseHandler *BaseHandler)ToJson(response interface{}) (result string)
