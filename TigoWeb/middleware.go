@@ -42,3 +42,13 @@ func InternalServerErrorMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		next.ServeHTTP(w, r)
 	})
 }
+
+// RequestProcessTimeMiddleware 用来记录接口处理请求所用时间的中间件
+func RequestProcessTimeMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requestStart := time.Now().Nanosecond() / 1e6
+		next.ServeHTTP(w, r)
+		requestEnd := time.Now().Nanosecond() / 1e6
+		logger.Trace.Printf("%s %s %dms", r.Method, r.RequestURI, requestEnd-requestStart)
+	})
+}
