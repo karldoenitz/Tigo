@@ -2,10 +2,8 @@
 package TigoWeb
 
 import (
-	"github.com/karldoenitz/Tigo/logger"
 	"net/http"
 	"reflect"
-	"time"
 )
 
 // UrlPatternMidWare 是URL路由中间件
@@ -21,7 +19,6 @@ type UrlPatternMidWare struct {
 //  - 4、调用handler中的功能方法；
 //  - 5、进行HTTP请求结束处理。
 func (urlPatternMidWare UrlPatternMidWare) Handle(responseWriter http.ResponseWriter, request *http.Request) {
-	requestStart := time.Now().Nanosecond() / 1e6
 	// 加载handler
 	handler := reflect.ValueOf(urlPatternMidWare.Handler)
 	// 获取init方法
@@ -52,8 +49,6 @@ func (urlPatternMidWare UrlPatternMidWare) Handle(responseWriter http.ResponseWr
 	if teardownRequest.IsValid() {
 		teardownRequest.Call(functionParams)
 	}
-	requestEnd := time.Now().Nanosecond() / 1e6
-	logger.Trace.Printf("%s %s %dms", requestMethod, urlPatternMidWare.requestUrl, requestEnd-requestStart)
 }
 
 // Router 路由对象
@@ -81,7 +76,7 @@ func (urlPattern *UrlPattern) AppendUrlPattern(uri string, v interface {
 func (urlPattern *UrlPattern) AppendRouterPattern(router Router, v interface {
 	Handle(http.ResponseWriter, *http.Request)
 }) {
-	baseMiddleware := []Middleware{InternalServerErrorMiddleware}
+	baseMiddleware := []Middleware{HttpContextLogMiddleware, InternalServerErrorMiddleware}
 	baseMiddleware = append(baseMiddleware, router.Middleware...)
 	middleware := chainMiddleware(baseMiddleware...)
 	http.HandleFunc(router.Url, middleware(v.Handle))

@@ -131,6 +131,25 @@ func (baseResponse *BaseResponse) ToJson() string {
 	return string(jsonResult)
 }
 
+//////////////////////////////////////Structure HttpResponseWriter//////////////////////////////////////////////////////
+
+// HttpResponseWriter Http响应写入器，用于在中间件中修改http响应报文
+type HttpResponseWriter struct {
+	http.ResponseWriter
+	status int
+}
+
+// WriteHeader 设置Http状态码
+func (httpResponseWriter *HttpResponseWriter) WriteHeader(code int) {
+	httpResponseWriter.status = code
+	httpResponseWriter.ResponseWriter.WriteHeader(code)
+}
+
+// GetStatus 获取Http状态码
+func (httpResponseWriter *HttpResponseWriter) GetStatus() int {
+	return httpResponseWriter.status
+}
+
 //////////////////////////////////////Structure GlobalConfig////////////////////////////////////////////////////////////
 
 // GlobalConfig 全局配置对象
