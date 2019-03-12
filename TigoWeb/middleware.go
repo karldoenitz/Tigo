@@ -57,10 +57,10 @@ func HttpContextLogMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			duration := time.Now().Sub(startTime).Seconds() * 1e3
 			switch status {
 			case http.StatusInternalServerError:
-				logger.Error.Printf("%s %s %dms", requestMethod, url, duration)
+				logger.Error.Printf("%d %s %s %fms", status, requestMethod, url, duration)
 				break
 			default:
-				logger.Trace.Printf("%s %s %dms", requestMethod, url, duration)
+				logger.Info.Printf("%d %s %s %fms", status, requestMethod, url, duration)
 			}
 		}()
 		next.ServeHTTP(&httpResponseWriter, r)
