@@ -70,7 +70,7 @@ API目录：
   - [type Response](#type-response)
     - [ToContentStr](#func-response-responsetocontentstr)
   - [functions](#request模块内置方法)
-    - [func Request](##func-request)
+    - [func Request](#func-request)
     - [func Get](#func-get)
     - [func Post](#func-post)
     - [func Put](#func-put)
