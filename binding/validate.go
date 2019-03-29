@@ -1,6 +1,7 @@
 package binding
 
 import (
+	"errors"
 	"fmt"
 	"github.com/karldoenitz/Tigo/logger"
 	"reflect"
@@ -80,7 +81,19 @@ func checkMapField(field reflect.StructField, vField reflect.Value) error {
 
 // checkSliceField 对切片类型的字段进行校验
 func checkSliceField(field reflect.StructField, vField reflect.Value) error {
-	logger.Warning.Printf("Do not support slice kind field: %s value: %s", field.Name, vField.String())
+	for i := 0; i < vField.Len(); i++ {
+		v := vField.Index(i)
+		t := v.Type()
+		if v.Kind() == reflect.Struct || v.Kind() == reflect.Interface {
+			err := checkObjBinding(t, v)
+			if err != nil {
+				return errors.New(fmt.Sprintf("Field %s=>index %d has an error: %s", field.Name, i, err.Error()))
+			}
+		} else {
+			logger.Warning.Printf("Only support interface/struct kind field: %s", field.Name)
+			break
+		}
+	}
 	return nil
 }
 
