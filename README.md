@@ -1,3 +1,4 @@
+[![Badge](https://img.shields.io/badge/link-Tigo-blue.svg)](https://karldoenitz.github.io/Tigo/)
 [![Build Status](https://travis-ci.org/karldoenitz/Tigo.svg?branch=master)](https://travis-ci.org/karldoenitz/Tigo)
 [![Join the chat at https://gitter.im/karlooper/Tigo](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/karlooper/Tigo?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Open Source Helpers](https://www.codetriage.com/karldoenitz/tigo/badges/users.svg)](https://www.codetriage.com/karldoenitz/Tigo)
@@ -5,6 +6,7 @@
 [![GoDoc](https://godoc.org/github.com/karldoenitz/Tigo?status.svg)](https://godoc.org/github.com/karldoenitz/Tigo)
 [![Release](https://img.shields.io/github/release/karldoenitz/Tigo.svg?style=flat-square)](https://github.com/karldoenitz/Tigo/releases)  
 ![Tigo logo](https://github.com/karldoenitz/Tigo/blob/master/documentation/tigo_logo.jpg "this is Tigo logo")  
+[![HitCount](http://hits.dwyl.io/karldoenitz/Tigo.svg)](http://hits.dwyl.io/karldoenitz/Tigo)
 # Tigo([For English Documentation Click Here](https://github.com/karldoenitz/Tigo/blob/master/README_EN.md))
 一个使用Go语言开发的web框架。
 
