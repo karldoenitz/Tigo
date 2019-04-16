@@ -4,7 +4,6 @@
 [![Open Source Helpers](https://www.codetriage.com/karldoenitz/tigo/badges/users.svg)](https://www.codetriage.com/karldoenitz/Tigo)
 [![Go Report Card](https://goreportcard.com/badge/github.com/karldoenitz/Tigo)](https://goreportcard.com/report/github.com/karldoenitz/Tigo)
 [![GoDoc](https://godoc.org/github.com/karldoenitz/Tigo?status.svg)](https://godoc.org/github.com/karldoenitz/Tigo)
-[![HitCount](http://hits.dwyl.io/karldoenitz/Tigo.svg)](http://hits.dwyl.io/karldoenitz/Tigo)
 [![Release](https://img.shields.io/github/release/karldoenitz/Tigo.svg?style=flat-square)](https://github.com/karldoenitz/Tigo/releases)  
 ![Tigo logo](https://github.com/karldoenitz/Tigo/blob/master/documentation/tigo_logo.jpg "this is Tigo logo")  
 # Tigo([For English Documentation Click Here](https://github.com/karldoenitz/Tigo/blob/master/README_EN.md))
