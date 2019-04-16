@@ -440,3 +440,8 @@ func (baseHandler *BaseHandler) CheckParamBinding(obj interface{}) error {
 	}
 	return nil
 }
+
+// CheckUrlParamBinding 检查url上传递的参数是否符合要求
+func (baseHandler *BaseHandler) CheckUrlParamBinding(obj interface{}) error  {
+	return baseHandler.CheckFormBinding(obj)
+}
