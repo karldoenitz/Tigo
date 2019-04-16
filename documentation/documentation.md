@@ -30,6 +30,7 @@ API目录：
     - [func DumpHttpRequestMsg](#func-basehandlerdumphttprequestmsg)
     - [func CheckJsonBinding](#func-basehandlercheckjsonbinding)
     - [func CheckFormBinding](#func-basehandlercheckformbinding)
+    - [func CheckUrlParamBinding](#func-basehandlercheckurlparambinding)
     - [func CheckParamBinding](#func-basehandlercheckparambinding)
     - [func BeforeRequest](#func-basehandlerbeforerequest)
     - [func TeardownRequest](#func-basehandlerteardownrequest)
@@ -285,6 +286,11 @@ Post的json：
 func (baseHandler *BaseHandler) CheckFormBinding(obj interface{}) error
 ```
 ```CheckFormBinding```校验客户端发送的form表单是否符合要求。
+### func (*BaseHandler)CheckUrlParamBinding
+```go
+func (baseHandler *BaseHandler) CheckUrlParamBinding(obj interface{}) error
+```
+```CheckUrlParamBinding```校验客户端请求时url上挂载的参数是否合法，通常在Get请求时使用。
 ### func (*BaseHandler)CheckParamBinding<a name="CheckParamBinding"></a>
 ```go
 func (baseHandler *BaseHandler) CheckParamBinding(obj interface{}) error

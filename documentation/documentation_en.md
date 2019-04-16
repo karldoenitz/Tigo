@@ -30,6 +30,7 @@ API index:
     - [func DumpHttpRequestMsg](#func-basehandlerdumphttprequestmsg)
     - [func CheckJsonBinding](#func-basehandlercheckjsonbinding)
     - [func CheckFormBinding](#func-basehandlercheckformbinding)
+    - [func CheckUrlParamBinding](#func-basehandlercheckurlparambinding)
     - [func CheckParamBinding](#func-basehandlercheckparambinding)
     - [func BeforeRequest](#func-basehandlerbeforerequest)
     - [func TeardownRequest](#func-basehandlerteardownrequest)
@@ -284,6 +285,11 @@ reference `Tigo.binding.ValidateInstance`
 func (baseHandler *BaseHandler) CheckFormBinding(obj interface{}) error
 ```
 ```CheckFormBinding``` check the form from http request.
+### func (*BaseHandler)CheckUrlParamBinding
+```go
+func (baseHandler *BaseHandler) CheckUrlParamBinding(obj interface{}) error
+```
+```CheckUrlParamBinding``` check the parameters in url.
 ### func (*BaseHandler)CheckParamBinding<a name="CheckParamBinding"></a>
 ```go
 func (baseHandler *BaseHandler) CheckParamBinding(obj interface{}) error
