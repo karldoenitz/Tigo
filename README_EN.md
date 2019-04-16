@@ -3,10 +3,10 @@
 [![Join the chat at https://gitter.im/karlooper/Tigo](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/karlooper/Tigo?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Open Source Helpers](https://www.codetriage.com/karldoenitz/tigo/badges/users.svg)](https://www.codetriage.com/karldoenitz/Tigo)
 [![Go Report Card](https://goreportcard.com/badge/github.com/karldoenitz/Tigo)](https://goreportcard.com/report/github.com/karldoenitz/Tigo)
+[![HitCount](http://hits.dwyl.io/karldoenitz/Tigo.svg)](http://hits.dwyl.io/karldoenitz/Tigo)
 [![GoDoc](https://godoc.org/github.com/karldoenitz/Tigo?status.svg)](https://godoc.org/github.com/karldoenitz/Tigo)
 [![Release](https://img.shields.io/github/release/karldoenitz/Tigo.svg?style=flat-square)](https://github.com/karldoenitz/Tigo/releases)  
 ![Tigo logo](https://github.com/karldoenitz/Tigo/blob/master/documentation/tigo_logo.jpg "this is Tigo logo")
-[![HitCount](http://hits.dwyl.io/karldoenitz/Tigo.svg)](http://hits.dwyl.io/karldoenitz/Tigo)
 # Tigo([中文文档点击此处](https://github.com/karldoenitz/Tigo/blob/master/README.md))
 A web framework developed in go language.
 
