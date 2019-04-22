@@ -19,3 +19,5 @@ var MethodMapping = map[string]string{
 	"OPTIONS": "Options",
 	"TRACE":   "Trace",
 }
+
+const Version  = "1.0.6"
