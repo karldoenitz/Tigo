@@ -10,6 +10,10 @@
 # Tigo([中文文档点击此处](https://github.com/karldoenitz/Tigo/blob/master/README.md))
 A web framework developed in go language.
 
+# Recommend A Commandline Tool For U!
+`tiger` is a commandline tool for `Tigo` framework, you can use `tiger` to create a `Tigo` projection.  
+[glance tiger](https://github.com/karldoenitz/tiger)
+
 # Install
 ```
 go get github.com/karldoenitz/Tigo/...

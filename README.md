@@ -10,6 +10,10 @@
 # Tigo([For English Documentation Click Here](https://github.com/karldoenitz/Tigo/blob/master/README_EN.md))
 一个使用Go语言开发的web框架。
 
+# 推荐工具tiger
+`tiger`是一个专门为`Tigo`框架量身定做的脚手架工具，可以使用`tiger`新建`Tigo`项目或者其他执行其他操作。  
+[查看tiger](https://github.com/karldoenitz/tiger)
+
 # 安装
 ```
 go get github.com/karldoenitz/Tigo/...
