@@ -132,7 +132,8 @@ func initLogger() {
 func init() {
 	dir, err := os.Getwd()
 	if err != nil {
-		panic(err)
+		println(err.Error())
+		dir = "/var"
 	}
 	logPath = dir + "/log.log"
 	initLogger()
