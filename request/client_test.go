@@ -10,6 +10,7 @@ func TestGet(t *testing.T) {
 	response, err := Get("https://life.qq.com/api/activity/detail?id=773947310848622080")
 	if err != nil {
 		fmt.Println(err.Error())
+		return
 	}
 	contentStr := response.ToContentStr()
 	result := struct {
@@ -32,6 +33,7 @@ func TestPost(t *testing.T) {
 	response, err := Post("https://life.qq.com/api/activity/get_good_act_list?cachedCount=0", postData, headers)
 	if err != nil {
 		fmt.Println(err.Error())
+		return
 	}
 	contentStr := response.ToContentStr()
 	fmt.Println(contentStr)

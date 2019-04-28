@@ -80,7 +80,7 @@ func (response *Response) ToContentStr() string {
 // Request 发送指定的Request请求
 func Request(method string, requestUrl string, postParams map[string]interface{}, headers ...map[string]string) (*Response, error) {
 	client := &HttpClient{http.DefaultClient}
-	var requestHeaders map[string]string
+	requestHeaders := map[string]string{}
 	if len(headers) > 0 {
 		requestHeaders = headers[0]
 	}
