@@ -79,8 +79,8 @@ INFO: 2018/07/09 15:02:36 Application.go:22: Server run on: 0.0.0.0:8888
 # 文档
 [点击此处](https://github.com/karldoenitz/Tigo/blob/master/documentation/documentation.md)
 # 都有谁在使用Tigo
-![CubeBackup](https://karldoenitz.github.io/TigoOld/img/cubebackup.png "Cubebackup")
-![Tencent](https://karldoenitz.github.io/TigoOld/img/tencent.png "腾讯教育")
-![Xiaomi](https://karldoenitz.github.io/TigoOld/img/xiaomi.png "小米电子")
+<img src="https://karldoenitz.github.io/TigoOld/img/cubebackup.png" width="150px" height="150px"/>
+<img src="https://karldoenitz.github.io/TigoOld/img/tencent.png" width="150px" height="150px"/>
+<img src="https://karldoenitz.github.io/TigoOld/img/xiaomi.png" width="150px" height="150px"/>
 # 注意
 如果你对此框架感兴趣，可以加入我们一同开发。
