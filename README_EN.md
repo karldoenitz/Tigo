@@ -79,6 +79,10 @@ Open web browser and visit ```http://127.0.0.1:8888/hello-tigo```, you will see 
 # Documentation
 [Click Here](https://github.com/karldoenitz/Tigo/blob/master/documentation/documentation_en.md)
 
+# Users of Tigo
+![CubeBackup](https://karldoenitz.github.io/TigoOld/img/cubebackup.png "Cubebackup")
+![Tencent](https://karldoenitz.github.io/TigoOld/img/tencent.png "Tencent")
+![Xiaomi](https://karldoenitz.github.io/TigoOld/img/xiaomi.png "Xiaomi")
+
 # Attention
-This framework used in [CubeBackup for Google Apps](http://www.cubebackup.com)。
 If you like the framework, join us please.
