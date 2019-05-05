@@ -80,9 +80,13 @@ Open web browser and visit ```http://127.0.0.1:8888/hello-tigo```, you will see 
 [Click Here](https://github.com/karldoenitz/Tigo/blob/master/documentation/documentation_en.md)
 
 # Users of Tigo
-![CubeBackup](https://karldoenitz.github.io/TigoOld/img/cubebackup.png "Cubebackup")
-![Tencent](https://karldoenitz.github.io/TigoOld/img/tencent.png "Tencent")
-![Xiaomi](https://karldoenitz.github.io/TigoOld/img/xiaomi.png "Xiaomi")
+<table>
+<tr>
+<td><img src="https://karldoenitz.github.io/TigoOld/img/cubebackup.png" width="150px" height="150px"/></td>
+<td><img src="https://karldoenitz.github.io/TigoOld/img/tencent.png" width="150px" height="150px"/></td>
+<td><img src="https://karldoenitz.github.io/TigoOld/img/xiaomi.png" width="150px" height="150px"/></td>
+</tr>
+</table>
 
 # Attention
 If you like the framework, join us please.
