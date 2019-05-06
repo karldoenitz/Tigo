@@ -81,8 +81,8 @@ INFO: 2018/07/09 15:02:36 Application.go:22: Server run on: 0.0.0.0:8888
 # 都有谁在使用Tigo
 <table>
 <tr>
-<td><a href="https://www.cubebackup.com"><img src="https://karldoenitz.github.io/TigoOld/img/cubebackup.png" width="150px" height="150px"/></a></td>
-<td><a href="https://eclass.qq.com"><img src="https://karldoenitz.github.io/TigoOld/img/tencent.png" width="150px" height="150px"/></a></td>
+<td><a href="https://www.cubebackup.com" target="_blank"><img src="https://karldoenitz.github.io/TigoOld/img/cubebackup.png" width="150px" height="150px"/></a></td>
+<td><a href="https://eclass.qq.com" target="_blank"><img src="https://karldoenitz.github.io/TigoOld/img/tencent.png" width="150px" height="150px"/></a></td>
 <td><img src="https://karldoenitz.github.io/TigoOld/img/xiaomi.png" width="150px" height="150px"/></td>
 </tr>
 </table>
