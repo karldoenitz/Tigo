@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/karldoenitz/Tigo/request"
+	"strings"
 	"testing"
 )
 
@@ -32,6 +33,20 @@ func TestPost(t *testing.T) {
 		"chlid": "news_news_bj",
 	}
 	response, err := request.Post("https://life.qq.com/api/activity/get_good_act_list?cachedCount=0", postData, headers)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	contentStr := response.ToContentStr()
+	fmt.Println(contentStr)
+}
+
+func TestMakeRequest(t *testing.T) {
+	headers := map[string]string{
+		"Content-Type": "application/x-www-form-urlencoded",
+	}
+	postData := "chlid=news_news_bj"
+	response, err := request.MakeRequest("POST", "https://life.qq.com/api/activity/get_good_act_list?cachedCount=0", strings.NewReader(postData), headers)
 	if err != nil {
 		fmt.Println(err.Error())
 		return

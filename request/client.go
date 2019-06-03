@@ -13,6 +13,16 @@ import (
 	"strings"
 )
 
+const (
+	GET     string = "GET"
+	POST    string = "POST"
+	PUT     string = "PUT"
+	PATCH   string = "PATCH"
+	HEAD    string = "HEAD"
+	OPTIONS string = "OPTIONS"
+	DELETE  string = "DELETE"
+)
+
 // HttpClient 是自定义HTTPClient
 type HttpClient struct {
 	*http.Client
@@ -78,6 +88,10 @@ func (response *Response) ToContentStr() string {
 }
 
 // Request 发送指定的Request请求
+//  - method 请求方式
+//  - requestUrl 请求地址
+//  - postParam 请求参数，k-v格式
+//  - headers 报文头，缺省
 func Request(method string, requestUrl string, postParams map[string]interface{}, headers ...map[string]string) (*Response, error) {
 	client := &HttpClient{http.DefaultClient}
 	requestHeaders := map[string]string{}
@@ -115,6 +129,25 @@ func Request(method string, requestUrl string, postParams map[string]interface{}
 		}
 	default:
 		break
+	}
+	return response, nil
+}
+
+// MakeRequest 发送指定的Request请求
+//  - method 请求方式
+//  - requestUrl 请求地址
+//  - bodyReader 请求体
+//  - headers 报文头，缺省
+func MakeRequest(method string, requestUrl string, bodyReader io.Reader, headers ...map[string]string) (*Response, error) {
+	client := &HttpClient{http.DefaultClient}
+	requestHeaders := map[string]string{}
+	if len(headers) > 0 {
+		requestHeaders = headers[0]
+	}
+	response, err := client.request(method, requestUrl, requestHeaders, bodyReader)
+	if err != nil {
+		logger.Error.Printf("%s %s ERROR\n", method, requestUrl)
+		return nil, err
 	}
 	return response, nil
 }
@@ -193,3 +226,7 @@ func Delete(requestUrl string, headers ...map[string]string) (*Response, error) 
 	}
 	return response, nil
 }
+
+///////////////////////////////////////////////////utils////////////////////////////////////////////////////////////////
+
+// TODO map2xml
