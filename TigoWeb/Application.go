@@ -33,6 +33,11 @@ func (application *Application) runTLS(cert string, key string) {
 	http.ListenAndServeTLS(address, cert, key, nil)
 }
 
+// Listen 端口监听
+func (application *Application) Listen(port int) {
+	application.Port = port
+}
+
 // Run 服务启动函数
 func (application *Application) Run() {
 	// 初始化全局变量
