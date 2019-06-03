@@ -82,6 +82,11 @@ func InitGlobalConfig(configPath string) {
 	globalConfig = &config
 }
 
+// InitGlobalConfigWithObj 可使用TigoWeb.GlobalConfig的实例进行初始化全局变量
+func InitGlobalConfigWithObj(config GlobalConfig)  {
+	globalConfig = &config
+}
+
 //////////////////////////////////////////////////HTTP相关工具///////////////////////////////////////////////////////////
 
 // getFormDataStr 获取报文体中的Form信息
