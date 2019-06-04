@@ -5,11 +5,13 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/json"
+	"fmt"
 	"github.com/karldoenitz/Tigo/logger"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"reflect"
 	"strings"
 )
 
@@ -127,6 +129,13 @@ func Request(method string, requestUrl string, postParams map[string]interface{}
 			logger.Error.Printf("%s %s ERROR\n", method, requestUrl)
 			return nil, err
 		}
+	case strings.HasPrefix(contentType, "application/xml"):
+		postData := Map2Xml(postParams)
+		response, err = client.request(method, requestUrl, requestHeaders, strings.NewReader(postData))
+		if err != nil {
+			logger.Error.Printf("%s %s ERROR\n", method, requestUrl)
+			return nil, err
+		}
 	default:
 		break
 	}
@@ -229,4 +238,41 @@ func Delete(requestUrl string, headers ...map[string]string) (*Response, error) 
 
 ///////////////////////////////////////////////////utils////////////////////////////////////////////////////////////////
 
-// TODO map2xml
+// Map2Xml map转xml
+//  - versionAndEncode 版本号和编码，[]string{version, encode}
+func Map2Xml(inputMap map[string]interface{}, versionAndEncode ...string) (xml string) {
+	version := "1.0"
+	encode := "utf-8"
+	if len(versionAndEncode) > 0 {
+		version = versionAndEncode[0]
+	}
+	if len(versionAndEncode) > 1 {
+		encode = versionAndEncode[1]
+	}
+	xmlHeader := fmt.Sprintf("<?xml version=\"%s\" encoding=\"%s\"?>", version, encode)
+	xmlBody := "%s"
+	if len(inputMap) > 1 {
+		xmlBody = "<root>%s</root>"
+	}
+	value := xmlMarshal(inputMap)
+	xmlBody = fmt.Sprintf(xmlBody, value)
+	xml = xmlHeader + xmlBody
+	return
+}
+
+// xmlMarshal 序列化为xml
+func xmlMarshal(inputMap interface{}) (result string) {
+	if reflect.ValueOf(inputMap).Kind() != reflect.Map {
+		return
+	}
+	for _, key := range reflect.ValueOf(inputMap).MapKeys() {
+		k := key.String()
+		v := reflect.ValueOf(inputMap).MapIndex(key)
+		innerValue := xmlMarshal(v.Interface())
+		if innerValue == "" {
+			innerValue = fmt.Sprintf("%v", v.Interface())
+		}
+		result += fmt.Sprintf("<%s>%s</%s>", k, innerValue, k)
+	}
+	return
+}
