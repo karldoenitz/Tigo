@@ -117,6 +117,8 @@ func checkStructureField(field reflect.StructField, vField reflect.Value) error 
 				return err
 			}
 		}
+		// TODO 等待完善
+		bindingCheck()
 	} else {
 		return fmt.Errorf("%s's address can not be obtained with Addr", field.Name)
 	}
@@ -231,6 +233,8 @@ func checkObjBinding(element reflect.Type, vElement reflect.Value) error {
 			return err
 		}
 	}
+	// TODO 等待完善
+	bindingCheck()
 	return nil
 }
 
@@ -247,4 +251,9 @@ func ValidateInstance(obj interface{}) error {
 func isMatchRegex(str, regex string) bool {
 	rgx := regexp.MustCompile(regex)
 	return rgx.MatchString(str)
+}
+
+// TODO bindingCheck 调用param结构体的Check函数对param进行校验
+func bindingCheck()  {
+
 }
