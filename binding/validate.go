@@ -252,7 +252,7 @@ func isMatchRegex(str, regex string) bool {
 	return rgx.MatchString(str)
 }
 
-// TODO bindingCheck 调用param结构体的Check函数对param进行校验
+// bindingCheck 调用param结构体的Check函数对param进行校验
 func bindingCheck(vElement reflect.Value) (err error) {
 	check := vElement.MethodByName("Check")
 	var functionParams []reflect.Value
