@@ -1,16 +1,37 @@
 package test_case
 
 import (
+	"errors"
 	"fmt"
 	"github.com/karldoenitz/Tigo/binding"
 	"testing"
 )
 
 type Person struct {
-	Name   string `json:"name" required:"true"`
-	Age    int    `json:"age" required:"true" default:"18"`
-	Mobile string `json:"mobile" required:"true" regex:"^1([38][0-9]|14[57]|5[^4])\\d{8}$"`
-	Info   string `json:"info" required:"false"`
+	Name    string  `json:"name" required:"true"`
+	Age     int     `json:"age" required:"true" default:"18"`
+	Mobile  string  `json:"mobile" required:"true" regex:"^1([38][0-9]|14[57]|5[^4])\\d{8}$"`
+	Info    string  `json:"info" required:"false"`
+	Company Company `json:"company" required:"true"`
+}
+
+type Company struct {
+	CompanyName string `json:"company_name" required:"true" default:"No"`
+	CompanyId   int    `json:"company_id" required:"true" default:"12581"`
+}
+
+func (c *Company)Check() (e error) {
+	if c.CompanyId <= 0 {
+		return errors.New("CompanyId invalid")
+	}
+	return
+}
+
+func (p *Person)Check() (e error) {
+	if p.Age < 18 {
+		return errors.New("Age  Invalid")
+	}
+	return p.Company.Check()
 }
 
 func TestName(t *testing.T) {
