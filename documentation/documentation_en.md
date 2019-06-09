@@ -39,6 +39,7 @@ API index:
     - [func AppendRouterPattern](#func-urlpattern-urlpattern-appendrouterpattern)
     - [func Init](#func-basehandlerinithandler)
   - [type Application](#type-application)
+    - [func Listen](#func-application-applicationlisten)
     - [func Run](#func-application-applicationrun)
   - [type Cookie](#func-basehandlergetcookie)
     - [func GetCookieEncodeValue](#func-cookie-cookiegetcookieencodevalue)
@@ -362,6 +363,11 @@ Application is the launcher of web server developed by Tigo.
 - Port: Port, developers can configure it in configuration file;
 - UrlPattern: url mapping.
 - ConfigPath: the configuration's path.
+### func (application *Application)Listen
+```go
+func (application *Application)Listen(port int)
+```
+Define the port for server to listen. **Attention**: The value of port in configuration will cover the value of port in this method.
 ### func (application *Application)Run<a name="Run"></a>
 ```go
 func (application *Application)Run()

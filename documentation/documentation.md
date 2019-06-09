@@ -39,6 +39,7 @@ API目录：
     - [func AppendRouterPattern](#func-urlpattern-urlpattern-appendrouterpattern)
     - [func Init](#func-basehandlerinithandler)
   - [type Application](#type-application)
+    - [func Listen](#func-application-applicationlisten)
     - [func Run](#func-application-applicationrun)
   - [type Cookie](#func-basehandlergetcookie)
     - [func GetCookieEncodeValue](#func-cookie-cookiegetcookieencodevalue)
@@ -364,6 +365,11 @@ Application结构体是启动http服务的入口。
 - Port：端口，可以在configuration中配置，若在configuration中配置了则以configuration中配置的为主；
 - UrlPattern：路由配置；
 - ConfigPath：配置文件的路径。
+### func (application *Application)Listen
+```go
+func (application *Application)Listen(port int)
+```
+指定服务要监听的端口。**注意**：如果配置文件中指定了端口，则以配置文件指定的端口为准。
 ### func (application *Application)Run<a name="Run"></a>
 ```go
 func (application *Application)Run()
