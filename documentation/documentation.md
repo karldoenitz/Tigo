@@ -56,6 +56,7 @@ API目录：
     - [func Encrypt](#Encrypt)
     - [func Decrypt](#Decrypt)
     - [func InitGlobalConfig](#InitGlobalConfig)
+    - [func InitGlobalConfigWithObj](#InitGlobalConfigWithObj)
 - [logger](#tigologger)
   - [Demo](#demo)
   - [structure](#structure)
@@ -504,6 +505,11 @@ func Decrypt(src[]byte, key []byte) ([]byte)
 初始化全局变量方法<a name="InitGlobalConfig"></a>
 ```go
 func InitGlobalConfig(configPath string)
+```
+使用此方法初始化全局变量。  
+初始化全局变量方法<a name="InitGlobalConfigWithObj"></a>
+```go
+func InitGlobalConfigWithObj(config GlobalConfig)
 ```
 使用此方法初始化全局变量。
 # Tigo.logger<a name="logger"></a>

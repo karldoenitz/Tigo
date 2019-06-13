@@ -56,6 +56,7 @@ API index:
     - [func Encrypt](#Encrypt)
     - [func Decrypt](#Decrypt)
     - [func InitGlobalConfig](#InitGlobalConfig)
+    - [func InitGlobalConfigWithObj](#InitGlobalConfigWithObj)
 - [logger](#tigologger)
   - [Demo](#demo)
   - [structure](#structure)
@@ -490,6 +491,11 @@ Use this method to decrypt byte array.
 Initialize global configuration<a name="InitGlobalConfig"></a>
 ```go
 func InitGlobalConfig(configPath string)
+```
+Use this method to initialize global configuration.  
+Initialize global configuration<a name="InitGlobalConfigWithObj"></a>
+```go
+func InitGlobalConfigWithObj(config GlobalConfig)
 ```
 Use this method to initialize global configuration.
 # Tigo.logger<a name="logger"></a>
