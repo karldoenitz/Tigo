@@ -73,6 +73,7 @@ API目录：
     - [ToContentStr](#func-response-responsetocontentstr)
   - [functions](#request模块内置方法)
     - [func Request](#func-request)
+    - [func MakeRequest](#func-makerequest)
     - [func Get](#func-get)
     - [func Post](#func-post)
     - [func Put](#func-put)
@@ -663,6 +664,11 @@ func (response *Response)ToContentStr() string
 func Request(method string, requestUrl string, postParams map[string]interface{}, headers ...map[string]string) (*Response, error)
 ```
 向一个连接发送请求。
+### func MakeRequest
+```go
+func MakeRequest(method string, requestUrl string, bodyReader io.Reader, headers ...map[string]string) (*Response, error)
+```
+向指定连接以指定的请求方式发送指定的数据。
 ### func Get<a name="Get"></a>
 ```go
 func Get(requestUrl string, headers ...map[string]string) (*Response, error)

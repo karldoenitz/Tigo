@@ -73,6 +73,7 @@ API index:
     - [ToContentStr](#func-response-responsetocontentstr)
   - [functions](#request-module)
     - [func Request](#func-request)
+    - [func MakeRequest](#func-makerequest)
     - [func Get](#func-get)
     - [func Post](#func-post)
     - [func Put](#func-put)
@@ -647,7 +648,12 @@ Convert `Response.Content` to string type.
 ```go
 func Request(method string, requestUrl string, postParams map[string]interface{}, headers ...map[string]string) (*Response, error)
 ```
-Make requestion to an url
+Make requestion to an url.
+### func MakeRequest
+```go
+func MakeRequest(method string, requestUrl string, bodyReader io.Reader, headers ...map[string]string) (*Response, error)
+```
+Make requestion to an url.
 ### func Get<a name="Get"></a>
 ```go
 func Get(requestUrl string, headers ...map[string]string) (*Response, error)
