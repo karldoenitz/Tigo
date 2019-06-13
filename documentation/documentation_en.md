@@ -708,6 +708,13 @@ type Company struct {
     Addr string `json:"addr" required:"false"`
 }
 
+func (c *Company) Check() (err error) {
+	if len(c.Name) > 100 {
+		return errors.New("Company.Name is invalid")
+	}
+	return 
+}
+
 type Boss struct {
     Name    string  `json:"name" required:"true"`
     Age     int     `json:"age" required:"true" default:"18"`
@@ -721,6 +728,14 @@ type Stuff struct {
     Company *Company `json:"company" required:"true"`  // OK
 }
 /*This is OK👌*/
+
+// Check method will run when checking `Stuff`.
+func (s *Stuff) Check() (err error){
+	if s.Age < 18 {
+		return errors.New("Stuff.Age is invalid!")
+	}
+	return s.Company.Check()
+}
 
 type Others struct {
     Name    string   `json:"name" required:"true"`
