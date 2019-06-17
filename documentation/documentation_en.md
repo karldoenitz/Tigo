@@ -40,6 +40,7 @@ API index:
     - [func Init](#func-basehandlerinithandler)
   - [type Application](#type-application)
     - [func Listen](#func-application-applicationlisten)
+    - [func MountFileServer](#func-application-applicationmountfileserver)
     - [func Run](#func-application-applicationrun)
   - [type Cookie](#func-basehandlergetcookie)
     - [func GetCookieEncodeValue](#func-cookie-cookiegetcookieencodevalue)
@@ -370,6 +371,13 @@ Application is the launcher of web server developed by Tigo.
 func (application *Application)Listen(port int)
 ```
 Define the port for server to listen. **Attention**: The value of port in configuration will cover the value of port in this method.
+### func (application *Application)MountFileServer
+```go
+func (application *Application)MountFileServer(dir string, uris ...string)
+```
+Mount http file server.
+- `dir` the directory of folder will be mounted 
+- `uris` the slice of uris
 ### func (application *Application)Run<a name="Run"></a>
 ```go
 func (application *Application)Run()

@@ -40,6 +40,7 @@ API目录：
     - [func Init](#func-basehandlerinithandler)
   - [type Application](#type-application)
     - [func Listen](#func-application-applicationlisten)
+    - [func MountFileServer](#func-application-applicationmountfileserver)
     - [func Run](#func-application-applicationrun)
   - [type Cookie](#func-basehandlergetcookie)
     - [func GetCookieEncodeValue](#func-cookie-cookiegetcookieencodevalue)
@@ -372,6 +373,13 @@ Application结构体是启动http服务的入口。
 func (application *Application)Listen(port int)
 ```
 指定服务要监听的端口。**注意**：如果配置文件中指定了端口，则以配置文件指定的端口为准。
+### func (application *Application)MountFileServer
+```go
+func (application *Application)MountFileServer(dir string, uris ...string)
+```
+挂载文件服务。
+- dir 需要挂载的文件夹地址
+- uris 需要挂载的URI合集
 ### func (application *Application)Run<a name="Run"></a>
 ```go
 func (application *Application)Run()

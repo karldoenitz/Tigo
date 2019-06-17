@@ -38,6 +38,20 @@ func (application *Application) Listen(port int) {
 	application.Port = port
 }
 
+// MountFileServer 挂载文件服务
+//  - dir 本地文件地址
+//  - uris 需要挂载的URI列表
+func (application *Application) MountFileServer(dir string, uris ...string) {
+	if len(uris) > 0 {
+		for _, uri := range uris {
+			http.Handle(uri, http.FileServer(http.Dir(dir)))
+		}
+	} else {
+		http.Handle("/", http.FileServer(http.Dir(dir)))
+	}
+}
+
+
 // Run 服务启动函数
 func (application *Application) Run() {
 	// 初始化全局变量
