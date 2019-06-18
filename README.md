@@ -72,7 +72,7 @@ go build main.go
 ```
 终端会有如下显示：
 ```
-INFO: 2018/07/09 15:02:36 Application.go:22: Server run on: 0.0.0.0:8888
+INFO: 2018/07/09 15:02:36 Application.go:22: Server run on: 127.0.0.1:8888
 ```
 打开浏览器访问地址```http://127.0.0.1:8888/hello-tigo```，就可以看到<font color=red>Hello Tigo</font>。
 
