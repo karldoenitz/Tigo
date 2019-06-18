@@ -55,7 +55,9 @@ func (application *Application) MountFileServer(dir string, uris ...string) {
 // Run 服务启动函数
 func (application *Application) Run() {
 	// 初始化全局变量
-	InitGlobalConfig(application.ConfigPath)
+	if application.ConfigPath != "" {
+		InitGlobalConfig(application.ConfigPath)
+	}
 	if globalConfig.IP != "" {
 		application.IPAddress = globalConfig.IP
 	}
