@@ -83,7 +83,7 @@ Open web browser and visit ```http://127.0.0.1:8888/hello-tigo```, you will see 
 <table>
 <tr>
 <td><a href="https://www.cubebackup.com" target="_blank"><img src="https://karldoenitz.github.io/TigoOld/img/cubebackup.png" width="150px" height="150px"/></a></td>
-<td><a href="https://eclass.qq.com" target="_blank"><img src="https://karldoenitz.github.io/TigoOld/img/tencent.png" width="150px" height="150px"/></a></td>
+<td><img src="https://karldoenitz.github.io/TigoOld/img/tencent.png" width="150px" height="150px"/></td>
 <td><img src="https://karldoenitz.github.io/TigoOld/img/xiaomi.png" width="150px" height="150px"/></td>
 </tr>
 </table>
