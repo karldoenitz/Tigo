@@ -11,6 +11,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -108,7 +110,7 @@ func (baseHandler *BaseHandler) Response(result ...interface{}) {
 }
 
 // ResponseFmt 向客户端响应一个字符串，支持format格式化字符串
-func (baseHandler *BaseHandler) ResponseFmt(format string, values... interface{}) {
+func (baseHandler *BaseHandler) ResponseFmt(format string, values ...interface{}) {
 	fmt.Fprintf(baseHandler.ResponseWriter, format, values...)
 }
 
@@ -185,6 +187,73 @@ func (baseHandler *BaseHandler) SetSecureCookie(name string, value string, key .
 		Value:       value,
 		IsSecurity:  true,
 		SecurityKey: securityKey,
+	}
+	baseHandler.SetCookieObject(cookie)
+}
+
+// SetAdvancedCookie 设置cookie
+//  - name cookie的名称
+//  - value cookie的value
+//  - attrs cookie的其他属性值，示例如下：
+//    - "path={{string}}" 设置cookie的有效作用地址
+//    - "domain={{string}}" 设置cookie的作用域
+//    - "raw={{string}}" 设置cookie的raw值
+//    - "maxAge={{int}}" 设置cookie的MaxAge，表示未指定“Max-Age”属性，表示现在删除cookie，相当于'Max-Age：0'，表示Max-Age属性存在并以秒为单位给出
+//    - "expires={{int}}" 设置cookie的过期时间，按秒计算
+//    - "secure={{bool}}" 设置cookie是否只限于加密传输
+//    - "httpOnly={{bool}}" 设置cookie是否只限于http/https传输
+//    - "isSecurity={{bool}}" 设置cookie是否要进行加密
+func (baseHandler *BaseHandler) SetAdvancedCookie(name string, value string, attrs ...string) {
+	key := globalConfig.Cookie
+	var Path, Domain, Raw string
+	var IsSecurity, Secure, HttpOnly bool
+	var Expires time.Time
+	var MaxAge int
+
+	for _, attr := range attrs {
+		switch {
+		case strings.HasPrefix(attr, "path="):
+			Path = strings.Replace(attr, "path=", "", 1)
+			break
+		case strings.HasPrefix(attr, "domain="):
+			Domain = strings.Replace(attr, "domain=", "", 1)
+			break
+		case strings.HasPrefix(attr, "raw="):
+			Raw = strings.Replace(attr, "raw=", "", 1)
+			break
+		case strings.HasPrefix(attr, "maxAge="):
+			tmp := strings.Replace(attr, "maxAge=", "", 1)
+			MaxAge, _ = strconv.Atoi(tmp)
+			break
+		case strings.HasPrefix(attr, "expires="):
+			tmp := strings.Replace(attr, "expires=", "", 1)
+			second, _ := strconv.Atoi(tmp)
+			Expires = time.Now().Add(time.Second * time.Duration(second))
+			break
+		case attr == "secure=true":
+			Secure = true
+			break
+		case attr == "httpOnly=true":
+			HttpOnly = true
+			break
+		case attr == "isSecurity=true":
+			IsSecurity = true
+			break
+		}
+	}
+
+	cookie := Cookie{
+		Name:        name,
+		Value:       value,
+		IsSecurity:  IsSecurity,
+		SecurityKey: key,
+		Path:        Path,
+		Domain:      Domain,
+		Expires:     Expires,
+		MaxAge:      MaxAge,
+		Secure:      Secure,
+		HttpOnly:    HttpOnly,
+		Raw:         Raw,
 	}
 	baseHandler.SetCookieObject(cookie)
 }
@@ -442,6 +511,6 @@ func (baseHandler *BaseHandler) CheckParamBinding(obj interface{}) error {
 }
 
 // CheckUrlParamBinding 检查url上传递的参数是否符合要求
-func (baseHandler *BaseHandler) CheckUrlParamBinding(obj interface{}) error  {
+func (baseHandler *BaseHandler) CheckUrlParamBinding(obj interface{}) error {
 	return baseHandler.CheckFormBinding(obj)
 }

@@ -16,6 +16,7 @@ API index:
     - [func SetSecureCookie](#func-basehandlersetsecurecookie)
     - [func GetCookieObject](#func-basehandlergetcookieobject)
     - [func SetCookieObject](#func-basehandlersetcookieobject)
+    - [func SetAdvancedCookie](#func-basehandlersetadvancedcookie)
     - [func ClearCookie](#func-basehandlerclearcookie)
     - [func ClearAllCookie](#func-basehandlerclearallcookie)
     - [func Redirect](#func-basehandlerredirect)
