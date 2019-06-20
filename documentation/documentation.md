@@ -188,6 +188,7 @@ func (baseHandler *BaseHandler) SetAdvancedCookie(name string, value string, att
   - "secure={{bool}}" 设置cookie是否只限于加密传输
   - "httpOnly={{bool}}" 设置cookie是否只限于http/https传输
   - "isSecurity={{bool}}" 设置cookie是否要进行加密  
+
 **示例如下：**
 ```go
 type DemoHandler struct {
@@ -195,7 +196,15 @@ type DemoHandler struct {
 }
 
 func (d *DemoHandler) Get() {
-	d.SetAdvancedCookie("test", "value", "path=/", "domain=localhost", "expires=10", "httpOnly=true", "secure=true")
+	d.SetAdvancedCookie(
+		"test", 
+		"value", 
+		"path=/", 
+		"domain=localhost", 
+		"expires=10", 
+		"httpOnly=true", 
+		"secure=true"
+	)
 	d.ResponseAsText("test")
 }
 ```
