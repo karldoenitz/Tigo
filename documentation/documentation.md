@@ -187,8 +187,8 @@ func (baseHandler *BaseHandler) SetAdvancedCookie(name string, value string, att
   - "expires={{int}}" 设置cookie的过期时间，按秒计算
   - "secure={{bool}}" 设置cookie是否只限于加密传输
   - "httpOnly={{bool}}" 设置cookie是否只限于http/https传输
-  - "isSecurity={{bool}}" 设置cookie是否要进行加密
-示例如下：
+  - "isSecurity={{bool}}" 设置cookie是否要进行加密  
+**示例如下：**
 ```go
 type DemoHandler struct {
 	TigoWeb.BaseHandler
