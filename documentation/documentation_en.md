@@ -170,6 +170,43 @@ func (baseHandler *BaseHandler)GetCookieObject(name ...string) (Cookie, error)
 func (baseHandler *BaseHandler)SetCookieObject(cookie Cookie)
 ```
 ```SetCookieObject``` is the method to set cookie object by name.
+### func (*BaseHandler)SetAdvancedCookie
+```go
+func (baseHandler *BaseHandler) SetAdvancedCookie(name string, value string, attrs ...string)
+```
+```SetAdvancedCookie```is the method to set cookie's attributes.  
+parameters:
+- name cookie's name
+- value cookie's value
+- attrs cookie's attributes:
+  - "path={{string}}" set cookie's path
+  - "domain={{string}}" set cookie's domain
+  - "raw={{string}}" set cookie's raw
+  - "maxAge={{int}}" MaxAge=0 means no 'Max-Age' attribute specified. MaxAge<0 means delete cookie now, equivalently 'Max-Age: 0', MaxAge>0 means Max-Age attribute present and given in seconds
+  - "expires={{int}}" set cookie's expires time, given in seconds
+  - "secure={{bool}}" set secure
+  - "httpOnly={{bool}}" set http only
+  - "isSecurity={{bool}}" `true` means cookie will be encrypted 
+
+**Example:**
+```go
+type DemoHandler struct {
+	TigoWeb.BaseHandler
+}
+
+func (d *DemoHandler) Get() {
+	d.SetAdvancedCookie(
+		"test", 
+		"value", 
+		"path=/", 
+		"domain=localhost", 
+		"expires=10", 
+		"httpOnly=true", 
+		"secure=true",
+	)
+	d.ResponseAsText("test")
+}
+```
 ### func (*BaseHandler)ClearCookie<a name="ClearCookie"></a>
 ```go
 func (baseHandler *BaseHandler)ClearCookie(name string)
