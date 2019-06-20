@@ -203,7 +203,7 @@ func (d *DemoHandler) Get() {
 		"domain=localhost", 
 		"expires=10", 
 		"httpOnly=true", 
-		"secure=true"
+		"secure=true",
 	)
 	d.ResponseAsText("test")
 }
