@@ -228,7 +228,7 @@ func (baseHandler *BaseHandler) SetAdvancedCookie(name string, value string, att
 		case strings.HasPrefix(attr, "expires="):
 			tmp := strings.Replace(attr, "expires=", "", 1)
 			second, _ := strconv.Atoi(tmp)
-			Expires = time.Now().Add(time.Second * time.Duration(second))
+			Expires = time.Now().Local().Add(time.Second * time.Duration(second))
 			break
 		case attr == "secure=true":
 			Secure = true
