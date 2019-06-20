@@ -171,6 +171,23 @@ func (baseHandler *BaseHandler)GetCookieObject(name ...string) (Cookie, error)
 func (baseHandler *BaseHandler)SetCookieObject(cookie Cookie)
 ```
 ```SetCookieObject```方法接收一个```Cookie```对象，为客户端设置cookie。
+### func (*BaseHandler)SetAdvancedCookie
+```go
+func (baseHandler *BaseHandler) SetAdvancedCookie(name string, value string, attrs ...string)
+```
+```SetAdvancedCookie```方法用来设置cookie的各项属性。  
+参数解析：
+- name cookie的名称
+- value cookie的value
+- attrs cookie的其他属性值，示例如下：
+  - "path={{string}}" 设置cookie的有效作用地址
+  - "domain={{string}}" 设置cookie的作用域
+  - "raw={{string}}" 设置cookie的raw值
+  - "maxAge={{int}}" 设置cookie的MaxAge，表示未指定“Max-Age”属性，表示现在删除cookie，相当于'Max-Age：0'，表示Max-Age属性存在并以秒为单位给出
+  - "expires={{int}}" 设置cookie的过期时间，按秒计算
+  - "secure={{bool}}" 设置cookie是否只限于加密传输
+  - "httpOnly={{bool}}" 设置cookie是否只限于http/https传输
+  - "isSecurity={{bool}}" 设置cookie是否要进行加密
 ### func (*BaseHandler)ClearCookie<a name="ClearCookie"></a>
 ```go
 func (baseHandler *BaseHandler)ClearCookie(name string)
