@@ -143,7 +143,7 @@ func (baseHandler *BaseHandler) Render(data interface{}, templates ...string) {
 
 // RedirectPermanently 向客户端永久重定向一个地址
 func (baseHandler *BaseHandler) RedirectPermanently(url string) {
-	baseHandler.ResponseWriter.WriteHeader(301)
+	baseHandler.ResponseWriter.WriteHeader(http.StatusMovedPermanently)
 	baseHandler.SetHeader("Location", url)
 	fmt.Fprintf(baseHandler.ResponseWriter, "")
 }
@@ -151,7 +151,7 @@ func (baseHandler *BaseHandler) RedirectPermanently(url string) {
 // Redirect 向客户端暂时重定向一个地址
 func (baseHandler *BaseHandler) Redirect(url string, expire ...time.Time) {
 	baseHandler.SetHeader("Location", url)
-	baseHandler.ResponseWriter.WriteHeader(302)
+	baseHandler.ResponseWriter.WriteHeader(http.StatusFound)
 	if len(expire) > 0 {
 		expireTime := expire[0]
 		expires := expireTime.Format("Mon, 02 Jan 2006 15:04:05 GMT")
