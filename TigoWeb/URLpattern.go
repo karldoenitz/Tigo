@@ -19,8 +19,9 @@ type UrlPatternMidWare struct {
 //  - 4、调用handler中的功能方法；
 //  - 5、进行HTTP请求结束处理。
 func (urlPatternMidWare UrlPatternMidWare) Handle(responseWriter http.ResponseWriter, request *http.Request) {
+	handlerType := reflect.TypeOf(urlPatternMidWare.Handler).Elem()
 	// 加载handler
-	handler := reflect.ValueOf(urlPatternMidWare.Handler)
+	handler := reflect.New(handlerType)
 	// 获取init方法
 	init := handler.MethodByName("InitHandler")
 	// 解析参数

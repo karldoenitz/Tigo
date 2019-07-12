@@ -58,17 +58,20 @@ func (application *Application) Run() {
 	if application.ConfigPath != "" {
 		InitGlobalConfig(application.ConfigPath)
 	}
-	if globalConfig.IP != "" {
+	if globalConfig != nil && globalConfig.IP != "" {
 		application.IPAddress = globalConfig.IP
 	}
-	if globalConfig.Port != 0 {
+	if globalConfig != nil && globalConfig.Port != 0 {
 		application.Port = globalConfig.Port
 	}
 	// url挂载
 	urlPattern := UrlPattern{UrlMapping: application.UrlPattern, UrlRouters: application.UrlRouters}
 	urlPattern.Init()
 	// 获取证书与密钥，判断是否启动https服务
-	cert, certKey := globalConfig.Cert, globalConfig.CertKey
+	cert, certKey := "", ""
+	if globalConfig != nil {
+		cert, certKey = globalConfig.Cert, globalConfig.CertKey
+	}
 	if cert != "" && certKey != "" {
 		application.runTLS(cert, certKey)
 	} else {
