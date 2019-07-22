@@ -344,7 +344,6 @@ func (baseHandler *BaseHandler) CheckParamBinding(obj interface{}) error
 func (baseHandler *BaseHandler) UrlEncode(value string) string
 ```
 ```UrlEncode``` url encode.
-### func (*BaseHandler)CheckUrlParamBinding
 ```go
 func (baseHandler *BaseHandler) UrlDecode(value string) string
 ```
