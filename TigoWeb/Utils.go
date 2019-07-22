@@ -103,3 +103,20 @@ func getFormDataStr(form url.Values) string {
 	}
 	return strings.Join(params, "&")
 }
+
+// UrlEncode 对一个字符串进行url编码
+func UrlEncode(value string) (result string) {
+	v := url.Values{}
+	v.Add("", value)
+	body := v.Encode()
+	result = body[1:]
+	return
+}
+
+// UrlDecode 对一个字符串进行url解码
+func UrlDecode(value string) (result string) {
+	urlStr := "param=" + value
+	m, _ := url.ParseQuery(urlStr)
+	result = m.Get("param")
+	return
+}
