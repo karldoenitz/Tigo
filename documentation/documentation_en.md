@@ -33,6 +33,8 @@ API index:
     - [func CheckFormBinding](#func-basehandlercheckformbinding)
     - [func CheckUrlParamBinding](#func-basehandlercheckurlparambinding)
     - [func CheckParamBinding](#func-basehandlercheckparambinding)
+    - [func UrlEncode](#func-basehandlerurlencode)
+    - [func UrlDecode](#func-basehandlerurldecode)
     - [func BeforeRequest](#func-basehandlerbeforerequest)
     - [func TeardownRequest](#func-basehandlerteardownrequest)
   - [type UrlPattern](#type-urlpattern)
