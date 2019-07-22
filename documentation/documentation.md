@@ -57,6 +57,8 @@ API目录：
   - [utils](#utils)
     - [func Encrypt](#Encrypt)
     - [func Decrypt](#Decrypt)
+    - [func UrlEncode](#urlencode)
+    - [func UrlDecode](#urldecode)
     - [func InitGlobalConfig](#InitGlobalConfig)
     - [func InitGlobalConfigWithObj](#InitGlobalConfigWithObj)
 - [logger](#tigologger)
@@ -558,6 +560,16 @@ func Encrypt(src[]byte, key []byte) string
 func Decrypt(src[]byte, key []byte) ([]byte)
 ```
 使用此方法对已加密的字符数组进行aes解密。  
+url编码<a name="urlencode"></a>
+```go
+func UrlEncode(value string)
+```
+使用此方法进行url编码。  
+url解码<a name="urldecode"></a>
+```go
+func UrlDecode(value string)
+```
+使用此方法进行url解码。  
 初始化全局变量方法<a name="InitGlobalConfig"></a>
 ```go
 func InitGlobalConfig(configPath string)

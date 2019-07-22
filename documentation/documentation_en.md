@@ -57,6 +57,8 @@ API index:
   - [utils](#utils)
     - [func Encrypt](#Encrypt)
     - [func Decrypt](#Decrypt)
+    - [func UrlEncode](#urlencode)
+    - [func UrlDecode](#urldecode)
     - [func InitGlobalConfig](#InitGlobalConfig)
     - [func InitGlobalConfigWithObj](#InitGlobalConfigWithObj)
 - [logger](#tigologger)
@@ -544,6 +546,16 @@ Decrypt method<a name="Decrypt"></a>
 func Decrypt(src[]byte, key []byte) ([]byte)
 ```
 Use this method to decrypt byte array.  
+url encode<a name="urlencode"></a>
+```go
+func UrlEncode(value string)
+```
+Use this method to urlencode a string.  
+url decode<a name="urldecode"></a>
+```go
+func UrlDecode(value string)
+```
+Use this method to urldecode a string.  
 Initialize global configuration<a name="InitGlobalConfig"></a>
 ```go
 func InitGlobalConfig(configPath string)
