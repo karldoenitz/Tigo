@@ -338,6 +338,16 @@ func (baseHandler *BaseHandler) CheckUrlParamBinding(obj interface{}) error
 func (baseHandler *BaseHandler) CheckParamBinding(obj interface{}) error
 ```
 ```CheckParamBinding```校验客户端发送的form或json是否符合要求。
+### func (*BaseHandler)UrlEncode
+```go
+func (baseHandler *BaseHandler) UrlEncode(value string) string
+```
+```UrlEncode```对值进行url编码。
+### func (*BaseHandler)CheckUrlParamBinding
+```go
+func (baseHandler *BaseHandler) UrlDecode(value string) string
+```
+```UrlDecode```对值进行url解码。
 ### func (*BaseHandler)BeforeRequest<a name="BeforeRequest"></a>
 ```go
 func (baseHandler *BaseHandler) BeforeRequest()

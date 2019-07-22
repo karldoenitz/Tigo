@@ -514,3 +514,13 @@ func (baseHandler *BaseHandler) CheckParamBinding(obj interface{}) error {
 func (baseHandler *BaseHandler) CheckUrlParamBinding(obj interface{}) error {
 	return baseHandler.CheckFormBinding(obj)
 }
+
+// UrlEncode 对值进行url编码
+func (baseHandler *BaseHandler) UrlEncode(value string) string {
+	return UrlEncode(value)
+}
+
+// UrlDecode 对值进行url解码
+func (baseHandler *BaseHandler) UrlDecode(value string) string {
+	return UrlDecode(value)
+}

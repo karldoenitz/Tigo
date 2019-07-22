@@ -337,6 +337,16 @@ func (baseHandler *BaseHandler) CheckUrlParamBinding(obj interface{}) error
 func (baseHandler *BaseHandler) CheckParamBinding(obj interface{}) error
 ```
 ```CheckParamBinding``` check the param from http request, form or json.
+### func (*BaseHandler)UrlEncode
+```go
+func (baseHandler *BaseHandler) UrlEncode(value string) string
+```
+```UrlEncode``` url encode.
+### func (*BaseHandler)CheckUrlParamBinding
+```go
+func (baseHandler *BaseHandler) UrlDecode(value string) string
+```
+```UrlDecode``` url decode.
 ### func (*BaseHandler)BeforeRequest<a name="BeforeRequest"></a>
 ```go
 func (baseHandler *BaseHandler) BeforeRequest()
