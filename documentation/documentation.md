@@ -33,6 +33,8 @@ API目录：
     - [func CheckFormBinding](#func-basehandlercheckformbinding)
     - [func CheckUrlParamBinding](#func-basehandlercheckurlparambinding)
     - [func CheckParamBinding](#func-basehandlercheckparambinding)
+    - [func UrlEncode](#func-basehandlerurlencode)
+    - [func UrlDecode](#func-basehandlerurldecode)
     - [func BeforeRequest](#func-basehandlerbeforerequest)
     - [func TeardownRequest](#func-basehandlerteardownrequest)
   - [type UrlPattern](#type-urlpattern)
@@ -57,6 +59,8 @@ API目录：
   - [utils](#utils)
     - [func Encrypt](#Encrypt)
     - [func Decrypt](#Decrypt)
+    - [func UrlEncode](#urlencode)
+    - [func UrlDecode](#urldecode)
     - [func InitGlobalConfig](#InitGlobalConfig)
     - [func InitGlobalConfigWithObj](#InitGlobalConfigWithObj)
 - [logger](#tigologger)
@@ -338,6 +342,16 @@ func (baseHandler *BaseHandler) CheckUrlParamBinding(obj interface{}) error
 func (baseHandler *BaseHandler) CheckParamBinding(obj interface{}) error
 ```
 ```CheckParamBinding```校验客户端发送的form或json是否符合要求。
+### func (*BaseHandler)UrlEncode
+```go
+func (baseHandler *BaseHandler) UrlEncode(value string) string
+```
+```UrlEncode```对值进行url编码。
+### func (*BaseHandler)UrlDecode
+```go
+func (baseHandler *BaseHandler) UrlDecode(value string) string
+```
+```UrlDecode```对值进行url解码。
 ### func (*BaseHandler)BeforeRequest<a name="BeforeRequest"></a>
 ```go
 func (baseHandler *BaseHandler) BeforeRequest()
@@ -548,6 +562,16 @@ func Encrypt(src[]byte, key []byte) string
 func Decrypt(src[]byte, key []byte) ([]byte)
 ```
 使用此方法对已加密的字符数组进行aes解密。  
+url编码<a name="urlencode"></a>
+```go
+func UrlEncode(value string)
+```
+使用此方法进行url编码。  
+url解码<a name="urldecode"></a>
+```go
+func UrlDecode(value string)
+```
+使用此方法进行url解码。  
 初始化全局变量方法<a name="InitGlobalConfig"></a>
 ```go
 func InitGlobalConfig(configPath string)

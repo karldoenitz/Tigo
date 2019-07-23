@@ -33,6 +33,8 @@ API index:
     - [func CheckFormBinding](#func-basehandlercheckformbinding)
     - [func CheckUrlParamBinding](#func-basehandlercheckurlparambinding)
     - [func CheckParamBinding](#func-basehandlercheckparambinding)
+    - [func UrlEncode](#func-basehandlerurlencode)
+    - [func UrlDecode](#func-basehandlerurldecode)
     - [func BeforeRequest](#func-basehandlerbeforerequest)
     - [func TeardownRequest](#func-basehandlerteardownrequest)
   - [type UrlPattern](#type-urlpattern)
@@ -57,6 +59,8 @@ API index:
   - [utils](#utils)
     - [func Encrypt](#Encrypt)
     - [func Decrypt](#Decrypt)
+    - [func UrlEncode](#urlencode)
+    - [func UrlDecode](#urldecode)
     - [func InitGlobalConfig](#InitGlobalConfig)
     - [func InitGlobalConfigWithObj](#InitGlobalConfigWithObj)
 - [logger](#tigologger)
@@ -337,6 +341,16 @@ func (baseHandler *BaseHandler) CheckUrlParamBinding(obj interface{}) error
 func (baseHandler *BaseHandler) CheckParamBinding(obj interface{}) error
 ```
 ```CheckParamBinding``` check the param from http request, form or json.
+### func (*BaseHandler)UrlEncode
+```go
+func (baseHandler *BaseHandler) UrlEncode(value string) string
+```
+```UrlEncode``` url encode.
+### func (*BaseHandler)UrlDecode
+```go
+func (baseHandler *BaseHandler) UrlDecode(value string) string
+```
+```UrlDecode``` url decode.
 ### func (*BaseHandler)BeforeRequest<a name="BeforeRequest"></a>
 ```go
 func (baseHandler *BaseHandler) BeforeRequest()
@@ -534,6 +548,16 @@ Decrypt method<a name="Decrypt"></a>
 func Decrypt(src[]byte, key []byte) ([]byte)
 ```
 Use this method to decrypt byte array.  
+url encode<a name="urlencode"></a>
+```go
+func UrlEncode(value string)
+```
+Use this method to urlencode a string.  
+url decode<a name="urldecode"></a>
+```go
+func UrlDecode(value string)
+```
+Use this method to urldecode a string.  
 Initialize global configuration<a name="InitGlobalConfig"></a>
 ```go
 func InitGlobalConfig(configPath string)
