@@ -86,12 +86,12 @@ func (baseHandler *BaseHandler) ResponseAsJson(response interface{}, charset ...
 	} else {
 		baseHandler.ResponseWriter.Header().Set("Content-Type", "application/json; charset=utf-8")
 	}
-	fmt.Fprintf(baseHandler.ResponseWriter, jsonResult)
+	fmt.Fprintf(baseHandler.ResponseWriter, "%v", jsonResult)
 }
 
 // ResponseAsText 向客户端响应一个Text结果
 func (baseHandler *BaseHandler) ResponseAsText(result string) {
-	fmt.Fprintf(baseHandler.ResponseWriter, result)
+	fmt.Fprintf(baseHandler.ResponseWriter, "%v", result)
 }
 
 // ResponseAsHtml 向客户端响应一个html结果，默认字符集为utf-8
@@ -101,7 +101,7 @@ func (baseHandler *BaseHandler) ResponseAsHtml(result string, charset ...string)
 	} else {
 		baseHandler.ResponseWriter.Header().Set("Content-Type", "text/html; charset=utf-8")
 	}
-	fmt.Fprintf(baseHandler.ResponseWriter, result)
+	fmt.Fprintf(baseHandler.ResponseWriter, "%v", result)
 }
 
 // Response 向客户端响应一个结果
