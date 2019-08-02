@@ -143,9 +143,9 @@ func (baseHandler *BaseHandler) Render(data interface{}, templates ...string) {
 
 // RedirectPermanently 向客户端永久重定向一个地址
 func (baseHandler *BaseHandler) RedirectPermanently(url string) {
-	baseHandler.ResponseWriter.WriteHeader(http.StatusMovedPermanently)
 	baseHandler.SetHeader("Location", url)
-	fmt.Fprintf(baseHandler.ResponseWriter, "")
+	baseHandler.ResponseWriter.WriteHeader(http.StatusMovedPermanently)
+	baseHandler.ResponseWriter.Write(nil)
 }
 
 // Redirect 向客户端暂时重定向一个地址
