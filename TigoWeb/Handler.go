@@ -65,7 +65,18 @@ func (baseHandler *BaseHandler) PassJson() {
 
 // ToJson 将对象转化为Json字符串，转换失败则返回空字符串。
 // 传入参数Response为一个interface，必须有成员函数Print。
-func (baseHandler *BaseHandler) ToJson(response interface{}) (result string) {
+func (baseHandler *BaseHandler) ToJson(response interface{}) (result []byte) {
+	// 将该对象转换为byte字节数组
+	jsonResult, jsonErr := json.Marshal(response)
+	if jsonErr != nil {
+		logger.Error.Println(jsonErr.Error())
+	}
+	return jsonResult
+}
+
+// ToJsonStr 将对象转化为Json字符串，转换失败则返回空字符串。
+// 传入参数Response为一个interface，必须有成员函数Print。
+func (baseHandler *BaseHandler) ToJsonStr(response interface{}) (result string) {
 	// 将该对象转换为byte字节数组
 	jsonResult, jsonErr := json.Marshal(response)
 	if jsonErr != nil {
@@ -86,12 +97,12 @@ func (baseHandler *BaseHandler) ResponseAsJson(response interface{}, charset ...
 	} else {
 		baseHandler.ResponseWriter.Header().Set("Content-Type", "application/json; charset=utf-8")
 	}
-	fmt.Fprintf(baseHandler.ResponseWriter, "%v", jsonResult)
+	baseHandler.ResponseWriter.Write(jsonResult)
 }
 
 // ResponseAsText 向客户端响应一个Text结果
 func (baseHandler *BaseHandler) ResponseAsText(result string) {
-	fmt.Fprintf(baseHandler.ResponseWriter, "%v", result)
+	fmt.Fprintf(baseHandler.ResponseWriter, "%s", result)
 }
 
 // ResponseAsHtml 向客户端响应一个html结果，默认字符集为utf-8
@@ -101,7 +112,7 @@ func (baseHandler *BaseHandler) ResponseAsHtml(result string, charset ...string)
 	} else {
 		baseHandler.ResponseWriter.Header().Set("Content-Type", "text/html; charset=utf-8")
 	}
-	fmt.Fprintf(baseHandler.ResponseWriter, "%v", result)
+	fmt.Fprintf(baseHandler.ResponseWriter, "%s", result)
 }
 
 // Response 向客户端响应一个结果
@@ -157,7 +168,7 @@ func (baseHandler *BaseHandler) Redirect(url string, expire ...time.Time) {
 		expires := expireTime.Format("Mon, 02 Jan 2006 15:04:05 GMT")
 		baseHandler.SetHeader("Expires", expires)
 	}
-	fmt.Fprintf(baseHandler.ResponseWriter, "")
+	baseHandler.ResponseWriter.Write(nil)
 }
 
 /////////////////////////////////////////////////////cookie/////////////////////////////////////////////////////////////
