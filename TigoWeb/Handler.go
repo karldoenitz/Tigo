@@ -152,14 +152,14 @@ func (baseHandler *BaseHandler) Render(data interface{}, templates ...string) {
 	}
 }
 
-// RedirectPermanently 向客户端永久重定向一个地址
+// redirectPermanently 向客户端永久重定向一个地址
 func (baseHandler *BaseHandler) redirectPermanently(url string, status int) {
 	baseHandler.SetHeader("Location", url)
 	baseHandler.ResponseWriter.WriteHeader(status)
 	baseHandler.ResponseWriter.Write(nil)
 }
 
-// Redirect 向客户端暂时重定向一个地址
+// redirect 向客户端暂时重定向一个地址
 func (baseHandler *BaseHandler) redirect(url string, status int, expire ...time.Time) {
 	baseHandler.SetHeader("Location", url)
 	baseHandler.ResponseWriter.WriteHeader(status)
@@ -189,6 +189,11 @@ func (baseHandler *BaseHandler) RedirectPermanently(url string) {
 // Redirect 向客户端暂时重定向一个地址
 func (baseHandler *BaseHandler) Redirect(url string, expire ...time.Time) {
 	baseHandler.redirect(url, http.StatusTemporaryRedirect, expire...)
+}
+
+// RedirectTo 自定义重定向
+func (baseHandler *BaseHandler) RedirectTo(url string, status int, expire ...time.Time) {
+	baseHandler.redirect(url, status, expire...)
 }
 
 /////////////////////////////////////////////////////cookie/////////////////////////////////////////////////////////////
