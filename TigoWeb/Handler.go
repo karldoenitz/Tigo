@@ -153,22 +153,42 @@ func (baseHandler *BaseHandler) Render(data interface{}, templates ...string) {
 }
 
 // RedirectPermanently 向客户端永久重定向一个地址
-func (baseHandler *BaseHandler) RedirectPermanently(url string) {
+func (baseHandler *BaseHandler) redirectPermanently(url string, status int) {
 	baseHandler.SetHeader("Location", url)
-	baseHandler.ResponseWriter.WriteHeader(http.StatusMovedPermanently)
+	baseHandler.ResponseWriter.WriteHeader(status)
 	baseHandler.ResponseWriter.Write(nil)
 }
 
 // Redirect 向客户端暂时重定向一个地址
-func (baseHandler *BaseHandler) Redirect(url string, expire ...time.Time) {
+func (baseHandler *BaseHandler) redirect(url string, status int, expire ...time.Time) {
 	baseHandler.SetHeader("Location", url)
-	baseHandler.ResponseWriter.WriteHeader(http.StatusFound)
+	baseHandler.ResponseWriter.WriteHeader(status)
 	if len(expire) > 0 {
 		expireTime := expire[0]
 		expires := expireTime.Format("Mon, 02 Jan 2006 15:04:05 GMT")
 		baseHandler.SetHeader("Expires", expires)
 	}
 	baseHandler.ResponseWriter.Write(nil)
+}
+
+// MovePermanently 向客户端永久性移动一个地址
+func (baseHandler *BaseHandler) MovePermanently(url string) {
+	baseHandler.redirectPermanently(url, http.StatusMovedPermanently)
+}
+
+// Move 向客户端暂时移动一个地址
+func (baseHandler *BaseHandler) Move(url string, expire ...time.Time) {
+	baseHandler.redirect(url, http.StatusFound, expire...)
+}
+
+// RedirectPermanently 向客户端永久重定向一个地址
+func (baseHandler *BaseHandler) RedirectPermanently(url string) {
+	baseHandler.redirectPermanently(url, http.StatusPermanentRedirect)
+}
+
+// Redirect 向客户端暂时重定向一个地址
+func (baseHandler *BaseHandler) Redirect(url string, expire ...time.Time) {
+	baseHandler.redirect(url, http.StatusTemporaryRedirect, expire...)
 }
 
 /////////////////////////////////////////////////////cookie/////////////////////////////////////////////////////////////
