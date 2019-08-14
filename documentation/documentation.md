@@ -21,6 +21,9 @@ API目录：
     - [func ClearAllCookie](#func-basehandlerclearallcookie)
     - [func Redirect](#func-basehandlerredirect)
     - [func RedirectPermanently](#func-basehandlerredirectpermanently)
+    - [func RedirectTo](#func-basehandlerredirectto)
+    - [func Move](#func-basehandlermove)
+    - [func MovePermanently](#func-basehandlermovepermanently)
     - [func Render](#func-basehandler-basehandlerrender)
     - [func ResponseAsHtml](#func-basehandlerresponseashtml)
     - [func ResponseAsText](#func-basehandlerresponseastext)
@@ -232,6 +235,21 @@ func (baseHandler *BaseHandler)Redirect(url string, expire ...time.Time)
 func (baseHandler *BaseHandler)RedirectPermanently(url string)
 ```
 ```RedirectPermanently```方法是将当前handler所挂载的URL永久性重定向到另一个URL地址。
+### func (*BaseHandler)Move
+```go
+func (baseHandler *BaseHandler)Move(url string, expire ...time.Time)
+```
+```Move```方法是将当前handler所挂载的URL重定向到另一个URL地址，expire为客户端过期时间，如果不填写expire，则会使用客户端默认过期时间。
+### func (*BaseHandler)MovePermanently
+```go
+func (baseHandler *BaseHandler)MovePermanently(url string)
+```
+```MovePermanently```方法是将当前handler所挂载的URL永久性重定向到另一个URL地址。
+### func (*BaseHandler)RedirectTo
+```go
+func (baseHandler *BaseHandler)RedirectTo(url string, status int, expire ...time.Time)
+```
+```RedirectTo```方法是将当前handler所挂载的URL重定向到另一个URL地址，status为http状态码，expire为客户端过期时间，如果不填写expire，则会使用客户端默认过期时间。
 ### func (baseHandler *BaseHandler)Render<a name="Render"></a>
 ```go
 func (baseHandler *BaseHandler)Render(data interface{}, templates ...string)

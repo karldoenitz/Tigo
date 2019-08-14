@@ -21,6 +21,9 @@ API index:
     - [func ClearAllCookie](#func-basehandlerclearallcookie)
     - [func Redirect](#func-basehandlerredirect)
     - [func RedirectPermanently](#func-basehandlerredirectpermanently)
+    - [func Move](#func-basehandlermove)
+    - [func MovePermanently](#func-basehandlermovepermanently)
+    - [func RedirectTo](#func-basehandlerredirectto)
     - [func Render](#func-basehandler-basehandlerrender)
     - [func ResponseAsHtml](#func-basehandlerresponseashtml)
     - [func ResponseAsText](#func-basehandlerresponseastext)
@@ -231,6 +234,21 @@ func (baseHandler *BaseHandler)Redirect(url string, expire ...time.Time)
 func (baseHandler *BaseHandler)RedirectPermanently(url string)
 ```
 ```RedirectPermanently``` is the method to redirect client to another url permanently.
+### func (*BaseHandler)Move
+```go
+func (baseHandler *BaseHandler)Move(url string, expire ...time.Time)
+```
+```Move``` is the method to redirect client to another url.
+### func (*BaseHandler)MovePermanently
+```go
+func (baseHandler *BaseHandler)MovePermanently(url string)
+```
+```MovePermanently``` is the method to redirect client to another url permanently.
+### func (*BaseHandler)RedirectTo
+```go
+func (baseHandler *BaseHandler)RedirectTo(url string, status int,expire ...time.Time)
+```
+```RedirectTo``` is the method to redirect client to another url.
 ### func (baseHandler *BaseHandler)Render<a name="Render"></a>
 ```go
 func (baseHandler *BaseHandler)Render(data interface{}, templates ...string)
