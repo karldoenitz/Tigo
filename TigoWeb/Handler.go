@@ -3,6 +3,7 @@ package TigoWeb
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/karldoenitz/Tigo/binding"
@@ -30,6 +31,7 @@ func (baseHandler *BaseHandler) InitHandler(responseWriter http.ResponseWriter, 
 	baseHandler.ResponseWriter = responseWriter
 	baseHandler.Request.ParseForm()
 	baseHandler.ctxValMap = map[string]interface{}{}
+	baseHandler.JsonParams = map[string]interface{}{}
 }
 
 // GetBody 获取HTTP报文体
@@ -199,6 +201,7 @@ func (baseHandler *BaseHandler) RedirectTo(url string, status int, expire ...tim
 /////////////////////////////////////////////////////cookie/////////////////////////////////////////////////////////////
 
 // SetCookie 设置cookie
+// SetCookie未设置cookie的domain及path，此cookie仅对当前路径有效，设置其他路径cookie可参考SetAdvancedCookie
 func (baseHandler *BaseHandler) SetCookie(name string, value string) {
 	cookie := http.Cookie{Name: name, Value: value}
 	http.SetCookie(baseHandler.ResponseWriter, &cookie)
@@ -211,6 +214,7 @@ func (baseHandler *BaseHandler) SetCookieObject(cookie Cookie) {
 }
 
 // SetSecureCookie 设置加密cookie
+// SetSecureCookie未设置cookie的domain及path，此cookie仅对当前路径有效，设置其他路径cookie可参考SetAdvancedCookie
 func (baseHandler *BaseHandler) SetSecureCookie(name string, value string, key ...string) {
 	securityKey := ""
 	if len(key) > 0 {
@@ -352,21 +356,33 @@ func (baseHandler *BaseHandler) GetCookieObject(name ...string) (Cookie, error) 
 	return cookie, nil
 }
 
-// ClearCookie 清除当前path下的指定的cookie
+// ClearCookie 清除本次请求当前path下的指定的cookie
 func (baseHandler *BaseHandler) ClearCookie(name string) {
 	cookie := Cookie{
 		Name:    name,
-		Expires: time.Now(),
+		Expires: time.Unix(0, 0),
+		MaxAge:  0,
 	}
 	baseHandler.SetCookieObject(cookie)
 }
 
-// ClearAllCookie 清除当前path下所有的cookie
+// ClearAllCookie 清除本次请求当前path下所有的cookie
 func (baseHandler *BaseHandler) ClearAllCookie() {
 	cookies := baseHandler.Request.Cookies()
 	for _, cookie := range cookies {
-		baseHandler.ClearCookie(cookie.Name)
+		cookie.Expires = time.Unix(0, 0)
+		http.SetCookie(baseHandler.ResponseWriter, cookie)
 	}
+}
+
+/////////////////////////////////////////////////////session////////////////////////////////////////////////////////////
+
+func (baseHandler *BaseHandler) SetSession(key string, value interface{}, expires ...int) {
+
+}
+
+func (baseHandler *BaseHandler) GetSession(key string) (value interface{}) {
+	return
 }
 
 /////////////////////////////////////////////////////input//////////////////////////////////////////////////////////////
@@ -387,15 +403,18 @@ func (baseHandler *BaseHandler) SetHeader(name string, value string) {
 //   - 否则，根据key直接获取value
 func (baseHandler *BaseHandler) GetParameter(key string) (value *ReqParams) {
 	jsonValue := &ReqParams{}
+	val := baseHandler.Request.FormValue(key)
 	if baseHandler.GetHeader("Content-Type") == "application/json" {
 		if value, ok := baseHandler.JsonParams[key]; ok {
 			jsonValue.Value = value
+		} else if val != "" {
+			jsonValue.Value = val
 		} else {
 			jsonValue.Value = nil
 		}
 		return jsonValue
 	}
-	jsonValue.Value = baseHandler.Request.FormValue(key)
+	jsonValue.Value = val
 	return jsonValue
 }
 
@@ -470,16 +489,27 @@ func (baseHandler *BaseHandler) Options() {
 //////////////////////////////////////////////////Context Method////////////////////////////////////////////////////////
 
 // SetCtxVal 在上下文中设置值
+//  - demo请查看源代码中的注释
 func (baseHandler *BaseHandler) SetCtxVal(key string, val interface{}) {
-	baseHandler.ctxValMap[key] = val
+	/*
+		在中间件中，如果初始化了一个handler，需要将handler内的Request和ResponseWriter作为参数传入到next.ServeHTTP中
+
+		func IsLogin(next http.HandlerFunc) http.HandlerFunc {
+			return func(w http.ResponseWriter, r *http.Request) {
+				handler := TigoWeb.BaseHandler{Request: r, ResponseWriter: w}
+				handler.SetCtxVal("key", "value")
+				next.ServeHTTP(handler.ResponseWriter, handler.Request)
+			}
+		}
+	 */
+	ctx := baseHandler.Request.Context()
+	ctx = context.WithValue(ctx, key, val)
+	baseHandler.Request = baseHandler.Request.WithContext(ctx)
 }
 
 // GetCtxVal 从上下文获取值
 func (baseHandler *BaseHandler) GetCtxVal(key string) interface{} {
-	if val, isExisted := baseHandler.ctxValMap[key]; isExisted {
-		return val
-	}
-	return nil
+	return baseHandler.Request.Context().Value(key)
 }
 
 //////////////////////////////////////////////////http message dump/////////////////////////////////////////////////////
