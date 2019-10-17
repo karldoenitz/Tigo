@@ -90,5 +90,13 @@ INFO: 2018/07/09 15:02:36 Application.go:22: Server run on: 127.0.0.1:8888
 </tr>
 </table>
 
+# 鸣谢以下组织的支持
+<table>
+<tr>
+<td><a href="https://www.jetbrains.com/?from=Tigo" target="_blank"><img src="https://karldoenitz.github.io/TigoOld/img/jetbrains.png" width="150px" height="150px"/></a></td>
+</tr>
+</table>
+
+
 # 注意
 如果你对此框架感兴趣，可以加入我们一同开发。
