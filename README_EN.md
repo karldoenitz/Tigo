@@ -91,5 +91,12 @@ Open web browser and visit ```http://127.0.0.1:8888/hello-tigo```, you will see 
 </tr>
 </table>
 
+# Special Thanks
+<table>
+<tr>
+<td><a href="https://www.jetbrains.com/?from=Tigo" target="_blank"><img src="https://karldoenitz.github.io/TigoOld/img/jetbrains.png" width="150px" height="150px"/></a></td>
+</tr>
+</table>
+
 # Attention
 If you like the framework, join us please.
