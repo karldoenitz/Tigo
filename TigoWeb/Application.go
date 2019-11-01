@@ -38,6 +38,14 @@ func (application *Application) Listen(port int) {
 	application.Port = port
 }
 
+// StartSession 设置session，此函数只提供session操作的接口，以便于第三方session插件嵌入。
+func (application *Application) StartSession(sessionInterface SessionInterface, sessionCookieName string) {
+	GlobalSessionManager = sessionInterface.NewSessionManager()
+	if sessionCookieName != "" {
+		SessionCookieName = sessionCookieName
+	}
+}
+
 // MountFileServer 挂载文件服务
 //  - dir 本地文件地址
 //  - uris 需要挂载的URI列表

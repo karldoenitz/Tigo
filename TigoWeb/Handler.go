@@ -377,12 +377,50 @@ func (baseHandler *BaseHandler) ClearAllCookie() {
 
 /////////////////////////////////////////////////////session////////////////////////////////////////////////////////////
 
-func (baseHandler *BaseHandler) SetSession(key string, value interface{}, expires ...int) {
-
+// SetSession 根据key设置session值
+func (baseHandler *BaseHandler) SetSession(key string, value interface{}) (err error) {
+	sessionId := baseHandler.GetCookie(SessionCookieName)
+	var session Session
+	if sessionId == "" {
+		// 此处先默认3600秒，下个版本改为从配置文件读取
+		session = GlobalSessionManager.GenerateSession(3600)
+		sessionId = session.SessionId()
+	} else {
+		session = GlobalSessionManager.GetSessionBySid(sessionId)
+		if session.SessionId() == "" {
+			session = GlobalSessionManager.GenerateSession(3600)
+			sessionId = session.SessionId()
+		}
+	}
+	baseHandler.SetAdvancedCookie(SessionCookieName, sessionId, "path=/")
+	err = session.Set(key, value)
+	return
 }
 
-func (baseHandler *BaseHandler) GetSession(key string) (value interface{}) {
+// GetSession 根据key获取session值
+func (baseHandler *BaseHandler) GetSession(key string, value interface{}) (err error) {
+	sessionId := baseHandler.GetCookie(SessionCookieName)
+	if sessionId == "" {
+		logger.Info.Println("session id is empty")
+		value = nil
+		return
+	}
+	session := GlobalSessionManager.GetSessionBySid(sessionId)
+	if session == nil {
+		logger.Info.Println("session is nil")
+		baseHandler.SetAdvancedCookie(SessionCookieName, "", "maxAge=0", "path=/")
+		value = nil
+		return
+	}
+	err = session.Get(key, value)
 	return
+}
+
+// DelSession 删除session
+func (baseHandler *BaseHandler) DelSession() {
+	sessionId := baseHandler.GetCookie(SessionCookieName)
+	GlobalSessionManager.DeleteSession(sessionId)
+	baseHandler.SetAdvancedCookie(SessionCookieName, "", "maxAge=0", "path=/")
 }
 
 /////////////////////////////////////////////////////input//////////////////////////////////////////////////////////////
