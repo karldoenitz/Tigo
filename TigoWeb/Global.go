@@ -1,3 +1,3 @@
 package TigoWeb
 
-var globalConfig *GlobalConfig
+var globalConfig = &GlobalConfig{}
