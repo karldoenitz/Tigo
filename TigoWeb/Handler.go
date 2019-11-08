@@ -383,12 +383,12 @@ func (baseHandler *BaseHandler) SetSession(key string, value interface{}) (err e
 	var session Session
 	if sessionId == "" {
 		// 此处先默认3600秒，下个版本改为从配置文件读取
-		session = GlobalSessionManager.GenerateSession(3600)
+		session = GlobalSessionManager.GenerateSession(0)
 		sessionId = session.SessionId()
 	} else {
 		session = GlobalSessionManager.GetSessionBySid(sessionId)
 		if session.SessionId() == "" {
-			session = GlobalSessionManager.GenerateSession(3600)
+			session = GlobalSessionManager.GenerateSession(0)
 			sessionId = session.SessionId()
 		}
 	}
