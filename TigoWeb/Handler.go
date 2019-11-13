@@ -416,7 +416,23 @@ func (baseHandler *BaseHandler) GetSession(key string, value interface{}) (err e
 	return
 }
 
-// DelSession 删除session
+// ClearSession 根据key清除对应的session值
+func (baseHandler *BaseHandler) ClearSession(key string) {
+	sessionId := baseHandler.GetCookie(SessionCookieName)
+	if sessionId == "" {
+		logger.Info.Println("session id is empty")
+		return
+	}
+	session := GlobalSessionManager.GetSessionBySid(sessionId)
+	if session == nil {
+		logger.Info.Println("session is nil")
+		baseHandler.SetAdvancedCookie(SessionCookieName, "", "maxAge=0", "path=/")
+		return
+	}
+	session.Delete(key)
+}
+
+// DelSession 删除所有的session值
 func (baseHandler *BaseHandler) DelSession() {
 	sessionId := baseHandler.GetCookie(SessionCookieName)
 	GlobalSessionManager.DeleteSession(sessionId)
