@@ -12,7 +12,7 @@
 
 # 相关工具及插件
 - **tiger**  
-`tiger`是一个专门为`Tigo`框架量身定做的脚手架工具，可以使用`tiger`新建`Tigo`项目或者其他执行其他操作。  
+`tiger`是一个专门为`Tigo`框架量身定做的脚手架工具，可以使用`tiger`新建`Tigo`项目或者执行其他操作。  
 [查看tiger](https://github.com/karldoenitz/tiger)  
 - **tission**  
 `tission`是一个为`Tigo`定制的session插件。  
