@@ -458,7 +458,8 @@ func (baseHandler *BaseHandler) SetHeader(name string, value string) {
 func (baseHandler *BaseHandler) GetParameter(key string) (value *ReqParams) {
 	jsonValue := &ReqParams{}
 	val := baseHandler.Request.FormValue(key)
-	if baseHandler.GetHeader("Content-Type") == "application/json" {
+	contentType := baseHandler.GetHeader("Content-Type")
+	if strings.Contains(contentType, "application/json") {
 		if value, ok := baseHandler.JsonParams[key]; ok {
 			jsonValue.Value = value
 		} else if val != "" {
