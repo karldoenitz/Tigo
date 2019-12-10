@@ -622,10 +622,11 @@ func (baseHandler *BaseHandler) CheckFormBinding(obj interface{}) error {
 
 // CheckParamBinding 检查提交的参数是否符合要求
 func (baseHandler *BaseHandler) CheckParamBinding(obj interface{}) error {
-	if baseHandler.GetHeader("Content-Type") == "application/json" {
+	contentType := baseHandler.GetHeader("Content-Type")
+	if strings.Contains(contentType, "application/json") {
 		return baseHandler.CheckJsonBinding(obj)
 	}
-	if baseHandler.GetHeader("Content-Type") == "application/x-www-form-urlencoded" {
+	if strings.Contains(contentType, "application/x-www-form-urlencoded") {
 		return baseHandler.CheckFormBinding(obj)
 	}
 	return nil
