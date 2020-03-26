@@ -53,9 +53,9 @@ func (baseHandler *BaseHandler) GetBody() []byte {
 
 // PassJson 用来解析json中的值
 func (baseHandler *BaseHandler) PassJson() {
-	if baseHandler.GetHeader("Content-Type") == "application/json" {
+	if strings.Contains(baseHandler.GetHeader("Content-Type"), "application/json") {
 		jsonData := baseHandler.GetBody()
-		//使用 json.Unmarshal(data []byte, v interface{})进行转换，返回 error 信息
+		// 使用 json.Unmarshal(data []byte, v interface{})进行转换，返回 error 信息
 		err := json.Unmarshal(jsonData, &baseHandler.JsonParams)
 		if err != nil {
 			logger.Error.Println(err.Error())
@@ -556,7 +556,7 @@ func (baseHandler *BaseHandler) SetCtxVal(key string, val interface{}) {
 				next.ServeHTTP(handler.ResponseWriter, handler.Request)
 			}
 		}
-	 */
+	*/
 	ctx := baseHandler.Request.Context()
 	ctx = context.WithValue(ctx, key, val)
 	baseHandler.Request = baseHandler.Request.WithContext(ctx)
