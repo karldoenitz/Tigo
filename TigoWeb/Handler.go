@@ -575,7 +575,7 @@ func (baseHandler *BaseHandler) getHttpRequestMsg() string {
 	if err != nil {
 		return err.Error()
 	}
-	if baseHandler.Request.Header.Get("Content-Type") == "application/x-www-form-urlencoded" {
+	if strings.Contains(baseHandler.GetHeader("Content-Type"), "application/x-www-form-urlencoded") {
 		bodyData := getFormDataStr(baseHandler.Request.Form)
 		return fmt.Sprintf("%s%s", string(req), bodyData)
 	}
