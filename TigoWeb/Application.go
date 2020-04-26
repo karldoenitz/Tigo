@@ -59,9 +59,23 @@ func (application *Application) MountFileServer(dir string, uris ...string) {
 	}
 }
 
-
 // Run 服务启动函数
 func (application *Application) Run() {
+	application.InitApp()
+	// 获取证书与密钥，判断是否启动https服务
+	cert, certKey := "", ""
+	if globalConfig != nil {
+		cert, certKey = globalConfig.Cert, globalConfig.CertKey
+	}
+	if cert != "" && certKey != "" {
+		application.runTLS(cert, certKey)
+	} else {
+		application.run()
+	}
+}
+
+// InitApp 初始化配置信息及路由
+func (application *Application) InitApp() {
 	// 初始化全局变量
 	if application.ConfigPath != "" {
 		InitGlobalConfig(application.ConfigPath)
@@ -75,14 +89,4 @@ func (application *Application) Run() {
 	// url挂载
 	urlPattern := UrlPattern{UrlMapping: application.UrlPattern, UrlRouters: application.UrlRouters}
 	urlPattern.Init()
-	// 获取证书与密钥，判断是否启动https服务
-	cert, certKey := "", ""
-	if globalConfig != nil {
-		cert, certKey = globalConfig.Cert, globalConfig.CertKey
-	}
-	if cert != "" && certKey != "" {
-		application.runTLS(cert, certKey)
-	} else {
-		application.run()
-	}
 }
