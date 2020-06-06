@@ -3,6 +3,9 @@ package TigoWeb
 
 import (
 	"fmt"
+	"github.com/fvbock/endless"
+	"github.com/jpillora/overseer"
+	"github.com/jpillora/overseer/fetcher"
 	"github.com/karldoenitz/Tigo/logger"
 	"net/http"
 )
@@ -89,4 +92,32 @@ func (application *Application) InitApp() {
 	// url挂载
 	urlPattern := UrlPattern{UrlMapping: application.UrlPattern, UrlRouters: application.UrlRouters}
 	urlPattern.Init()
+}
+
+// EndlessStart 使用endless进行平滑启动
+func (application *Application) EndlessStart() {
+	application.InitApp()
+	logger.Info.Println("start with endless...")
+	err := endless.ListenAndServe(fmt.Sprintf("%s:%d", application.IPAddress, application.Port), http.DefaultServeMux)
+	if err != nil {
+		panic(fmt.Sprintf("server err: %v", err))
+	}
+}
+
+// OverseerStart 使用overseer进行平滑启动
+//  - fc: overseer包中的fetcher接口，包括file、http、GitHub等
+func (application *Application) OverseerStart(fc fetcher.Interface) {
+	overseer.Run(overseer.Config{
+		Program: application.overseerProgram,
+		Address: fmt.Sprintf("%s:%d", application.IPAddress, application.Port),
+		Fetcher: fc,
+	})
+}
+
+func (application *Application) overseerProgram(state overseer.State) {
+	logger.Info.Printf("app (%s) start with overseer...\n", state.ID)
+	application.InitApp()
+	if err := http.Serve(state.Listener, nil); err != nil {
+		panic(fmt.Sprintf("server err: %v", err))
+	}
 }
