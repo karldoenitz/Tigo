@@ -738,7 +738,7 @@ func InitError(level string)
 - stdout： 终端输出，不打印到文件；
 - 文件具体路径：存储log的文件的路径。
 # Tigo.request<a name="request"></a>
-request模块是Tigo框架中用来进行http request请求的模块，可使用此模块内的方法对目标链接发送http请求。
+request模块是Tigo框架中用来进行http request请求的模块，可使用此模块内的方法对目标恋接发送http请求。
 ## type Response<a name="httpResponse"></a>
 ```go
 type Response struct {
