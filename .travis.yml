@@ -9,4 +9,4 @@ go:
   - "1.12"
   - "1.13"
 
-install: go get -u github.com/karldoenitz/Tigo/...
+install: go get -u github.com/karldoenitz/Tigo
