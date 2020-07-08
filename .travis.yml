@@ -10,6 +10,4 @@ go:
   - "1.13"
 
 install: 
-- go get github.com/fvbock/endless
-- go get github.com/jpillora/overseer
-- go get github.com/karldoenitz/Tigo/TigoWeb
+  - go get github.com/karldoenitz/Tigo/TigoWeb
