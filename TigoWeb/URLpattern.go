@@ -20,7 +20,9 @@ type UrlPatternMidWare struct {
 //  - 5、进行HTTP请求结束处理。
 func (urlPatternMidWare UrlPatternMidWare) Handle(responseWriter http.ResponseWriter, request *http.Request) {
 	handlerType := reflect.TypeOf(urlPatternMidWare.Handler)
-
+	if handlerType.Kind() == reflect.Ptr {
+		handlerType = handlerType.Elem()
+	}
 	// 加载handler
 	handler := reflect.New(handlerType)
 	// 获取init方法
