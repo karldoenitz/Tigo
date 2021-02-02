@@ -52,7 +52,7 @@ func Authorize(next http.HandlerFunc) http.HandlerFunc {
 
 // 路由
 var urls = []TigoWeb.Router{
-    {"/demo", &DemoHandler{}, []TigoWeb.Middleware{Authorize}},
+    {"/demo", DemoHandler{}, []TigoWeb.Middleware{Authorize}},
 }
 
 func main() {
