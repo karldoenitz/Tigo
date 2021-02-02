@@ -128,8 +128,8 @@ func UrlDecode(value string) (result string) {
 // 这个方法只适用于没有入参，且无返回值的函数调用
 //  - instance: 实例
 //  - funcName: 需要调用的方法名
-func VoidFuncCall(instance reflect.Value, funcName string) {
-	var funcParams []reflect.Value
+//  - funcParams: 调用函数所需要的参数
+func VoidFuncCall(instance reflect.Value, funcName string, funcParams ...reflect.Value) {
 	function := instance.MethodByName(funcName)
 	if function.IsValid() {
 		function.Call(funcParams)
