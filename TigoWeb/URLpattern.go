@@ -71,17 +71,15 @@ func (urlPattern *UrlPattern) AppendRouterPattern(router Router, v interface {
 // Init 初始化url映射，遍历UrlMapping，将handler与对应的URL依次挂载到http服务上
 func (urlPattern *UrlPattern) Init() {
 	for key, value := range urlPattern.UrlMapping {
-		urlPatternMidWare := UrlPatternMidWare{
+		urlPattern.AppendUrlPattern(key, &UrlPatternMidWare{
 			Handler:    value,
 			requestUrl: key,
-		}
-		urlPattern.AppendUrlPattern(key, &urlPatternMidWare)
+		})
 	}
 	for _, router := range urlPattern.UrlRouters {
-		urlPatternMidWare := UrlPatternMidWare{
+		urlPattern.AppendRouterPattern(router, &UrlPatternMidWare{
 			Handler:    router.Handler,
 			requestUrl: router.Url,
-		}
-		urlPattern.AppendRouterPattern(router, &urlPatternMidWare)
+		})
 	}
 }
