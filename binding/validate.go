@@ -84,14 +84,12 @@ func checkSliceField(field reflect.StructField, vField reflect.Value) error {
 	for i := 0; i < vField.Len(); i++ {
 		v := vField.Index(i)
 		t := v.Type()
-		if v.Kind() == reflect.Struct || v.Kind() == reflect.Interface {
-			err := checkObjBinding(t, v)
-			if err != nil {
-				return errors.New(fmt.Sprintf("Field %s=>index %d has an error: %s", field.Name, i, err.Error()))
-			}
-		} else {
+		if v.Kind() != reflect.Struct && v.Kind() != reflect.Interface {
 			logger.Warning.Printf("Only support interface/struct kind field: %s", field.Name)
 			break
+		}
+		if err := checkObjBinding(t, v); err != nil {
+			return errors.New(fmt.Sprintf("Field %s=>index %d has an error: %s", field.Name, i, err.Error()))
 		}
 	}
 	return nil
@@ -109,16 +107,15 @@ func checkStructureField(field reflect.StructField, vField reflect.Value) error 
 	if !isRequiredExisted || strings.ToLower(required) != "true" {
 		return nil
 	}
-	if vField.CanAddr() && vField.Addr().CanInterface() {
-		attrType := vField.Type()
-		attrValue := vField
-		for i := 0; i < attrType.NumField(); i++ {
-			if err := checkField(attrType.Field(i), attrValue.Field(i)); err != nil {
-				return err
-			}
-		}
-	} else {
+	if !(vField.CanAddr() && vField.Addr().CanInterface()) {
 		return fmt.Errorf("%s's address can not be obtained with Addr", field.Name)
+	}
+	attrType := vField.Type()
+	attrValue := vField
+	for i := 0; i < attrType.NumField(); i++ {
+		if err := checkField(attrType.Field(i), attrValue.Field(i)); err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -258,9 +255,7 @@ func bindingCheck(vElement reflect.Value) (err error) {
 	var functionParams []reflect.Value
 	if check.IsValid() {
 		values := check.Call(functionParams)
-		if values[0].IsNil() {
-			return nil
-		} else {
+		if !values[0].IsNil() {
 			return values[0].Interface().(error)
 		}
 	}
