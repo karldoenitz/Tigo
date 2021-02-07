@@ -168,7 +168,7 @@ func Get(requestUrl string, headers ...map[string]string) (*Response, error) {
 	if len(headers) > 0 {
 		requestHeaders = headers[0]
 	}
-	response, err := client.request("GET", requestUrl, requestHeaders, nil)
+	response, err := client.request(GET, requestUrl, requestHeaders, nil)
 	if err != nil {
 		logger.Error.Printf("GET %s ERROR\n", requestUrl)
 		return nil, err
@@ -178,17 +178,17 @@ func Get(requestUrl string, headers ...map[string]string) (*Response, error) {
 
 // Post 向指定url发送post请求
 func Post(requestUrl string, postParams map[string]interface{}, headers ...map[string]string) (*Response, error) {
-	return Request("POST", requestUrl, postParams, headers...)
+	return Request(POST, requestUrl, postParams, headers...)
 }
 
 // Put 向指定url发送put请求
 func Put(requestUrl string, postParams map[string]interface{}, headers ...map[string]string) (*Response, error) {
-	return Request("PUT", requestUrl, postParams, headers...)
+	return Request(PUT, requestUrl, postParams, headers...)
 }
 
 // Patch 向指定url发送patch请求
 func Patch(requestUrl string, postParams map[string]interface{}, headers ...map[string]string) (*Response, error) {
-	return Request("PATCH", requestUrl, postParams, headers...)
+	return Request(PATCH, requestUrl, postParams, headers...)
 }
 
 // Head 向指定url发送head请求
@@ -198,7 +198,7 @@ func Head(requestUrl string, headers ...map[string]string) (*Response, error) {
 	if len(headers) > 0 {
 		requestHeaders = headers[0]
 	}
-	response, err := client.request("HEAD", requestUrl, requestHeaders, nil)
+	response, err := client.request(HEAD, requestUrl, requestHeaders, nil)
 	if err != nil {
 		logger.Error.Printf("HEAD %s ERROR\n", requestUrl)
 		return nil, err
@@ -213,7 +213,7 @@ func Options(requestUrl string, headers ...map[string]string) (*Response, error)
 	if len(headers) > 0 {
 		requestHeaders = headers[0]
 	}
-	response, err := client.request("OPTIONS", requestUrl, requestHeaders, nil)
+	response, err := client.request(OPTIONS, requestUrl, requestHeaders, nil)
 	if err != nil {
 		logger.Error.Printf("OPTIONS %s ERROR\n", requestUrl)
 		return nil, err
@@ -228,7 +228,7 @@ func Delete(requestUrl string, headers ...map[string]string) (*Response, error) 
 	if len(headers) > 0 {
 		requestHeaders = headers[0]
 	}
-	response, err := client.request("DELETE", requestUrl, requestHeaders, nil)
+	response, err := client.request(DELETE, requestUrl, requestHeaders, nil)
 	if err != nil {
 		logger.Error.Printf("DELETE %s ERROR\n", requestUrl)
 		return nil, err
