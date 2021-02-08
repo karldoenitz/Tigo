@@ -23,17 +23,17 @@ type Application struct {
 func (application *Application) run() {
 	address := fmt.Sprintf("%s:%d", application.IPAddress, application.Port)
 	logger.Info.Printf("Server run on: %s", address)
-	httpServerErr := http.ListenAndServe(address, nil)
+	var httpServerErr error
+	switch {
+	// 获取证书与密钥，判断是否启动https服务
+	case globalConfig != nil && globalConfig.Cert != "" && globalConfig.CertKey != "":
+		httpServerErr = http.ListenAndServeTLS(address, globalConfig.Cert, globalConfig.CertKey, nil)
+	default:
+		httpServerErr = http.ListenAndServe(address, nil)
+	}
 	if httpServerErr != nil {
 		logger.Error.Printf("HTTP SERVER ERROR! MSG: %s", httpServerErr.Error())
 	}
-}
-
-// https服务启动函数
-func (application *Application) runTLS(cert string, key string) {
-	address := fmt.Sprintf("%s:%d", application.IPAddress, application.Port)
-	logger.Info.Printf("Server run on: %s", address)
-	http.ListenAndServeTLS(address, cert, key, nil)
 }
 
 // Listen 端口监听
@@ -53,28 +53,18 @@ func (application *Application) StartSession(sessionInterface SessionInterface, 
 //  - dir 本地文件地址
 //  - uris 需要挂载的URI列表
 func (application *Application) MountFileServer(dir string, uris ...string) {
-	if len(uris) > 0 {
-		for _, uri := range uris {
-			http.Handle(uri, http.FileServer(http.Dir(dir)))
-		}
-	} else {
-		http.Handle("/", http.FileServer(http.Dir(dir)))
+	if len(uris) == 0 {
+		uris = append(uris, "/")
+	}
+	for _, uri := range uris {
+		http.Handle(uri, http.FileServer(http.Dir(dir)))
 	}
 }
 
 // Run 服务启动函数
 func (application *Application) Run() {
 	application.InitApp()
-	// 获取证书与密钥，判断是否启动https服务
-	cert, certKey := "", ""
-	if globalConfig != nil {
-		cert, certKey = globalConfig.Cert, globalConfig.CertKey
-	}
-	if cert != "" && certKey != "" {
-		application.runTLS(cert, certKey)
-	} else {
-		application.run()
-	}
+	application.run()
 }
 
 // InitApp 初始化配置信息及路由
