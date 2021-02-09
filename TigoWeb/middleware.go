@@ -25,7 +25,7 @@ func chainMiddleware(mw ...Middleware) Middleware {
 
 // InternalServerErrorMiddleware 用来处理控制层出现的异常的中间件
 func InternalServerErrorMiddleware(next http.HandlerFunc) http.HandlerFunc {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		var err error
 		defer func() {
 			r := recover()
@@ -42,12 +42,12 @@ func InternalServerErrorMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			}
 		}()
 		next.ServeHTTP(w, r)
-	})
+	}
 }
 
 // HttpContextLogMiddleware 记录一个http请求响应时间的中间件
 func HttpContextLogMiddleware(next http.HandlerFunc) http.HandlerFunc {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		startTime := time.Now()
 		requestMethod := r.Method
 		url := r.RequestURI
@@ -64,5 +64,5 @@ func HttpContextLogMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			}
 		}()
 		next.ServeHTTP(&httpResponseWriter, r)
-	})
+	}
 }
