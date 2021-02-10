@@ -8,6 +8,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -349,4 +350,22 @@ func sliceLog(logLevel LogLevel, current time.Time) {
 	InitInfo(logLevel.Info)
 	InitWarning(logLevel.Warning)
 	InitError(logLevel.Error)
+}
+
+////////////////////////////////////////////////////http相关工具函数//////////////////////////////////////////////////////
+
+// StatusColor 给http状态码进行终端着色
+//  - status: 状态码
+func StatusColor(status int) (coloredStatus string) {
+	switch {
+	case status < http.StatusMultipleChoices:
+		coloredStatus = fmt.Sprintf(" \x1B[6;30;42m%d\x1B[0m", status)
+	case http.StatusMultipleChoices <= status && status < http.StatusBadRequest:
+		coloredStatus = fmt.Sprintf(" \x1B[6;30;44m%d\x1B[0m", status)
+	case http.StatusBadRequest <= status && status < http.StatusInternalServerError:
+		coloredStatus = fmt.Sprintf(" \x1B[6;30;43m%d\x1B[0m", status)
+	default:
+		coloredStatus = fmt.Sprintf(" \x1B[6;30;41m%d\x1B[0m", status)
+	}
+	return
 }
