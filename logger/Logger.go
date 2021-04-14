@@ -114,18 +114,18 @@ func initLogger() {
 		log.Fatalln("Failed to open error log file: ", err)
 	}
 	Trace = &TiLog{}
-	Trace.Logger = log.New(ioutil.Discard, "\x1b[32m TRACE:   \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+	Trace.Logger = log.New(ioutil.Discard, "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
 	Trace.Level = TraceLevel
 	// 将运行日志写入控制台
 	Info = &TiLog{}
-	Info.Logger = log.New(os.Stdout, "\x1b[34m INFO:    \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+	Info.Logger = log.New(os.Stdout, "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
 	Info.Level = InfoLevel
 	Warning = &TiLog{}
-	Warning.Logger = log.New(os.Stdout, "\x1b[33m WARNING: \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+	Warning.Logger = log.New(os.Stdout, "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
 	Warning.Level = WarningLevel
 	// 将错误日志写入log文件
 	Error = &TiLog{}
-	Error.Logger = log.New(io.MultiWriter(file, os.Stderr), "\x1b[31m ERROR:   \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+	Error.Logger = log.New(io.MultiWriter(file, os.Stderr), "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
 	Error.Level = ErrorLevel
 }
 
@@ -194,14 +194,14 @@ func InitTrace(level string) {
 	Trace.Level = TraceLevel
 	switch {
 	case level == "" || level == "discard":
-		Trace.Logger = log.New(ioutil.Discard, "\x1b[32m TRACE:   \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+		Trace.Logger = log.New(ioutil.Discard, "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	case level == "stdout":
-		Trace.Logger = log.New(os.Stdout, "\x1b[32m TRACE:   \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+		Trace.Logger = log.New(os.Stdout, "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	default:
 		logFile := logFileMapping[level]
-		Trace.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[32m TRACE:   \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+		Trace.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
 	}
 }
 
@@ -210,14 +210,14 @@ func InitInfo(level string) {
 	Info.Level = InfoLevel
 	switch {
 	case level == "" || level == "discard":
-		Info.Logger = log.New(ioutil.Discard, "\x1b[34m INFO:    \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+		Info.Logger = log.New(ioutil.Discard, "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	case level == "stdout":
-		Info.Logger = log.New(os.Stdout, "\x1b[34m INFO:    \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+		Info.Logger = log.New(os.Stdout, "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	default:
 		logFile := logFileMapping[level]
-		Info.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[34m INFO:    \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+		Info.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	}
 }
@@ -227,14 +227,14 @@ func InitWarning(level string) {
 	Warning.Level = WarningLevel
 	switch {
 	case level == "" || level == "discard":
-		Warning.Logger = log.New(ioutil.Discard, "\x1b[33m WARNING: \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+		Warning.Logger = log.New(ioutil.Discard, "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	case level == "stdout":
-		Warning.Logger = log.New(os.Stdout, "\x1b[33m WARNING: \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+		Warning.Logger = log.New(os.Stdout, "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	default:
 		logFile := logFileMapping[level]
-		Warning.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[33m WARNING: \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+		Warning.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	}
 }
@@ -244,14 +244,14 @@ func InitError(level string) {
 	Error.Level = ErrorLevel
 	switch {
 	case level == "" || level == "discard":
-		Error.Logger = log.New(ioutil.Discard, "\x1b[31m ERROR:   \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+		Error.Logger = log.New(ioutil.Discard, "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	case level == "stdout":
-		Error.Logger = log.New(os.Stdout, "\x1b[31m ERROR:   \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+		Error.Logger = log.New(os.Stdout, "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	default:
 		logFile := logFileMapping[level]
-		Error.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[31m ERROR:   \x1b[0m ", log.Ldate|log.Ltime|log.Lshortfile)
+		Error.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	}
 }
@@ -359,13 +359,13 @@ func sliceLog(logLevel LogLevel, current time.Time) {
 func StatusColor(status int) (coloredStatus string) {
 	switch {
 	case status < http.StatusMultipleChoices:
-		coloredStatus = fmt.Sprintf(" \x1B[6;30;42m%d\x1B[0m", status)
+		coloredStatus = fmt.Sprintf("\x1B[6;30;32m[%d]\x1B[0m", status)
 	case http.StatusMultipleChoices <= status && status < http.StatusBadRequest:
-		coloredStatus = fmt.Sprintf(" \x1B[6;30;44m%d\x1B[0m", status)
+		coloredStatus = fmt.Sprintf("\x1B[6;30;34m[%d]\x1B[0m", status)
 	case http.StatusBadRequest <= status && status < http.StatusInternalServerError:
-		coloredStatus = fmt.Sprintf(" \x1B[6;30;43m%d\x1B[0m", status)
+		coloredStatus = fmt.Sprintf("\x1B[6;30;33m[%d]\x1B[0m", status)
 	default:
-		coloredStatus = fmt.Sprintf(" \x1B[6;30;41m%d\x1B[0m", status)
+		coloredStatus = fmt.Sprintf("\x1B[6;30;31m[%d]\x1B[0m", status)
 	}
 	return
 }
