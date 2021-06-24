@@ -6,7 +6,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/karldoenitz/Tigo)](https://goreportcard.com/report/github.com/karldoenitz/Tigo)
 [![GoDoc](https://godoc.org/github.com/karldoenitz/Tigo?status.svg)](https://pkg.go.dev/github.com/karldoenitz/Tigo)
 [![Release](https://img.shields.io/github/release/karldoenitz/Tigo.svg)](https://github.com/karldoenitz/Tigo/releases)  
-![Tigo logo](https://github.com/karldoenitz/Tigo/blob/master/documentation/tigo_logo.jpg "this is Tigo logo")
+![Tigo logo](https://raw.githubusercontent.com/karldoenitz/Tigo/master/documentation/tigo_logo.jpg "this is Tigo logo")
 # Tigo([中文文档点击此处](https://github.com/karldoenitz/Tigo/blob/master/README.md))
 A web framework developed in go language.
 

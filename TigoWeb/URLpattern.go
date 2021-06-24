@@ -19,37 +19,22 @@ type UrlPatternMidWare struct {
 //  - 4、调用handler中的功能方法；
 //  - 5、进行HTTP请求结束处理。
 func (urlPatternMidWare UrlPatternMidWare) Handle(responseWriter http.ResponseWriter, request *http.Request) {
-	handlerType := reflect.TypeOf(urlPatternMidWare.Handler).Elem()
+	handlerType := reflect.TypeOf(urlPatternMidWare.Handler)
+	if handlerType.Kind() == reflect.Ptr {
+		handlerType = handlerType.Elem()
+	}
 	// 加载handler
 	handler := reflect.New(handlerType)
-	// 获取init方法
-	init := handler.MethodByName("InitHandler")
-	// 解析参数
-	paramPasser := handler.MethodByName("PassJson")
-	// 获取BeforeRequest方法
-	beforeRequest := handler.MethodByName("BeforeRequest")
-	// 获取HTTP请求方式
-	requestMethod := MethodMapping[request.Method]
-	function := handler.MethodByName(requestMethod)
-	// 获取TeardownRequest方法
-	teardownRequest := handler.MethodByName("TeardownRequest")
-	initParams := []reflect.Value{reflect.ValueOf(responseWriter), reflect.ValueOf(request)}
-	var functionParams []reflect.Value
-	if init.IsValid() {
-		init.Call(initParams)
-	}
-	if paramPasser.IsValid() {
-		paramPasser.Call(functionParams)
-	}
-	if beforeRequest.IsValid() {
-		beforeRequest.Call(functionParams)
-	}
-	if function.IsValid() {
-		function.Call(functionParams)
-	}
-	if teardownRequest.IsValid() {
-		teardownRequest.Call(functionParams)
-	}
+	// 调用InitHandler方法
+	VoidFuncCall(handler, "InitHandler", reflect.ValueOf(responseWriter), reflect.ValueOf(request))
+	// 调用PassJson方法
+	VoidFuncCall(handler, "PassJson")
+	// 调用BeforeRequest方法
+	VoidFuncCall(handler, "BeforeRequest")
+	// 根据http请求方式调用相关方法
+	VoidFuncCall(handler, MethodMapping[request.Method])
+	// 调用TeardownRequest方法
+	VoidFuncCall(handler, "TeardownRequest")
 }
 
 // Router 路由对象
@@ -86,17 +71,15 @@ func (urlPattern *UrlPattern) AppendRouterPattern(router Router, v interface {
 // Init 初始化url映射，遍历UrlMapping，将handler与对应的URL依次挂载到http服务上
 func (urlPattern *UrlPattern) Init() {
 	for key, value := range urlPattern.UrlMapping {
-		urlPatternMidWare := UrlPatternMidWare{
+		urlPattern.AppendUrlPattern(key, &UrlPatternMidWare{
 			Handler:    value,
 			requestUrl: key,
-		}
-		urlPattern.AppendUrlPattern(key, &urlPatternMidWare)
+		})
 	}
 	for _, router := range urlPattern.UrlRouters {
-		urlPatternMidWare := UrlPatternMidWare{
+		urlPattern.AppendRouterPattern(router, &UrlPatternMidWare{
 			Handler:    router.Handler,
 			requestUrl: router.Url,
-		}
-		urlPattern.AppendRouterPattern(router, &urlPatternMidWare)
+		})
 	}
 }

@@ -25,7 +25,7 @@ func chainMiddleware(mw ...Middleware) Middleware {
 
 // InternalServerErrorMiddleware 用来处理控制层出现的异常的中间件
 func InternalServerErrorMiddleware(next http.HandlerFunc) http.HandlerFunc {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		var err error
 		defer func() {
 			r := recover()
@@ -42,12 +42,12 @@ func InternalServerErrorMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			}
 		}()
 		next.ServeHTTP(w, r)
-	})
+	}
 }
 
 // HttpContextLogMiddleware 记录一个http请求响应时间的中间件
 func HttpContextLogMiddleware(next http.HandlerFunc) http.HandlerFunc {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		startTime := time.Now()
 		requestMethod := r.Method
 		url := r.RequestURI
@@ -57,12 +57,12 @@ func HttpContextLogMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			duration := time.Now().Sub(startTime).Seconds() * 1e3
 			switch status {
 			case http.StatusInternalServerError:
-				logger.Error.Printf("%d %s %s %fms", status, requestMethod, url, duration)
+				logger.Error.Printf("%s | %fms | %s %s", logger.StatusColor(status), duration, requestMethod, url)
 				break
 			default:
-				logger.Info.Printf("%d %s %s %fms", status, requestMethod, url, duration)
+				logger.Info.Printf("%s | %fms | %s %s", logger.StatusColor(status), duration, requestMethod, url)
 			}
 		}()
 		next.ServeHTTP(&httpResponseWriter, r)
-	})
+	}
 }

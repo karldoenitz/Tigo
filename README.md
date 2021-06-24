@@ -6,7 +6,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/karldoenitz/Tigo)](https://goreportcard.com/report/github.com/karldoenitz/Tigo)
 [![GoDoc](https://godoc.org/github.com/karldoenitz/Tigo?status.svg)](https://pkg.go.dev/github.com/karldoenitz/Tigo)
 [![Release](https://img.shields.io/github/release/karldoenitz/Tigo.svg)](https://github.com/karldoenitz/Tigo/releases)  
-![Tigo logo](https://github.com/karldoenitz/Tigo/blob/master/documentation/tigo_logo.jpg "this is Tigo logo")  
+![Tigo logo](https://raw.githubusercontent.com/karldoenitz/Tigo/master/documentation/tigo_logo.jpg "this is Tigo logo")  
 # Tigo([For English Documentation Click Here](https://github.com/karldoenitz/Tigo/blob/master/README_EN.md))
 一个使用Go语言开发的web框架。
 
@@ -52,7 +52,7 @@ func Authorize(next http.HandlerFunc) http.HandlerFunc {
 
 // 路由
 var urls = []TigoWeb.Router{
-    {"/demo", &DemoHandler{}, []TigoWeb.Middleware{Authorize}},
+    {"/demo", DemoHandler{}, []TigoWeb.Middleware{Authorize}},
 }
 
 func main() {

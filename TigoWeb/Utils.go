@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 	"net/url"
+	"reflect"
 	"strings"
 )
 
@@ -36,7 +37,7 @@ func Decrypt(src []byte, key []byte) []byte {
 // 先将key通过md5加密为64位，然后对原始值进行aes加密
 func encrypt(plainText []byte, key []byte) ([]byte, error) {
 	has := md5.Sum(key)
-	hasKey := []byte(has[:])
+	hasKey := has[:]
 	c, err := aes.NewCipher(hasKey)
 	if err != nil {
 		return nil, err
@@ -83,7 +84,7 @@ func InitGlobalConfig(configPath string) {
 }
 
 // InitGlobalConfigWithObj 可使用TigoWeb.GlobalConfig的实例进行初始化全局变量
-func InitGlobalConfigWithObj(config GlobalConfig)  {
+func InitGlobalConfigWithObj(config GlobalConfig) {
 	globalConfig = &config
 }
 
@@ -119,4 +120,18 @@ func UrlDecode(value string) (result string) {
 	m, _ := url.ParseQuery(urlStr)
 	result = m.Get("param")
 	return
+}
+
+////////////////////////////////////////////////////反射相关的工具函数/////////////////////////////////////////////////////
+
+// VoidFuncCall 调用某个指定的方法，通过反射获取某个变量的值，然后通过传入的方法名，调用这个变量中的方法；
+// 这个方法只适用于没有入参，且无返回值的函数调用
+//  - instance: 实例
+//  - funcName: 需要调用的方法名
+//  - funcParams: 调用函数所需要的参数
+func VoidFuncCall(instance reflect.Value, funcName string, funcParams ...reflect.Value) {
+	function := instance.MethodByName(funcName)
+	if function.IsValid() {
+		function.Call(funcParams)
+	}
 }
