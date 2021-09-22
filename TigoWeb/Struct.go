@@ -338,7 +338,9 @@ func (jsonParam *ReqParams) To(result interface{}) {
 		return
 	}
 	if jsonData, err := json.Marshal(jsonParam.Value); err == nil {
-		json.Unmarshal(jsonData, &result)
+		if err := json.Unmarshal(jsonData, &result); err != nil {
+			logger.Warning.Println(err.Error())
+		}
 	} else {
 		logger.Warning.Println(err.Error())
 	}

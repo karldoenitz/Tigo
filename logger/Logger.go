@@ -70,21 +70,21 @@ type TiLog struct {
 func (l *TiLog) Printf(format string, v ...interface{}) {
 	formatStr := formatter[l.Level]
 	format = fmt.Sprintf(formatStr, format)
-	l.Output(2, fmt.Sprintf(format, v...))
+	_ = l.Output(2, fmt.Sprintf(format, v...))
 }
 
 // Print 打印log，不换行
 func (l *TiLog) Print(v ...interface{}) {
 	formatStr := formatter[l.Level]
 	logInfo := fmt.Sprintf(formatStr, fmt.Sprint(v...))
-	l.Output(2, logInfo)
+	_ = l.Output(2, logInfo)
 }
 
 // Println 打印log并且换行
 func (l *TiLog) Println(v ...interface{}) {
 	formatStr := formatter[l.Level]
 	logInfo := fmt.Sprintf(formatStr, fmt.Sprintln(v...))
-	l.Output(2, logInfo)
+	_ = l.Output(2, logInfo)
 }
 
 ////////////////////////////////////////////////////初始化logger的方法集//////////////////////////////////////////////////
@@ -163,10 +163,10 @@ func InitLoggerWithConfigFile(filePath string) {
 	}
 	logLevel := LogLevel{}
 	if strings.HasSuffix(filePath, ".json") {
-		json.Unmarshal(raw, &logLevel)
+		_ = json.Unmarshal(raw, &logLevel)
 	}
 	if strings.HasSuffix(filePath, ".yaml") || strings.HasSuffix(filePath, "yml") {
-		yaml.Unmarshal(raw, &logLevel)
+		_ = yaml.Unmarshal(raw, &logLevel)
 	}
 	InitLoggerWithObject(logLevel)
 }
@@ -334,16 +334,16 @@ func sliceLog(logLevel LogLevel, current time.Time) {
 	updateLogMapping(logLevel.Error)
 	// 如果上一份日志文件没有关闭则进行关闭
 	if isTraceExisted && TraceLogFile != nil {
-		TraceLogFile.Close()
+		_ = TraceLogFile.Close()
 	}
 	if isInfoExisted && InfoLogFile != nil {
-		InfoLogFile.Close()
+		_ = InfoLogFile.Close()
 	}
 	if isWarningExisted && WarningLogFile != nil {
-		WarningLogFile.Close()
+		_ = WarningLogFile.Close()
 	}
 	if isErrorExisted && ErrorLogFile != nil {
-		ErrorLogFile.Close()
+		_ = ErrorLogFile.Close()
 	}
 	// 重新初始化当前日志
 	InitTrace(logLevel.Trace)

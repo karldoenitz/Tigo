@@ -19,7 +19,7 @@ func TestGet(t *testing.T) {
 		Code int    `json:"code"`
 		Msg  string `json:"msg"`
 	}{}
-	json.Unmarshal(response.Content, &result)
+	_ = json.Unmarshal(response.Content, &result)
 	fmt.Println(result.Code)
 	fmt.Println(result.Msg)
 	fmt.Println(contentStr)
