@@ -46,16 +46,7 @@ type Router struct {
 
 // UrlPattern 是URL路由，此处存储URL映射。
 type UrlPattern struct {
-	UrlMapping map[string]interface{}
 	UrlRouters []Router
-}
-
-// AppendUrlPattern 向http服务挂载单个handler，注意：
-//   - handler必须有一个Handle(http.ResponseWriter, *http.Request)函数
-func (urlPattern *UrlPattern) AppendUrlPattern(uri string, v interface {
-	Handle(http.ResponseWriter, *http.Request)
-}) {
-	http.HandleFunc(uri, v.Handle)
 }
 
 // AppendRouterPattern 向http服务挂载单个Router，Router中配置有url对应的handler以及对应的中间件
@@ -70,12 +61,6 @@ func (urlPattern *UrlPattern) AppendRouterPattern(router Router, v interface {
 
 // Init 初始化url映射，遍历UrlMapping，将handler与对应的URL依次挂载到http服务上
 func (urlPattern *UrlPattern) Init() {
-	for key, value := range urlPattern.UrlMapping {
-		urlPattern.AppendUrlPattern(key, &UrlPatternMidWare{
-			Handler:    value,
-			requestUrl: key,
-		})
-	}
 	for _, router := range urlPattern.UrlRouters {
 		urlPattern.AppendRouterPattern(router, &UrlPatternMidWare{
 			Handler:    router.Handler,

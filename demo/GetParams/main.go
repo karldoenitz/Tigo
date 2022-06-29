@@ -29,15 +29,15 @@ func (testHandler *TestHandler) Post() {
 	}
 }
 
-var url = map[string]interface{}{
-	"/test": &TestHandler{},
+var url = []TigoWeb.Router{
+	{"/test", TestHandler{}, nil},
 }
 
 func main() {
 	application := TigoWeb.Application{
 		IPAddress:  "0.0.0.0",
 		Port:       8080,
-		UrlPattern: url,
+		UrlRouters: url,
 	}
 	application.Run()
 }

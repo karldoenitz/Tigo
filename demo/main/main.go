@@ -61,17 +61,17 @@ func (testCookieHandler *TestCookieHandler) Get() {
 	testCookieHandler.ResponseAsHtml("<h1>Tiger Go Go Go!</h1>")
 }
 
-var urls = map[string]interface{}{
-	"/hello-world": &HelloHandler{},
-	"/redirect":    &RedirectHandler{},
-	"/test-cookie": &TestCookieHandler{},
+var urls = []TigoWeb.Router{
+	{"/hello-world", HelloHandler{}, nil},
+	{"/redirect", RedirectHandler{}, nil},
+	{"/test-cookie", TestCookieHandler{}, nil},
 }
 
 func main() {
 	application := TigoWeb.Application{
 		IPAddress:  "0.0.0.0",
 		Port:       8888,
-		UrlPattern: urls,
+		UrlRouters: urls,
 		ConfigPath: "./configuration.json",
 	}
 	application.Run()

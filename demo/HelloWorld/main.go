@@ -12,15 +12,15 @@ func (helloWorldHandler *HelloWorldHandler) Get() {
 	helloWorldHandler.ResponseAsHtml("Hello World!")
 }
 
-var urls = map[string]interface{}{
-	"/hello-world": &HelloWorldHandler{},
+var urls = []TigoWeb.Router{
+	{"/hello-world", HelloWorldHandler{}, nil},
 }
 
 func main() {
 	application := TigoWeb.Application{
 		IPAddress:  "0.0.0.0",
 		Port:       8080,
-		UrlPattern: urls,
+		UrlRouters: urls,
 	}
 	application.Run()
 }

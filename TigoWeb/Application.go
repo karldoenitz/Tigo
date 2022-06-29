@@ -12,11 +12,10 @@ import (
 
 // Application web容器
 type Application struct {
-	IPAddress  string                 // IP地址
-	Port       int                    // 端口
-	UrlPattern map[string]interface{} // url路由配置
-	UrlRouters []Router               // url路由配置
-	ConfigPath string                 // 全局配置
+	IPAddress  string   // IP地址
+	Port       int      // 端口
+	UrlRouters []Router // url路由配置
+	ConfigPath string   // 全局配置
 }
 
 // http服务启动函数
@@ -80,7 +79,7 @@ func (application *Application) InitApp() {
 		application.Port = globalConfig.Port
 	}
 	// url挂载
-	urlPattern := UrlPattern{UrlMapping: application.UrlPattern, UrlRouters: application.UrlRouters}
+	urlPattern := UrlPattern{UrlRouters: application.UrlRouters}
 	urlPattern.Init()
 }
 
