@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/karldoenitz/Tigo/binding"
 	"github.com/karldoenitz/Tigo/logger"
 	"html/template"
@@ -483,6 +484,18 @@ func (baseHandler *BaseHandler) GetJsonValue(key string) interface{} {
 		return ""
 	}
 	return mapResult[key]
+}
+
+// GetPathParam 根据key获取Url上的参数
+func (baseHandler *BaseHandler) GetPathParam(key string) (value PathParam) {
+	vars := mux.Vars(baseHandler.Request)
+	value = PathParam(vars[key])
+	return
+}
+
+// GetPathParamStr 根据key获取Url上的参数
+func (baseHandler *BaseHandler) GetPathParamStr(key string) string {
+	return mux.Vars(baseHandler.Request)[key]
 }
 
 // BeforeRequest 在每次响应HTTP请求之前执行此函数

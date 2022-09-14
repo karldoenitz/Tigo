@@ -343,3 +343,35 @@ func (jsonParam *ReqParams) To(result interface{}) {
 		logger.Warning.Println(err.Error())
 	}
 }
+
+/////////////////////////////////////////////// Path Param /////////////////////////////////////////////////////////////
+
+type PathParam string
+
+// ToBool 将从url路径中获取参数转换为布尔型
+func (p PathParam) ToBool() bool {
+	value := string(p)
+	if strings.ToLower(value) == "true" || strings.ToLower(value) == "1" {
+		return true
+	}
+	return false
+}
+
+// ToFloat 将url路径中的参数转换为浮点型
+func (p PathParam) ToFloat() (float64, error) {
+	value := string(p)
+	result, err := strconv.ParseFloat(value, 64)
+	return result, err
+}
+
+// ToInt 将url路径中的参数转换成整型
+func (p PathParam) ToInt() (int, error) {
+	value := string(p)
+	result, err := strconv.Atoi(value)
+	return result, err
+}
+
+// ToStr 将url路径中的参数转换为字符串型
+func (p PathParam) ToStr() string {
+	return string(p)
+}

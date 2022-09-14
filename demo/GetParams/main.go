@@ -31,6 +31,7 @@ func (testHandler *TestHandler) Post() {
 
 var url = []TigoWeb.Pattern{
 	{"/test", TestHandler{}, nil},
+	{"/user/{userId}/info/{isShowExtra}", TestHandler{}, nil},
 }
 
 func main() {
