@@ -29,6 +29,20 @@ func (testHandler *TestHandler) Post() {
 	}
 }
 
+func (testHandler *TestHandler) Get() {
+	userId, _ := testHandler.GetPathParam("userId").ToInt()
+	result := map[string]interface{}{
+		"id":   userId,
+		"name": "Three Zhang",
+		"desc": "this is test info",
+	}
+	isShowExtra := testHandler.GetPathParam("isShowExtra").ToBool()
+	if isShowExtra {
+		result["extra"] = "this is extra info"
+	}
+	testHandler.ResponseAsJson(result)
+}
+
 var url = []TigoWeb.Pattern{
 	{"/test", TestHandler{}, nil},
 	{"/user/{userId}/info/{isShowExtra}", TestHandler{}, nil},
