@@ -7,7 +7,7 @@
 // Basic Example:
 //
 //	func main() {
-//		application := TigoWeb.Application{UrlRouters: urlRouter}
+//		application := TigoWeb.Application{UrlPatterns: urlRouter}
 //		application.PrepareStart()
 //		endless.DefaultReadTimeOut = 10 * time.Second
 //		endless.DefaultWriteTimeOut = 10 * time.Second
@@ -34,7 +34,7 @@
 //
 //	func prog(state overseer.State) {
 //		log.Printf("app (%s) listening...", state.ID)
-//		application := TigoWeb.Application{UrlRouters: urlRouter}
+//		application := TigoWeb.Application{UrlPatterns: urlRouter}
 //		application.InitApp()
 //		http.Serve(state.Listener, nil)
 //	}

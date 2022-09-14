@@ -61,7 +61,7 @@ func (testCookieHandler *TestCookieHandler) Get() {
 	testCookieHandler.ResponseAsHtml("<h1>Tiger Go Go Go!</h1>")
 }
 
-var urls = []TigoWeb.Router{
+var urls = []TigoWeb.Pattern{
 	{"/hello-world", HelloHandler{}, nil},
 	{"/redirect", RedirectHandler{}, nil},
 	{"/test-cookie", TestCookieHandler{}, nil},
@@ -69,10 +69,10 @@ var urls = []TigoWeb.Router{
 
 func main() {
 	application := TigoWeb.Application{
-		IPAddress:  "0.0.0.0",
-		Port:       8888,
-		UrlRouters: urls,
-		ConfigPath: "./configuration.json",
+		IPAddress:   "0.0.0.0",
+		Port:        8888,
+		UrlPatterns: urls,
+		ConfigPath:  "./configuration.json",
 	}
 	application.Run()
 }

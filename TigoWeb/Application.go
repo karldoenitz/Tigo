@@ -4,6 +4,7 @@ package TigoWeb
 import (
 	"fmt"
 	"github.com/fvbock/endless"
+	"github.com/gorilla/mux"
 	"github.com/jpillora/overseer"
 	"github.com/jpillora/overseer/fetcher"
 	"github.com/karldoenitz/Tigo/logger"
@@ -12,10 +13,11 @@ import (
 
 // Application web容器
 type Application struct {
-	IPAddress  string   // IP地址
-	Port       int      // 端口
-	UrlRouters []Router // url路由配置
-	ConfigPath string   // 全局配置
+	IPAddress   string      // IP地址
+	Port        int         // 端口
+	UrlPatterns []Pattern   // url路由配置
+	ConfigPath  string      // 全局配置
+	muxRouter   *mux.Router // gorilla的路由
 }
 
 // http服务启动函数
@@ -26,9 +28,9 @@ func (application *Application) run() {
 	switch {
 	// 获取证书与密钥，判断是否启动https服务
 	case globalConfig != nil && globalConfig.Cert != "" && globalConfig.CertKey != "":
-		httpServerErr = http.ListenAndServeTLS(address, globalConfig.Cert, globalConfig.CertKey, nil)
+		httpServerErr = http.ListenAndServeTLS(address, globalConfig.Cert, globalConfig.CertKey, application.muxRouter)
 	default:
-		httpServerErr = http.ListenAndServe(address, nil)
+		httpServerErr = http.ListenAndServe(address, application.muxRouter)
 	}
 	if httpServerErr != nil {
 		logger.Error.Printf("HTTP SERVER ERROR! MSG: %s", httpServerErr.Error())
@@ -62,6 +64,7 @@ func (application *Application) MountFileServer(dir string, uris ...string) {
 
 // Run 服务启动函数
 func (application *Application) Run() {
+	application.muxRouter = mux.NewRouter()
 	application.InitApp()
 	application.run()
 }
@@ -79,7 +82,7 @@ func (application *Application) InitApp() {
 		application.Port = globalConfig.Port
 	}
 	// url挂载
-	urlPattern := UrlPattern{UrlRouters: application.UrlRouters}
+	urlPattern := UrlPattern{UrlPatterns: application.UrlPatterns, router: application.muxRouter}
 	urlPattern.Init()
 }
 
@@ -87,7 +90,7 @@ func (application *Application) InitApp() {
 func (application *Application) EndlessStart() {
 	application.InitApp()
 	logger.Info.Println("start with endless...")
-	err := endless.ListenAndServe(fmt.Sprintf("%s:%d", application.IPAddress, application.Port), http.DefaultServeMux)
+	err := endless.ListenAndServe(fmt.Sprintf("%s:%d", application.IPAddress, application.Port), application.muxRouter)
 	if err != nil {
 		panic(fmt.Sprintf("server err: %v", err))
 	}
@@ -106,7 +109,7 @@ func (application *Application) OverseerStart(fc fetcher.Interface) {
 func (application *Application) overseerProgram(state overseer.State) {
 	logger.Info.Printf("app (%s) start with overseer...\n", state.ID)
 	application.InitApp()
-	if err := http.Serve(state.Listener, nil); err != nil {
+	if err := http.Serve(state.Listener, application.muxRouter); err != nil {
 		panic(fmt.Sprintf("server err: %v", err))
 	}
 }

@@ -2,6 +2,7 @@
 package TigoWeb
 
 import (
+	"github.com/gorilla/mux"
 	"net/http"
 	"reflect"
 )
@@ -37,8 +38,8 @@ func (urlPatternMidWare UrlPatternMidWare) Handle(responseWriter http.ResponseWr
 	VoidFuncCall(handler, "TeardownRequest")
 }
 
-// Router 路由对象
-type Router struct {
+// Pattern 路由对象
+type Pattern struct {
 	Url        string
 	Handler    interface{}
 	Middleware []Middleware
@@ -46,25 +47,26 @@ type Router struct {
 
 // UrlPattern 是URL路由，此处存储URL映射。
 type UrlPattern struct {
-	UrlRouters []Router
+	UrlPatterns []Pattern
+	router      *mux.Router
 }
 
 // AppendRouterPattern 向http服务挂载单个Router，Router中配置有url对应的handler以及对应的中间件
-func (urlPattern *UrlPattern) AppendRouterPattern(router Router, v interface {
+func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v interface {
 	Handle(http.ResponseWriter, *http.Request)
 }) {
 	baseMiddleware := []Middleware{HttpContextLogMiddleware, InternalServerErrorMiddleware}
-	baseMiddleware = append(baseMiddleware, router.Middleware...)
+	baseMiddleware = append(baseMiddleware, pattern.Middleware...)
 	middleware := chainMiddleware(baseMiddleware...)
-	http.HandleFunc(router.Url, middleware(v.Handle))
+	urlPattern.router.HandleFunc(pattern.Url, middleware(v.Handle))
 }
 
 // Init 初始化url映射，遍历UrlMapping，将handler与对应的URL依次挂载到http服务上
 func (urlPattern *UrlPattern) Init() {
-	for _, router := range urlPattern.UrlRouters {
-		urlPattern.AppendRouterPattern(router, &UrlPatternMidWare{
-			Handler:    router.Handler,
-			requestUrl: router.Url,
+	for _, pattern := range urlPattern.UrlPatterns {
+		urlPattern.AppendRouterPattern(pattern, &UrlPatternMidWare{
+			Handler:    pattern.Handler,
+			requestUrl: pattern.Url,
 		})
 	}
 }

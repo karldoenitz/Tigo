@@ -393,7 +393,7 @@ func (urlPattern *UrlPattern)AppendUrlPattern(uri string, v interface{Handle(htt
 Use this method to append a handler to an url.
 ### func (urlPattern *UrlPattern) AppendRouterPattern<a name="AppendRouterPattern"></a>
 ```go
-func (urlPattern *UrlPattern) AppendRouterPattern(router Router, v interface {
+func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v interface {
 	Handle(http.ResponseWriter, *http.Request)
 })
 ```
@@ -408,12 +408,12 @@ func WithTracing(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-var routers = []TigoWeb.Router{
+var routers = []TigoWeb.Pattern{
 	{Url: "/test", Handler: &TestHandler{}, Middleware: []TigoWeb.Middleware{WithTracing}},
 }
 
 func main() {
-	application := TigoWeb.Application{IPAddress: "0.0.0.0", Port: 8080, UrlRouters: routers}
+	application := TigoWeb.Application{IPAddress: "0.0.0.0", Port: 8080, UrlPatterns: routers}
 	application.Run()
 }
 ```

@@ -384,7 +384,7 @@ func (baseHandler *BaseHandler) TeardownRequest()
 ```go
 type UrlPattern struct {
     UrlMapping map[string] interface{Handle(http.ResponseWriter, *http.Request)}
-    UrlRouters []Router
+    UrlPatterns []Pattern
 }
 ```
 URL路由设置，使用这个结构体在应用中配置URL与对应的handler。
@@ -395,7 +395,7 @@ func (urlPattern *UrlPattern)AppendUrlPattern(uri string, v interface{Handle(htt
 此方法是向指定URL上挂载一个Handler。
 ### func (urlPattern *UrlPattern) AppendRouterPattern<a name="AppendRouterPattern"></a>
 ```go
-func (urlPattern *UrlPattern) AppendRouterPattern(router Router, v interface {
+func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v interface {
 	Handle(http.ResponseWriter, *http.Request)
 })
 ```
@@ -410,12 +410,12 @@ func WithTracing(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-var routers = []TigoWeb.Router{
+var routers = []TigoWeb.Pattern{
 	{Url: "/test", Handler: &TestHandler{}, Middleware: []TigoWeb.Middleware{WithTracing}},
 }
 
 func main() {
-	application := TigoWeb.Application{IPAddress: "0.0.0.0", Port: 8080, UrlRouters: routers}
+	application := TigoWeb.Application{IPAddress: "0.0.0.0", Port: 8080, UrlPatterns: routers}
 	application.Run()
 }
 ```

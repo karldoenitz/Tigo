@@ -51,15 +51,15 @@ func Authorize(next http.HandlerFunc) http.HandlerFunc {
 }
 
 // 路由
-var urls = []TigoWeb.Router{
+var urls = []TigoWeb.Pattern{
     {"/demo", DemoHandler{}, []TigoWeb.Middleware{Authorize}},
 }
 
 func main() {
     application := TigoWeb.Application{
-        IPAddress:  "127.0.0.1",
-        Port:       8888,
-        UrlRouters: urls,
+        IPAddress:   "127.0.0.1",
+        Port:        8888,
+        UrlPatterns: urls,
     }
     application.Run()
 }
