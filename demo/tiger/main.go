@@ -35,5 +35,5 @@ func main() {
 `
 
 func main() {
-
+	// TODO 此处补充脚手架逻辑
 }
