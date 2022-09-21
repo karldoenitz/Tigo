@@ -36,4 +36,10 @@ func main() {
 
 func main() {
 	// TODO 此处补充脚手架逻辑
+	// 获取命令行参数，根据参数判断是否是创建demo，
+	// 如果创建demo，则直接把`DemoCode`注入到目标文件中就行
+	// tiger支持的命令:
+	//  - create xxx: 创建项目
+	//  - addHandler xxx: 增加xxx命名的handler
+	//  - conf xxx: 用xxx命名的配置文件替换现有配置文件，没有则新建
 }
