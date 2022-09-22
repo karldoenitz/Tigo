@@ -110,8 +110,45 @@ func printCmdUsage(args []string) {
 	}
 }
 
+// execEngine 执行引擎
+//  - args: 执行参数
+func execEngine(args []string) {
+	switch args[0] {
+	case "create":
+		execCreate(args[1])
+		break
+	case "conf":
+		break
+	case "addHandler":
+		break
+	}
+}
+
+// execCreate 执行create命令
+//  - arg create命令的参数
+func execCreate(arg string) {
+	if arg == "demo" {
+		// 此处直接创建一个项目和文件
+		// 先创建目录
+		workDir := getWorkingDirPath()
+		if err := os.Mkdir(fmt.Sprintf("%s/%s", workDir, arg), os.ModePerm); err != nil {
+			panic(err.Error())
+		}
+		// 再创建文件
+		f, err := os.Create(fmt.Sprintf("%s/%s/main.go", workDir, arg))
+		if err != nil {
+			panic(err.Error())
+		}
+		if _, err := f.WriteString(DemoCode); err != nil {
+			panic(err)
+		}
+		fmt.Printf("project `%s` created successfully", arg)
+		return
+	}
+	// 创建非demo项目
+}
+
 func main() {
-	// TODO 此处补充脚手架逻辑
 	// 获取命令行参数，根据参数判断是否是创建demo，
 	// 如果创建demo，则直接把`DemoCode`注入到目标文件中就行
 	// tiger支持的命令:
@@ -127,4 +164,5 @@ func main() {
 		printCmdUsage(args)
 		return
 	}
+	execEngine(args)
 }
