@@ -1,7 +1,10 @@
 // tiger插件，一个脚手架工具，用于来初始化一个Tigo项目
 package main
 
-import "os"
+import (
+	"fmt"
+	"os"
+)
 
 const (
 	DemoCode = `
@@ -56,15 +59,18 @@ Use "go help <command>" for more information about a command.
 use this command to create a Tigo project.
 "tiger create <project_name>" can create a project with name "project_name",
 "tiger create demo" can create a demo project.
+
 `
 	cmdConfVerbose = `
 use this command to add a configuration.
 if it's an empty folder, this command will throw an error.
 the new configuration will replace the old configuration.
+
 `
 	cmdAddHandlerVerbose = `
 use this command to add a handler with defined name.
 "tiger addHandler <handler_name>" will add a handler named "handler_name".
+
 `
 )
 
@@ -84,6 +90,26 @@ func getCmdArgs() (args []string, argNum int) {
 	return
 }
 
+// printCmdUsage 打印help
+//  - args: 命令行输入的参数
+func printCmdUsage(args []string) {
+	cmd := args[1]
+	switch cmd {
+	case "create":
+		fmt.Print(cmdCreateVerbose)
+		break
+	case "conf":
+		fmt.Print(cmdConfVerbose)
+		break
+	case "addHandler":
+		fmt.Print(cmdAddHandlerVerbose)
+		break
+	default:
+		fmt.Print(cmdVerbose)
+		break
+	}
+}
+
 func main() {
 	// TODO 此处补充脚手架逻辑
 	// 获取命令行参数，根据参数判断是否是创建demo，
@@ -92,5 +118,13 @@ func main() {
 	//  - create xxx: 创建项目
 	//  - addHandler xxx: 增加xxx命名的handler
 	//  - conf xxx: 用xxx命名的配置文件替换现有配置文件，没有则新建
-
+	args, argsCnt := getCmdArgs()
+	if argsCnt <= 1 {
+		fmt.Print(cmdVerbose)
+		return
+	}
+	if args[0] == "help" {
+		printCmdUsage(args)
+		return
+	}
 }
