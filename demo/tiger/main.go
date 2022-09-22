@@ -4,6 +4,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/exec"
 )
 
 const (
@@ -38,6 +39,48 @@ func main() {
 	}
 	application.Run()
 }
+`
+	mainCode = `
+package main
+
+import (
+	"github.com/karldoenitz/Tigo/TigoWeb"
+	"%s/handler"
+)
+
+// Write you url mapping here
+var urls = []TigoWeb.Pattern{
+	{"/ping", handler.PingHandler{}, nil},
+}
+
+func main() {
+	application := TigoWeb.Application{
+		IPAddress:   "0.0.0.0",
+		Port:        8080,
+		UrlPatterns: urls,
+	}
+	application.Run()
+}
+
+`
+	handlerCode = `
+package handler
+
+import (
+	"github.com/karldoenitz/Tigo/TigoWeb"
+)
+
+type PingHandler struct {
+	TigoWeb.BaseHandler
+}
+
+func (p *PingHandler) Get() {
+	p.ResponseAsText("Pong")
+}
+
+// you can write your code here.
+// to add 'Post', 'Put', 'Delete' and other methods here.
+
 `
 	cmdVerbose = `
 use command tiger to create a Tigo projection.
@@ -127,25 +170,60 @@ func execEngine(args []string) {
 // execCreate 执行create命令
 //  - arg create命令的参数
 func execCreate(arg string) {
+	// 先创建目录
+	workDir := getWorkingDirPath()
+	projectPath := fmt.Sprintf("%s/%s", workDir, arg)
+	if err := os.Mkdir(projectPath, os.ModePerm); err != nil {
+		panic(err.Error())
+	}
 	if arg == "demo" {
-		// 此处直接创建一个项目和文件
-		// 先创建目录
-		workDir := getWorkingDirPath()
-		if err := os.Mkdir(fmt.Sprintf("%s/%s", workDir, arg), os.ModePerm); err != nil {
-			panic(err.Error())
-		}
 		// 再创建文件
-		f, err := os.Create(fmt.Sprintf("%s/%s/main.go", workDir, arg))
+		f, err := os.Create(fmt.Sprintf("%s/main.go", projectPath))
 		if err != nil {
 			panic(err.Error())
 		}
 		if _, err := f.WriteString(DemoCode); err != nil {
 			panic(err)
 		}
-		fmt.Printf("project `%s` created successfully", arg)
+		fmt.Println("project `demo` created successfully")
+		fmt.Println("Execute go mod")
+		goMod()
 		return
 	}
-	// 创建非demo项目
+	// 创建非demo项目的main文件
+	f, err := os.Create(fmt.Sprintf("%s/main.go", projectPath))
+	if err != nil {
+		panic(err.Error())
+	}
+	if _, err := f.WriteString(fmt.Sprintf(mainCode, arg)); err != nil {
+		panic(err)
+	}
+	// 创建handler文件
+	// TODO add create handler code here
+	fmt.Printf("project `%s` created successfully\n", arg)
+	fmt.Println("Execute go mod")
+	goMod()
+}
+
+// execCmd 执行cmd命令
+//  - commands: 需要执行的命令
+func execCmd(commands []string) bool {
+	cmd := exec.Command(commands[0], commands[1:]...)
+	err := cmd.Run()
+	if err != nil {
+		fmt.Printf("cmd.Run() failed with %s\n", err)
+		return false
+	}
+	return true
+}
+
+// goMod 执行go mod
+func goMod() {
+	if execCmd([]string{"go", "mod", "init"}) {
+		if execCmd([]string{"go", "mod", "tidy"}) {
+			execCmd([]string{"go", "mod", "vendor"})
+		}
+	}
 }
 
 func main() {
