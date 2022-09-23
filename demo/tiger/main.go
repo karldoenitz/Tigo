@@ -3,6 +3,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
@@ -210,6 +211,7 @@ func execCreate(arg string) {
 		fmt.Println(err.Error())
 	}
 	_, _ = fHandler.WriteString(fmt.Sprintf(handlerCode, "PingHandler", "PingHandler"))
+	_ = f.Close()
 	fmt.Printf("project `%s` created successfully\n", arg)
 	fmt.Println("Execute go mod")
 }
@@ -268,6 +270,7 @@ func execAddHandler(handlerName string) {
 		return
 	}
 	_, _ = fHandler.WriteString(fmt.Sprintf(handlerCode, handlerName, handlerName))
+	_ = fHandler.Close()
 	// 再判断是否有main文件
 	_, err = os.Stat(fmt.Sprintf("%s/main.go", workDir))
 	if err != nil {
@@ -276,7 +279,36 @@ func execAddHandler(handlerName string) {
 		return
 	}
 	// 如果有则检测代码，并在urls中插入一个url映射
-
+	content, err := ioutil.ReadFile(fmt.Sprintf("%s/main.go", workDir))
+	if err != nil {
+		fmt.Printf("read file error:%v\n", err)
+		return
+	}
+	// 寻找main.go中的url配置
+	codes := strings.Split(string(content), "\n")
+	var isFoundUrls bool
+	var newCodes []string
+	url := strings.Replace(fileName, "handler", "", -1)
+	for _, code := range codes {
+		if code == "var urls = []TigoWeb.Pattern{" {
+			isFoundUrls = true
+		}
+		if code == "}" && isFoundUrls {
+			code = fmt.Sprintf("\t{\"/%s\", handler.%s{}, nil},\n}", url, handlerName)
+			isFoundUrls = false
+			newCodes = append(newCodes, code)
+			continue
+		}
+		newCodes = append(newCodes, code)
+	}
+	newCode := strings.Join(newCodes, "\n")
+	f, err := os.Create(fmt.Sprintf("%s/main.go", workDir))
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	_, _ = f.WriteString(newCode)
+	_ = f.Close()
 }
 
 func main() {
