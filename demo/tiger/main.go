@@ -94,6 +94,7 @@ The commands are:
     create          to create a Tigo projection
     conf            to add a configuration for Tigo projection
     addHandler      to add a handler for Tigo projection
+    mod             to run go mod
 
 Use "go help <command>" for more information about a command.
 
@@ -187,7 +188,6 @@ func execCreate(arg string) {
 		}
 		fmt.Println("project `demo` created successfully")
 		fmt.Println("Execute go mod")
-		goMod()
 		return
 	}
 	// 创建非demo项目的main文件
@@ -199,10 +199,16 @@ func execCreate(arg string) {
 		panic(err)
 	}
 	// 创建handler文件
-	// TODO add create handler code here
+	if err := os.Mkdir(projectPath+"/handler", os.ModePerm); err != nil {
+		fmt.Println(err.Error())
+	}
+	fHandler, err := os.Create(fmt.Sprintf("%s/handler/pinghandler.go", projectPath))
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	_, _ = fHandler.WriteString(handlerCode)
 	fmt.Printf("project `%s` created successfully\n", arg)
 	fmt.Println("Execute go mod")
-	goMod()
 }
 
 // execCmd 执行cmd命令
@@ -219,11 +225,9 @@ func execCmd(commands []string) bool {
 
 // goMod 执行go mod
 func goMod() {
-	if execCmd([]string{"go", "mod", "init"}) {
-		if execCmd([]string{"go", "mod", "tidy"}) {
-			execCmd([]string{"go", "mod", "vendor"})
-		}
-	}
+	execCmd([]string{"go", "mod", "init"})
+	execCmd([]string{"go", "mod", "tidy"})
+	execCmd([]string{"go", "mod", "vendor"})
 }
 
 func main() {
@@ -233,8 +237,13 @@ func main() {
 	//  - create xxx: 创建项目
 	//  - addHandler xxx: 增加xxx命名的handler
 	//  - conf xxx: 用xxx命名的配置文件替换现有配置文件，没有则新建
+	//  - mod: 进行go mod
 	args, argsCnt := getCmdArgs()
 	if argsCnt <= 1 {
+		if args[0] == "mod" {
+			goMod()
+			return
+		}
 		fmt.Print(cmdVerbose)
 		return
 	}
