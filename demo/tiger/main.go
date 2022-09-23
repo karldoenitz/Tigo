@@ -10,8 +10,7 @@ import (
 )
 
 const (
-	DemoCode = `
-package main
+	DemoCode = `package main
 
 import (
 	"github.com/karldoenitz/Tigo/TigoWeb"
@@ -42,8 +41,7 @@ func main() {
 	application.Run()
 }
 `
-	mainCode = `
-package main
+	mainCode = `package main
 
 import (
 	"github.com/karldoenitz/Tigo/TigoWeb"
@@ -65,8 +63,7 @@ func main() {
 }
 
 `
-	handlerCode = `
-package handler
+	handlerCode = `package handler
 
 import (
 	"github.com/karldoenitz/Tigo/TigoWeb"
@@ -140,6 +137,7 @@ func getCmdArgs() (args []string, argNum int) {
 // printCmdUsage 打印help
 //  - args: 命令行输入的参数
 func printCmdUsage(args []string) {
+	args = append(args, "")
 	cmd := args[1]
 	switch cmd {
 	case "create":
