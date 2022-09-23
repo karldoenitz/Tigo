@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 const (
@@ -225,7 +226,10 @@ func execCmd(commands []string) bool {
 
 // goMod 执行go mod
 func goMod() {
-	execCmd([]string{"go", "mod", "init"})
+	dir, _ := os.Getwd()
+	splitPath := strings.Split(dir, "/")
+	proName := splitPath[len(splitPath)-1]
+	execCmd([]string{"go", "mod", "init", proName})
 	execCmd([]string{"go", "mod", "tidy"})
 	execCmd([]string{"go", "mod", "vendor"})
 }
