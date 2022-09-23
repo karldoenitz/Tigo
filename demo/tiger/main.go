@@ -236,15 +236,47 @@ func goMod() {
 	execCmd([]string{"go", "mod", "vendor"})
 }
 
+// isDir 判断路径是否存在
+//  - path: 路径地址
+func isDir(path string) bool {
+	s, err := os.Stat(path)
+	if err != nil {
+		fmt.Println(err.Error())
+		return false
+	}
+	return s.IsDir()
+}
+
 // execAddHandler 在当前Tigo项目中增加一个handler
 //  - handlerName: handler名字
 func execAddHandler(handlerName string) {
+	workDir := getWorkingDirPath()
+	handlerPath := fmt.Sprintf("%s/handler", workDir)
 	// 先判断当前路径线是否有handler文件夹
-	// 没有则退出
+	if !isDir(handlerPath) {
+		// 没有则创建
+		if err := os.Mkdir(handlerPath, os.ModePerm); err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+	}
 	// 如果有则新建一个handler文件，并注入代码
+	fileName := strings.ToLower(handlerName)
+	fHandler, err := os.Create(fmt.Sprintf("%s/%s.go", handlerPath, fileName))
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	_, _ = fHandler.WriteString(fmt.Sprintf(handlerCode, handlerName, handlerName))
 	// 再判断是否有main文件
-	// 如果没有则退出
+	_, err = os.Stat(fmt.Sprintf("%s/main.go", workDir))
+	if err != nil {
+		// 如果没有则退出
+		fmt.Println(err.Error())
+		return
+	}
 	// 如果有则检测代码，并在urls中插入一个url映射
+
 }
 
 func main() {
