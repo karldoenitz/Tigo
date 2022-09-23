@@ -71,11 +71,12 @@ import (
 	"github.com/karldoenitz/Tigo/TigoWeb"
 )
 
-type PingHandler struct {
+type %s struct {
 	TigoWeb.BaseHandler
 }
 
-func (p *PingHandler) Get() {
+func (p *%s) Get() {
+	// write your code here
 	p.ResponseAsText("Pong")
 }
 
@@ -165,6 +166,7 @@ func execEngine(args []string) {
 	case "conf":
 		break
 	case "addHandler":
+		execAddHandler(args[1])
 		break
 	}
 }
@@ -207,7 +209,7 @@ func execCreate(arg string) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	_, _ = fHandler.WriteString(handlerCode)
+	_, _ = fHandler.WriteString(fmt.Sprintf(handlerCode, "PingHandler", "PingHandler"))
 	fmt.Printf("project `%s` created successfully\n", arg)
 	fmt.Println("Execute go mod")
 }
@@ -232,6 +234,17 @@ func goMod() {
 	execCmd([]string{"go", "mod", "init", proName})
 	execCmd([]string{"go", "mod", "tidy"})
 	execCmd([]string{"go", "mod", "vendor"})
+}
+
+// execAddHandler 在当前Tigo项目中增加一个handler
+//  - handlerName: handler名字
+func execAddHandler(handlerName string) {
+	// 先判断当前路径线是否有handler文件夹
+	// 没有则退出
+	// 如果有则新建一个handler文件，并注入代码
+	// 再判断是否有main文件
+	// 如果没有则退出
+	// 如果有则检测代码，并在urls中插入一个url映射
 }
 
 func main() {
