@@ -341,6 +341,7 @@ func execConf(arg string) {
 		return
 	}
 	// 寻找main.go中的application.Run()配置
+	// TODO 此处逻辑以后要改，需要适配json和yaml两种配置文件
 	codes := strings.Split(string(content), "\n")
 	var newCodes []string
 	for _, code := range codes {
