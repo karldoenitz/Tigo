@@ -82,7 +82,7 @@ func (p *%s) Get() {
 // to add 'Post', 'Put', 'Delete' and other methods here.
 
 `
-	configCode = `{
+	configCodeJson = `{
 	"cookie": "%s",
 	"ip": "0.0.0.0",
 	"port": 8080,
@@ -93,6 +93,15 @@ func (p *%s) Get() {
 		"error": "%s/log/run.log"
 	}
 }
+`
+	configCodeYaml = `cookie: %s
+ip: 0.0.0.0
+port: 8080
+log:
+  trace: stdout
+  info: "%s/log/run-info.log"
+  warning: "%s/log/run.log"
+  error: "%s/log/run.log"
 `
 	cmdVerbose = `
 use command tiger to create a Tigo projection.
@@ -334,7 +343,7 @@ func execConf(arg string) {
 		return
 	}
 	// TODO 此处逻辑以后要改，需要适配json和yaml两种配置文件
-	_, _ = f.WriteString(fmt.Sprintf(configCode, arg, workDir, workDir, workDir))
+	_, _ = f.WriteString(fmt.Sprintf(configCodeJson, arg, workDir, workDir, workDir))
 	_ = f.Close()
 	content, err := ioutil.ReadFile(fmt.Sprintf("%s/main.go", workDir))
 	if err != nil {
