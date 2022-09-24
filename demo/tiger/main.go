@@ -82,6 +82,18 @@ func (p *%s) Get() {
 // to add 'Post', 'Put', 'Delete' and other methods here.
 
 `
+	configCode = `{
+	"cookie": "%s",
+	"ip": "0.0.0.0",
+	"port": 8080,
+	"log": {
+		"trace": "stdout",
+		"info": "%s/log/run-info.log",
+		"warning": "%s/log/run.log",
+		"error": "%s/log/run.log"
+	}
+}
+`
 	cmdVerbose = `
 use command tiger to create a Tigo projection.
 
@@ -163,6 +175,7 @@ func execEngine(args []string) {
 		execCreate(args[1])
 		break
 	case "conf":
+		execConf(args[1])
 		break
 	case "addHandler":
 		execAddHandler(args[1])
@@ -301,6 +314,45 @@ func execAddHandler(handlerName string) {
 	}
 	newCode := strings.Join(newCodes, "\n")
 	f, err := os.Create(fmt.Sprintf("%s/main.go", workDir))
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	_, _ = f.WriteString(newCode)
+	_ = f.Close()
+}
+
+// execConf 增加配置文件
+//  - arg: 配置文件名称
+func execConf(arg string) {
+	workDir := getWorkingDirPath()
+	configPath := fmt.Sprintf("%s/%s", workDir, arg)
+	_ = os.Mkdir(fmt.Sprintf("%s/log", workDir), os.ModePerm)
+	f, err := os.Create(configPath)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	_, _ = f.WriteString(fmt.Sprintf(configCode, arg, workDir, workDir, workDir))
+	_ = f.Close()
+	content, err := ioutil.ReadFile(fmt.Sprintf("%s/main.go", workDir))
+	if err != nil {
+		fmt.Printf("read file error:%v\n", err)
+		return
+	}
+	// 寻找main.go中的application.Run()配置
+	codes := strings.Split(string(content), "\n")
+	var newCodes []string
+	for _, code := range codes {
+		if code == "application.Run()" {
+			code = fmt.Sprintf("\tapplication.ConfigPath = \"configPath\"\n\tapplication.Run()")
+			newCodes = append(newCodes, code)
+			continue
+		}
+		newCodes = append(newCodes, code)
+	}
+	newCode := strings.Join(newCodes, "\n")
+	f, err = os.Create(fmt.Sprintf("%s/main.go", workDir))
 	if err != nil {
 		fmt.Println(err.Error())
 		return
