@@ -344,8 +344,8 @@ func execConf(arg string) {
 	codes := strings.Split(string(content), "\n")
 	var newCodes []string
 	for _, code := range codes {
-		if code == "application.Run()" {
-			code = fmt.Sprintf("\tapplication.ConfigPath = \"configPath\"\n\tapplication.Run()")
+		if code == "\tapplication.Run()" {
+			code = fmt.Sprintf("\tapplication.ConfigPath = \"%s\"\n\tapplication.Run()", configPath)
 			newCodes = append(newCodes, code)
 			continue
 		}
@@ -357,7 +357,10 @@ func execConf(arg string) {
 		fmt.Println(err.Error())
 		return
 	}
-	_, _ = f.WriteString(newCode)
+	_, err = f.WriteString(newCode)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 	_ = f.Close()
 }
 
