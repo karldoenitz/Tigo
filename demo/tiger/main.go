@@ -342,8 +342,10 @@ func execConf(arg string) {
 		fmt.Println(err.Error())
 		return
 	}
-	// TODO 此处逻辑以后要改，需要适配json和yaml两种配置文件
-	_, _ = f.WriteString(fmt.Sprintf(configCodeJson, arg, workDir, workDir, workDir))
+	if strings.HasSuffix(arg, ".json") {
+		_, _ = f.WriteString(fmt.Sprintf(configCodeJson, arg, workDir, workDir, workDir))
+	}
+
 	_ = f.Close()
 	content, err := ioutil.ReadFile(fmt.Sprintf("%s/main.go", workDir))
 	if err != nil {
