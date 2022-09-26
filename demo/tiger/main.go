@@ -344,8 +344,9 @@ func execConf(arg string) {
 	}
 	if strings.HasSuffix(arg, ".json") {
 		_, _ = f.WriteString(fmt.Sprintf(configCodeJson, arg, workDir, workDir, workDir))
+	} else {
+		_, _ = f.WriteString(fmt.Sprintf(configCodeYaml, arg, workDir, workDir, workDir))
 	}
-
 	_ = f.Close()
 	content, err := ioutil.ReadFile(fmt.Sprintf("%s/main.go", workDir))
 	if err != nil {
