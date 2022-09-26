@@ -41,7 +41,7 @@ type RedirectHandler struct {
 
 // Get Http Method
 func (redirectHandler *RedirectHandler) Get() {
-	redirectHandler.Redirect("http://www.tencent.com")
+	redirectHandler.Redirect("https://www.tencent.com")
 }
 
 // TestCookieHandler Demo
