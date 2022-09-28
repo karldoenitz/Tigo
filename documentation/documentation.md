@@ -383,8 +383,8 @@ func (baseHandler *BaseHandler) TeardownRequest()
 ## type UrlPattern<a name="UrlPattern"></a>
 ```go
 type UrlPattern struct {
-    UrlMapping map[string] interface{Handle(http.ResponseWriter, *http.Request)}
     UrlPatterns []Pattern
+    router      *mux.Router
 }
 ```
 URL路由设置，使用这个结构体在应用中配置URL与对应的handler。
@@ -427,10 +427,11 @@ func (urlPattern *UrlPattern)Init()
 ## type Application<a name="Application"></a>
 ```go
 type Application struct {
-    IPAddress  string      // IP地址
-    Port       int         // 端口
-    UrlPattern UrlPattern  // url路由配置
-    ConfigPath string      // 全局配置
+    IPAddress   string      // IP地址
+    Port        int         // 端口
+    UrlPatterns []Pattern   // url路由配置
+    ConfigPath  string      // 全局配置
+    muxRouter   *mux.Router // gorilla的路由
 }
 ```
 Application结构体是启动http服务的入口。
@@ -623,14 +624,14 @@ func (helloHandler *HelloHandler)Get() {
     helloHandler.ResponseAsHtml("<p1 style='color: red'>Hello Tigo!</p1>")
 }
 
-var urls = map[string]interface{}{
-    "/hello-tigo": &HelloHandler{},
+var urls = []TigoWeb.Pattern{
+  {"/hello-tigo", HelloHandler{}, nil},
 }
 
 func main() {
     application := TigoWeb.Application{
-        UrlPattern: urls,
-        ConfigPath: "./configuration.json",  // 此处配置文件，如果不适用配置文件，可以在代码中初始化LogLevel对象，使用该对象进行logger模块初始化。
+        UrlPatterns: urls,
+        ConfigPath:  "./configuration.json",  // 此处配置文件，如果不适用配置文件，可以在代码中初始化LogLevel对象，使用该对象进行logger模块初始化。
     }
     application.Run()
 }
