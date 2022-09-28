@@ -212,6 +212,7 @@ func execCreate(arg string) {
 		}
 		fmt.Println("project `demo` created successfully")
 		fmt.Println("Execute go mod")
+		_ = f.Close()
 		return
 	}
 	// 创建非demo项目的main文件
@@ -232,6 +233,7 @@ func execCreate(arg string) {
 	}
 	_, _ = fHandler.WriteString(fmt.Sprintf(handlerCode, "PingHandler", "PingHandler"))
 	_ = f.Close()
+	_ = fHandler.Close()
 	fmt.Printf("project `%s` created successfully\n", arg)
 	fmt.Println("Execute go mod")
 }
