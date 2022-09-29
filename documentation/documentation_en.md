@@ -382,7 +382,8 @@ func (baseHandler *BaseHandler) TeardownRequest()
 ## type UrlPattern<a name="UrlPattern"></a>
 ```go
 type UrlPattern struct {
-    UrlMapping map[string] interface{Handle(http.ResponseWriter, *http.Request)}
+    UrlPatterns []Pattern
+    router      *mux.Router
 }
 ```
 URL mapping structure.
@@ -409,7 +410,7 @@ func WithTracing(next http.HandlerFunc) http.HandlerFunc {
 }
 
 var routers = []TigoWeb.Pattern{
-	{Url: "/test", Handler: &TestHandler{}, Middleware: []TigoWeb.Middleware{WithTracing}},
+	{Url: "/test", Handler: TestHandler{}, Middleware: []TigoWeb.Middleware{WithTracing}},
 }
 
 func main() {
@@ -594,9 +595,9 @@ The demo about using ```logger``` package in the web application developed by Ti
 package main
 
 import (
-    "net/http"
-    "github.com/karldoenitz/Tigo/TigoWeb"
-    "github.com/karldoenitz/Tigo/logger"
+  "net/http"
+  "github.com/karldoenitz/Tigo/TigoWeb"
+  "github.com/karldoenitz/Tigo/logger"
 )
 
 type HelloHandler struct {
@@ -604,18 +605,18 @@ type HelloHandler struct {
 }
 
 func (helloHandler *HelloHandler)Get() {
-    logger.Info.Printf("info data: %s", "test") // print log here
+    logger.Info.Printf("info data: %s", "test") // 此处打印log
     helloHandler.ResponseAsHtml("<p1 style='color: red'>Hello Tigo!</p1>")
 }
 
-var urls = map[string]interface{}{
-    "/hello-tigo": &HelloHandler{},
+var urls = []TigoWeb.Pattern{
+    {"/hello-tigo", HelloHandler{}, nil},
 }
 
 func main() {
     application := TigoWeb.Application{
-        UrlPattern: urls,
-        ConfigPath: "./configuration.json",  // use configuration file to config logger, or you can use LogLevel instance if you wanted.
+        UrlPatterns: urls,
+        ConfigPath:  "./configuration.json",  // 此处配置文件，如果不适用配置文件，可以在代码中初始化LogLevel对象，使用该对象进行logger模块初始化。
     }
     application.Run()
 }
