@@ -276,14 +276,7 @@ func isDir(path string) bool {
 func execAddHandler(handlerName string) {
 	workDir := getWorkingDirPath()
 	handlerPath := fmt.Sprintf("%s/handler", workDir)
-	// 先判断当前路径线是否有handler文件夹
-	if !isDir(handlerPath) {
-		// 没有则创建
-		if err := os.Mkdir(handlerPath, os.ModePerm); err != nil {
-			fmt.Println(err.Error())
-			return
-		}
-	}
+	_ = os.Mkdir(handlerPath, os.ModePerm)
 	// 如果有则新建一个handler文件，并注入代码
 	fileName := strings.ToLower(handlerName)
 	fHandler, err := os.Create(fmt.Sprintf("%s/%s.go", handlerPath, fileName))
