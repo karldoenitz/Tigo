@@ -2,6 +2,7 @@
 package main
 
 import (
+	"Tigo/TigoWeb"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -377,6 +378,10 @@ func main() {
 	}
 	if args[0] == "mod" {
 		goMod()
+		return
+	}
+	if args[0] == "version" {
+		fmt.Println(TigoWeb.Version)
 		return
 	}
 	if args[0] == "help" {
