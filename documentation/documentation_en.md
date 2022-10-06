@@ -54,9 +54,6 @@ API index:
     - [func ToHttpCookie](#func-cookie-cookietohttpcookie)
     - [func ConvertFromHttpCookie](#func-cookie-cookieconvertfromhttpcookie)
     - [func SetSecurityKey](#func-cookie-cookiesetsecuritykey)
-  - [type BaseResponse](#type-baseresponse)
-    - [func Print](#func-baseresponse-baseresponseprint)
-    - [func ToJson](#func-baseresponse-baseresponsetojson)
   - [type GlobalConfig](#type-globalconfig)
     - [func Init](#func-globalconfig-globalconfiginit)
   - [utils](#utils)
@@ -504,23 +501,6 @@ Convert http.Cookie to cookie.
 func (cookie *Cookie)SetSecurityKey(key string)
 ```
 Set security cookie's key.
-## type BaseResponse<a name="BaseResponse"></a>
-```go
-type BaseResponse struct {
-
-}
-```
-The structure extend this structure can use method ```func (baseHandler *BaseHandler)ResponseAsJson(response Response)``` to response json to client.
-### func (baseResponse *BaseResponse)Print<a name="Print"></a>
-```
-func (baseResponse *BaseResponse)Print()
-```
-Use this method to print json to console.
-### func (baseResponse *BaseResponse)ToJson<a name="ResponseToJson"></a>
-```
-func (baseResponse *BaseResponse)ToJson() (string)
-```
-Use this method to convert object to json string.
 ## type GlobalConfig<a name="GlobalConfig"></a>
 ```go
 type GlobalConfig struct {
