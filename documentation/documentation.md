@@ -54,9 +54,6 @@ API目录：
     - [func ToHttpCookie](#func-cookie-cookietohttpcookie)
     - [func ConvertFromHttpCookie](#func-cookie-cookieconvertfromhttpcookie)
     - [func SetSecurityKey](#func-cookie-cookiesetsecuritykey)
-  - [type BaseResponse](#type-baseresponse)
-    - [func Print](#func-baseresponse-baseresponseprint)
-    - [func ToJson](#func-baseresponse-baseresponsetojson)
   - [type GlobalConfig](#type-globalconfig)
     - [func Init](#func-globalconfig-globalconfiginit)
   - [utils](#utils)
@@ -506,23 +503,6 @@ func (cookie *Cookie)ConvertFromHttpCookie(httpCookie http.Cookie)
 func (cookie *Cookie)SetSecurityKey(key string)
 ```
 使用此方法为cookie对象设置加密key。
-## type BaseResponse<a name="BaseResponse"></a>
-```go
-type BaseResponse struct {
-
-}
-```
-继承此结构体的对象可以通过```func (baseHandler *BaseHandler)ResponseAsJson(response Response)```方法，序列化为json字符串传递给客户端。
-### func (baseResponse *BaseResponse)Print<a name="Print"></a>
-```
-func (baseResponse *BaseResponse)Print()
-```
-使用此方法可以打印当前Response对象到控制台中。
-### func (baseResponse *BaseResponse)ToJson<a name="ResponseToJson"></a>
-```
-func (baseResponse *BaseResponse)ToJson() (string)
-```
-使用此方法将当前Response对象序列化为json字符串。
 ## type GlobalConfig<a name="GlobalConfig"></a>
 ```go
 type GlobalConfig struct {
