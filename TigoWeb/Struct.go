@@ -109,28 +109,6 @@ func (cookie *Cookie) SetSecurityKey(key string) {
 	cookie.IsSecurity = true
 }
 
-//////////////////////////////////////Structure BaseResponse////////////////////////////////////////////////////////////
-
-// BaseResponse 定义BaseResponse类，其他Json数据类继承此类，用于BaseHandler.ResponseAsJson的参数。
-type BaseResponse struct {
-}
-
-// Print 打印Json数据
-func (baseResponse *BaseResponse) Print() {
-	fmt.Println(baseResponse.ToJson())
-}
-
-// ToJson 序列化为Json字符串
-func (baseResponse *BaseResponse) ToJson() string {
-	// 将该对象转换为byte字节数组
-	jsonResult, jsonErr := json.Marshal(baseResponse)
-	if jsonErr != nil {
-		return "To Json Failed!"
-	}
-	// 将byte数组转换为string
-	return string(jsonResult)
-}
-
 //////////////////////////////////////Structure HttpResponseWriter//////////////////////////////////////////////////////
 
 // HttpResponseWriter Http响应写入器，用于在中间件中修改http响应报文
