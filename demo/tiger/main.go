@@ -112,10 +112,11 @@ Usage:
 
 The commands are:
 
+    addHandler      to add a handler for Tigo projection
     create          to create a Tigo projection
     conf            to add a configuration for Tigo projection
-    addHandler      to add a handler for Tigo projection
     mod             to run go mod
+    version         to show Tigo version
 
 Use "go help <command>" for more information about a command.
 
@@ -258,17 +259,6 @@ func goMod() {
 	execCmd([]string{"go", "mod", "init", proName})
 	execCmd([]string{"go", "mod", "tidy"})
 	execCmd([]string{"go", "mod", "vendor"})
-}
-
-// isDir 判断路径是否存在
-//  - path: 路径地址
-func isDir(path string) bool {
-	s, err := os.Stat(path)
-	if err != nil {
-		fmt.Println(err.Error())
-		return false
-	}
-	return s.IsDir()
 }
 
 // execAddHandler 在当前Tigo项目中增加一个handler
