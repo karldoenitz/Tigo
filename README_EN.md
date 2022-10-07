@@ -76,7 +76,7 @@ After compiled, there will be a runnable file named ```main```, input the comman
 ```
 The info will display in terminal：
 ```
-INFO: 2018/07/09 15:02:36 Application.go:22: Server run on: 127.0.0.1:8888
+ INFO     2022/10/07 22:40:36  Server run on: 127.0.0.1:8080
 ```
 Open web browser and visit ```http://127.0.0.1:8888/hello-tigo```, you will see <font color=red>Hello Tigo</font>.
 
