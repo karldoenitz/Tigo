@@ -33,7 +33,7 @@ import (
     "net/http"
 )
 
-// handler
+// DemoHandler handler
 type DemoHandler struct {
     TigoWeb.BaseHandler
 }
@@ -42,7 +42,7 @@ func (demoHandler *DemoHandler) Get() {
     demoHandler.ResponseAsText("Hello Demo!")
 }
 
-// 中间件
+// Authorize 中间件
 func Authorize(next http.HandlerFunc) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
         // 此处授权认证逻辑
@@ -81,23 +81,23 @@ go build main.go
 打开浏览器访问地址```http://127.0.0.1:8888/hello-tigo```，就可以看到<font color=red>Hello Tigo</font>。
 
 # 性能对比
-<img src="https://github.com/karldoenitz/Tigo/blob/master/documentation/chart.png" width="100%" height="300px"/> 
+<img src="https://github.com/karldoenitz/Tigo/blob/master/documentation/chart.png" width="100%" height="300px" alt="性能对比"/> 
 
 # 文档
 [点击此处](https://github.com/karldoenitz/Tigo/blob/master/documentation/documentation.md)
 # 都有谁在使用Tigo
 <table>
 <tr>
-<td><a href="https://www.cubebackup.com" target="_blank"><img src="https://karldoenitz.github.io/TigoOld/img/cubebackup.png" width="150px" height="150px"/></a></td>
-<td><a href="https://open2.campus.qq.com" target="_blank"><img src="https://karldoenitz.github.io/TigoOld/img/tencent.png" width="150px" height="150px"/></a></td>
-<td><img src="https://karldoenitz.github.io/TigoOld/img/xiaomi.png" width="150px" height="150px"/></td>
+<td><a href="https://www.cubebackup.com" target="_blank"><img src="https://karldoenitz.github.io/TigoOld/img/cubebackup.png" width="150px" height="150px" alt="cube-backup"/></a></td>
+<td><a href="https://open2.campus.qq.com" target="_blank"><img src="https://karldoenitz.github.io/TigoOld/img/tencent.png" width="150px" height="150px" alt="Tencent"/></a></td>
+<td><img src="https://karldoenitz.github.io/TigoOld/img/xiaomi.png" width="150px" height="150px" alt="Xiaomi"/></td>
 </tr>
 </table>
 
 # 鸣谢以下组织的支持
 <table>
 <tr>
-<td><a href="https://www.jetbrains.com/?from=Tigo" target="_blank"><img src="https://karldoenitz.github.io/TigoOld/img/jetbrains.png" width="150px" height="150px"/></a></td>
+<td><a href="https://www.jetbrains.com/?from=Tigo" target="_blank"><img src="https://karldoenitz.github.io/TigoOld/img/jetbrains.png" width="150px" height="150px" alt="Jetbrains"/></a></td>
 </tr>
 </table>
 
