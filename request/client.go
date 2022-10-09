@@ -51,7 +51,7 @@ func (client HttpClient) request(method, uri string, headers map[string]string, 
 	}
 	defer func() {
 		if response != nil {
-			response.Body.Close()
+			_ = response.Body.Close()
 		}
 	}()
 	if response.StatusCode == http.StatusOK {

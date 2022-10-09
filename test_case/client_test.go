@@ -54,3 +54,16 @@ func TestMakeRequest(t *testing.T) {
 	contentStr := response.ToContentStr()
 	fmt.Println(contentStr)
 }
+
+func TestMap2Xml(t *testing.T) {
+	testMap := map[string]interface{}{
+		"k1": "v1",
+		"k2": []string{"1", "2", "3"},
+		"k3": map[string]int{
+			"kk1": 1,
+			"kk2": 2,
+		},
+	}
+	result := request.Map2Xml(testMap)
+	t.Logf("xml result => %s", result)
+}
