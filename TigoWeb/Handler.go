@@ -30,7 +30,9 @@ type BaseHandler struct {
 func (baseHandler *BaseHandler) InitHandler(responseWriter http.ResponseWriter, request *http.Request) {
 	baseHandler.Request = request
 	baseHandler.ResponseWriter = responseWriter
-	baseHandler.Request.ParseForm()
+	if err := baseHandler.Request.ParseForm(); err != nil {
+		logger.Warning.Printf("BaseHandler ParseForm Failed => %s", err.Error())
+	}
 	baseHandler.ctxValMap = map[string]interface{}{}
 	baseHandler.JsonParams = map[string]interface{}{}
 }
