@@ -102,7 +102,9 @@ func (baseHandler *BaseHandler) ResponseAsJson(response interface{}, charset ...
 	} else {
 		baseHandler.ResponseWriter.Header().Set("Content-Type", "application/json; charset=utf-8")
 	}
-	baseHandler.ResponseWriter.Write(jsonResult)
+	if _, err := baseHandler.ResponseWriter.Write(jsonResult); err != nil {
+		logger.Warning.Printf("ResponseAsJson Write Failed => %s", err.Error())
+	}
 }
 
 // ResponseAsText 向客户端响应一个Text结果
