@@ -31,7 +31,7 @@ func (baseHandler *BaseHandler) InitHandler(responseWriter http.ResponseWriter, 
 	baseHandler.Request = request
 	baseHandler.ResponseWriter = responseWriter
 	if err := baseHandler.Request.ParseForm(); err != nil {
-		logger.Warning.Printf("BaseHandler ParseForm Failed => %s", err.Error())
+		logger.Warning.Println(err.Error())
 	}
 	baseHandler.ctxValMap = map[string]interface{}{}
 	baseHandler.JsonParams = map[string]interface{}{}
@@ -103,13 +103,15 @@ func (baseHandler *BaseHandler) ResponseAsJson(response interface{}, charset ...
 		baseHandler.ResponseWriter.Header().Set("Content-Type", "application/json; charset=utf-8")
 	}
 	if _, err := baseHandler.ResponseWriter.Write(jsonResult); err != nil {
-		logger.Warning.Printf("ResponseAsJson Write Failed => %s", err.Error())
+		logger.Warning.Println(err.Error())
 	}
 }
 
 // ResponseAsText 向客户端响应一个Text结果
 func (baseHandler *BaseHandler) ResponseAsText(result string) {
-	fmt.Fprintf(baseHandler.ResponseWriter, "%s", result)
+	if _, err := fmt.Fprintf(baseHandler.ResponseWriter, "%s", result); err != nil {
+		logger.Warning.Println(err.Error())
+	}
 }
 
 // ResponseAsHtml 向客户端响应一个html结果，默认字符集为utf-8
