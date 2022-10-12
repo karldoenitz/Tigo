@@ -177,7 +177,9 @@ func (baseHandler *BaseHandler) redirect(url string, status int, expire ...time.
 		expires := expireTime.Format("Mon, 02 Jan 2006 15:04:05 GMT")
 		baseHandler.SetHeader("Expires", expires)
 	}
-	baseHandler.ResponseWriter.Write(nil)
+	if _, err := baseHandler.ResponseWriter.Write(nil); err != nil {
+		logger.Warning.Println(err.Error())
+	}
 }
 
 // MovePermanently 向客户端永久性移动一个地址
