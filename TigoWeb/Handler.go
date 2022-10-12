@@ -165,7 +165,9 @@ func (baseHandler *BaseHandler) Render(data interface{}, templates ...string) {
 func (baseHandler *BaseHandler) redirectPermanently(url string, status int) {
 	baseHandler.SetHeader("Location", url)
 	baseHandler.ResponseWriter.WriteHeader(status)
-	baseHandler.ResponseWriter.Write(nil)
+	if _, err := baseHandler.ResponseWriter.Write(nil); err != nil {
+		logger.Warning.Println(err.Error())
+	}
 }
 
 // redirect 向客户端暂时重定向一个地址
