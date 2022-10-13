@@ -164,7 +164,7 @@ func checkBasicField(field reflect.StructField, vField reflect.Value) error {
 			}
 		}
 		if isRegexExisted {
-			valueStr := strconv.FormatInt(int64(value), 10)
+			valueStr := strconv.FormatInt(value, 10)
 			if !isMatchRegex(valueStr, regexStr) {
 				return RegexErr(fieldName)
 			}
