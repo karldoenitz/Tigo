@@ -121,12 +121,16 @@ func (baseHandler *BaseHandler) ResponseAsHtml(result string, charset ...string)
 	} else {
 		baseHandler.ResponseWriter.Header().Set("Content-Type", "text/html; charset=utf-8")
 	}
-	fmt.Fprintf(baseHandler.ResponseWriter, "%s", result)
+	if _, err := fmt.Fprintf(baseHandler.ResponseWriter, "%s", result); err != nil {
+		logger.Warning.Println(err.Error())
+	}
 }
 
 // Response 向客户端响应一个结果
 func (baseHandler *BaseHandler) Response(result ...interface{}) {
-	fmt.Fprintf(baseHandler.ResponseWriter, "%v", result)
+	if _, err := fmt.Fprintf(baseHandler.ResponseWriter, "%v", result); err != nil {
+		logger.Warning.Println(err.Error())
+	}
 }
 
 // ResponseFmt 向客户端响应一个字符串，支持format格式化字符串
