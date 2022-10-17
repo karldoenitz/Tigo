@@ -83,7 +83,7 @@ func reflectValueFromTag(values url.Values, val reflect.Value) error {
 	return nil
 }
 
-// parseValue 解析
+// parseValue 从tag的form标签中解析出对应的字符串值，bool型返true或false，数值型返回0或者对应的数值，其他则直接返回字符串。
 func parseValue(value, tp string) string {
 	if tp == "bool" && value == "" {
 		return "false"
