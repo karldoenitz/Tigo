@@ -57,7 +57,7 @@ func encrypt(plainText []byte, key []byte) ([]byte, error) {
 // 先将key通过md5加密为64位，然后对加密值进行aes解密
 func decrypt(cipherText []byte, key []byte) ([]byte, error) {
 	has := md5.Sum(key)
-	hasKey := []byte(has[:])
+	hasKey := has[:]
 	c, err := aes.NewCipher(hasKey)
 	if err != nil {
 		return nil, err
