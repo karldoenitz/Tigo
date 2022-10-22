@@ -1,7 +1,7 @@
 // Package TigoWeb
 // TigoWeb 包是Tigo框架的基础包，内部封装了Handler、http context、middleware、application、session等相关模块的操作。
 //
-// 使用Tigo创建的服务，可以裸起，也可以通过graceful、endless、overseer等进行平滑启动。
+// 使用Tigo创建的服务，可以裸起，也可以通过endless、overseer等进行平滑启动。
 // 使用endless平滑启动的示例如下
 //
 // Basic Example:
