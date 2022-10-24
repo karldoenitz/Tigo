@@ -408,7 +408,7 @@ func WithTracing(next http.HandlerFunc) http.HandlerFunc {
 }
 
 var routers = []TigoWeb.Pattern{
-	{Url: "/test", Handler: &TestHandler{}, Middleware: []TigoWeb.Middleware{WithTracing}},
+	{Url: "/test", Handler: TestHandler{}, Middleware: []TigoWeb.Middleware{WithTracing}},
 }
 
 func main() {
