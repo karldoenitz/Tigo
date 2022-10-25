@@ -244,6 +244,8 @@ func ValidateInstance(obj interface{}) error {
 }
 
 // 判断是否符合正则规则
+//  - str: 待处理的字符串
+//  - regex: 正则表达式
 func isMatchRegex(str, regex string) bool {
 	rgx := regexp.MustCompile(regex)
 	return rgx.MatchString(str)
