@@ -232,6 +232,7 @@ func checkObjBinding(element reflect.Type, vElement reflect.Value) error {
 }
 
 // ValidateInstance 检查结构体实例化是否有效
+//  - obj: 待校验的实例，需要传递一个指针
 func ValidateInstance(obj interface{}) error {
 	t := reflect.TypeOf(obj)
 	v := reflect.ValueOf(obj)
