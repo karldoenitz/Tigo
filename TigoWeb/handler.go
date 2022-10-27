@@ -70,6 +70,7 @@ func (baseHandler *BaseHandler) PassJson() {
 
 // ToJson 将对象转化为Json字符串，转换失败则返回空字符串。
 // 传入参数Response为一个interface，必须有成员函数Print。
+//  - response: 需要转换成json的实例
 func (baseHandler *BaseHandler) ToJson(response interface{}) (result []byte) {
 	// 将该对象转换为byte字节数组
 	jsonResult, jsonErr := json.Marshal(response)
