@@ -112,6 +112,7 @@ func (baseHandler *BaseHandler) ResponseAsJson(response interface{}, charset ...
 }
 
 // ResponseAsText 向客户端响应一个Text结果
+//  - response: 需要返回的文本内容
 func (baseHandler *BaseHandler) ResponseAsText(result string) {
 	if _, err := fmt.Fprintf(baseHandler.ResponseWriter, "%s", result); err != nil {
 		logger.Warning.Println(err.Error())
