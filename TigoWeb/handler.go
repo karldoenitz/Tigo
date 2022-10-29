@@ -121,11 +121,11 @@ func (baseHandler *BaseHandler) ResponseAsText(result string) {
 
 // ResponseAsHtml 向客户端响应一个html结果，默认字符集为utf-8
 func (baseHandler *BaseHandler) ResponseAsHtml(result string, charset ...string) {
+	cs := "text/html; charset=utf-8"
 	if len(charset) > 0 {
-		baseHandler.ResponseWriter.Header().Set("Content-Type", fmt.Sprintf("text/html; %s", charset[0]))
-	} else {
-		baseHandler.ResponseWriter.Header().Set("Content-Type", "text/html; charset=utf-8")
+		cs = fmt.Sprintf("text/html; %s", charset[0])
 	}
+	baseHandler.ResponseWriter.Header().Set("Content-Type", cs)
 	if _, err := fmt.Fprintf(baseHandler.ResponseWriter, "%s", result); err != nil {
 		logger.Warning.Println(err.Error())
 	}
