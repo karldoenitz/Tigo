@@ -120,6 +120,8 @@ func (baseHandler *BaseHandler) ResponseAsText(result string) {
 }
 
 // ResponseAsHtml 向客户端响应一个html结果，默认字符集为utf-8
+//  - result: 相应的结果
+//  - charset: 字符集，默认utf-8
 func (baseHandler *BaseHandler) ResponseAsHtml(result string, charset ...string) {
 	cs := "text/html; charset=utf-8"
 	if len(charset) > 0 {
