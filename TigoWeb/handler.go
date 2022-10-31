@@ -141,6 +141,8 @@ func (baseHandler *BaseHandler) Response(result ...interface{}) {
 }
 
 // ResponseFmt 向客户端响应一个字符串，支持format格式化字符串
+//  - format: 格式化母串
+//  - values: 返回的值
 func (baseHandler *BaseHandler) ResponseFmt(format string, values ...interface{}) {
 	if _, err := fmt.Fprintf(baseHandler.ResponseWriter, format, values...); err != nil {
 		logger.Warning.Println(err.Error())
