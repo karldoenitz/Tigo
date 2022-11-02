@@ -206,6 +206,8 @@ func (baseHandler *BaseHandler) MovePermanently(url string) {
 }
 
 // Move 向客户端暂时移动一个地址
+//  - url: 指定客户端要移动的目标地址
+//  - expire: 过期时间
 func (baseHandler *BaseHandler) Move(url string, expire ...time.Time) {
 	baseHandler.redirect(url, http.StatusFound, expire...)
 }
