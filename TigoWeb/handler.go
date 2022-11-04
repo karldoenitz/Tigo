@@ -213,6 +213,7 @@ func (baseHandler *BaseHandler) Move(url string, expire ...time.Time) {
 }
 
 // RedirectPermanently 向客户端永久重定向一个地址
+//  - url: 重定向的地址
 func (baseHandler *BaseHandler) RedirectPermanently(url string) {
 	baseHandler.redirectPermanently(url, http.StatusPermanentRedirect)
 }
