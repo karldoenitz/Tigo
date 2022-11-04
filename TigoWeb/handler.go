@@ -226,6 +226,9 @@ func (baseHandler *BaseHandler) Redirect(url string, expire ...time.Time) {
 }
 
 // RedirectTo 自定义重定向
+//  - url: 重定向的url
+//  - status: http状态码
+//  - expire: 过期时间
 func (baseHandler *BaseHandler) RedirectTo(url string, status int, expire ...time.Time) {
 	baseHandler.redirect(url, status, expire...)
 }
