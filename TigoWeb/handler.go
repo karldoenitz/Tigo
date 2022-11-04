@@ -219,6 +219,8 @@ func (baseHandler *BaseHandler) RedirectPermanently(url string) {
 }
 
 // Redirect 向客户端暂时重定向一个地址
+//  - url: 重定向的地址
+//  - expire: 过期时间
 func (baseHandler *BaseHandler) Redirect(url string, expire ...time.Time) {
 	baseHandler.redirect(url, http.StatusTemporaryRedirect, expire...)
 }
