@@ -245,6 +245,7 @@ func (baseHandler *BaseHandler) SetCookie(name string, value string) {
 }
 
 // SetCookieObject 设置高级cookie选项
+//  - cookie: 要设置的cookie对象
 func (baseHandler *BaseHandler) SetCookieObject(cookie Cookie) {
 	responseCookie := cookie.ToHttpCookie()
 	http.SetCookie(baseHandler.ResponseWriter, &responseCookie)
