@@ -237,6 +237,8 @@ func (baseHandler *BaseHandler) RedirectTo(url string, status int, expire ...tim
 
 // SetCookie 设置cookie
 // SetCookie未设置cookie的domain及path，此cookie仅对当前路径有效，设置其他路径cookie可参考SetAdvancedCookie
+//  - name: cookie的name
+//  - value: cookie的值
 func (baseHandler *BaseHandler) SetCookie(name string, value string) {
 	cookie := http.Cookie{Name: name, Value: value}
 	http.SetCookie(baseHandler.ResponseWriter, &cookie)
