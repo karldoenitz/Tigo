@@ -337,6 +337,7 @@ func (baseHandler *BaseHandler) SetAdvancedCookie(name string, value string, att
 }
 
 // GetCookie 获取cookie值，如果获取失败则返回空字符串
+//  - name: cookie的name
 func (baseHandler *BaseHandler) GetCookie(name string) (value string) {
 	cookie, err := baseHandler.Request.Cookie(name)
 	if err != nil {
