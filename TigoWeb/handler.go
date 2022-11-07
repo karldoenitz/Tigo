@@ -348,6 +348,8 @@ func (baseHandler *BaseHandler) GetCookie(name string) (value string) {
 }
 
 // GetSecureCookie 获取加密cookie值，如果获取失败则返回空
+//  - name: cookie的name
+//  - key: cookie加密用的key
 func (baseHandler *BaseHandler) GetSecureCookie(name string, key ...string) (value string) {
 	securityKey := ""
 	if len(key) > 0 {
