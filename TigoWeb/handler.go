@@ -398,6 +398,7 @@ func (baseHandler *BaseHandler) GetCookieObject(name ...string) (Cookie, error) 
 }
 
 // ClearCookie 清除本次请求当前path下的指定的cookie
+//  - name: 需要清楚的cookie的name
 func (baseHandler *BaseHandler) ClearCookie(name string) {
 	cookie := Cookie{
 		Name:    name,
