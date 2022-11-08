@@ -420,6 +420,8 @@ func (baseHandler *BaseHandler) ClearAllCookie() {
 /////////////////////////////////////////////////////session////////////////////////////////////////////////////////////
 
 // SetSession 根据key设置session值
+//  - key: session对应的键
+//  - value: session的值
 func (baseHandler *BaseHandler) SetSession(key string, value interface{}) (err error) {
 	sessionId := baseHandler.GetCookie(SessionCookieName)
 	var session Session
