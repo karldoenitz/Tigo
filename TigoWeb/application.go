@@ -54,8 +54,10 @@ func (application *Application) StartSession(sessionInterface SessionInterface, 
 //  - dir 本地文件地址
 //  - uris 需要挂载的URI列表
 func (application *Application) MountFileServer(dir string, uris ...string) {
+	// TODO 这里后续需要优化一下
 	if len(uris) == 0 {
 		uris = append(uris, "/")
+		return
 	}
 	for _, uri := range uris {
 		http.Handle(uri, http.FileServer(http.Dir(dir)))
