@@ -23,13 +23,14 @@ type Application struct {
 // http服务启动函数
 func (application *Application) run() {
 	address := fmt.Sprintf("%s:%d", application.IPAddress, application.Port)
-	logger.Info.Printf("Server run on: %s", address)
 	var httpServerErr error
 	switch {
 	// 获取证书与密钥，判断是否启动https服务
 	case globalConfig != nil && globalConfig.Cert != "" && globalConfig.CertKey != "":
+		logger.Info.Printf("Server run on: https://%s", address)
 		httpServerErr = http.ListenAndServeTLS(address, globalConfig.Cert, globalConfig.CertKey, application.muxRouter)
 	default:
+		logger.Info.Printf("Server run on: http://%s", address)
 		httpServerErr = http.ListenAndServe(address, application.muxRouter)
 	}
 	if httpServerErr != nil {
