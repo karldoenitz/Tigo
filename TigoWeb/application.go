@@ -58,7 +58,7 @@ func (application *Application) gorillaMuxRouter() {
 
 // MountFileServer 挂载文件服务
 //  - dir 本地文件地址
-//  - uris 需要挂载的URI列表
+//  - uris 需要挂载的URI，只支持至多一个URI，输入多个则只取第一个
 func (application *Application) MountFileServer(dir string, uris ...string) {
 	application.gorillaMuxRouter()
 	if len(uris) == 0 {
