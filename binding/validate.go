@@ -45,8 +45,7 @@ func checkField(field reflect.StructField, vField reflect.Value) error {
 			return err
 		}
 	case reflect.Uintptr, reflect.UnsafePointer, reflect.Chan, reflect.Func:
-		logger.Warning.Printf("%s's kind is: %s", field.Name, fieldKind)
-		logger.Warning.Printf("%s is unsupported field kind", field.Name)
+		logger.Warning.Printf("%s[type: %s] is unsupported field kind", field.Name, fieldKind)
 		break
 	default:
 		if err := checkBasicField(field, vField); err != nil {
