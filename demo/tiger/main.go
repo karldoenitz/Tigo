@@ -371,6 +371,7 @@ func main() {
 	//  - addHandler xxx: 增加xxx命名的handler
 	//  - conf xxx: 用xxx命名的配置文件替换现有配置文件，没有则新建
 	//  - mod: 进行go mod
+	//  - version: 获取当前Tigo版本号
 	args, argsCnt := getCmdArgs()
 	if argsCnt < 1 {
 		fmt.Print(cmdVerbose)
