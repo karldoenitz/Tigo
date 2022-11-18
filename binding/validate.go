@@ -132,8 +132,9 @@ func checkBasicField(field reflect.StructField, vField reflect.Value) error {
 	fieldValue := vField.Interface()
 	fieldName := field.Name
 	switch fieldKind {
-	case reflect.Bool:
-		break
+	// Todo: 这里要验证一下，这个有什么影响
+	//case reflect.Bool:
+	//	break
 	case reflect.String:
 		value := fieldValue.(string)
 		if isRequired && value == "" && (!isDefaultExisted || defaultValue == "") {
