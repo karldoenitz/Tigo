@@ -16,4 +16,5 @@ var (
 	RequiredErr = NewTagErr("%s is required")
 	DefaultErr  = NewTagErr("%s default is invalid")
 	RegexErr    = NewTagErr("%s regex can not match")
+	InvalidErr  = NewTagErr("%s is invalid")
 )
