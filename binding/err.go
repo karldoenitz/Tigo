@@ -17,4 +17,5 @@ var (
 	DefaultErr  = NewTagErr("%s default is invalid")
 	RegexErr    = NewTagErr("%s regex can not match")
 	InvalidErr  = NewTagErr("%s is invalid")
+	UnDefineErr = NewTagErr("%s is undefined")
 )
