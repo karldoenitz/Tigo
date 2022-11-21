@@ -119,8 +119,8 @@ func Request(method string, requestUrl string, postParams map[string]interface{}
 			return nil, err
 		}
 	case strings.HasPrefix(contentType, "application/json"):
-		postData, err := json.Marshal(postParams)
-		if err != nil {
+		var postData []byte
+		if postData, err = json.Marshal(postParams); err != nil {
 			logger.Error.Println("marshal to json failed")
 			return nil, err
 		}
