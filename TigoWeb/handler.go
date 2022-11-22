@@ -625,7 +625,7 @@ func (baseHandler *BaseHandler) GetCtxVal(key string) interface{} {
 
 //////////////////////////////////////////////////http message dump/////////////////////////////////////////////////////
 
-// 获取http请求报文
+// 获取http请求报文 TODO 校验此处是否正常
 func (baseHandler *BaseHandler) getHttpRequestMsg() string {
 	req, err := httputil.DumpRequest(baseHandler.Request, true)
 	if err != nil {
