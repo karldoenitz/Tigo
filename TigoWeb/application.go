@@ -51,17 +51,10 @@ func (application *Application) StartSession(sessionInterface SessionInterface, 
 	}
 }
 
-func (application *Application) gorillaMuxRouter() {
-	if application.muxRouter == nil {
-		application.muxRouter = mux.NewRouter()
-	}
-}
-
 // MountFileServer 挂载文件服务
 //  - dir 本地文件地址
 //  - uris 需要挂载的URI，只支持至多一个URI，输入多个则只取第一个
 func (application *Application) MountFileServer(dir string, uris ...string) {
-	application.gorillaMuxRouter()
 	if len(uris) == 0 {
 		uris = append(uris, "/")
 		return
@@ -73,7 +66,7 @@ func (application *Application) MountFileServer(dir string, uris ...string) {
 
 // Run 服务启动函数
 func (application *Application) Run() {
-	application.gorillaMuxRouter()
+	application.muxRouter = mux.NewRouter()
 	application.InitApp()
 	application.run()
 }
