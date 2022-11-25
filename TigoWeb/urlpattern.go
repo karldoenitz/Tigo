@@ -58,7 +58,12 @@ func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v interface {
 	baseMiddleware := []Middleware{HttpContextLogMiddleware, InternalServerErrorMiddleware}
 	baseMiddleware = append(baseMiddleware, pattern.Middleware...)
 	middleware := chainMiddleware(baseMiddleware...)
-	urlPattern.router.HandleFunc(pattern.Url, middleware(v.Handle))
+	filePath, isOK := pattern.Handler.(string)
+	if !isOK {
+		urlPattern.router.HandleFunc(pattern.Url, middleware(v.Handle))
+		return
+	}
+	urlPattern.router.PathPrefix(pattern.Url).Handler(http.StripPrefix(pattern.Url, http.FileServer(http.Dir(filePath))))
 }
 
 // Init 初始化url映射，遍历UrlMapping，将handler与对应的URL依次挂载到http服务上

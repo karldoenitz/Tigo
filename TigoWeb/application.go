@@ -57,11 +57,8 @@ func (application *Application) StartSession(sessionInterface SessionInterface, 
 func (application *Application) MountFileServer(dir string, uris ...string) {
 	if len(uris) == 0 {
 		uris = append(uris, "/")
-		return
 	}
-	for _, uri := range uris {
-		application.muxRouter.PathPrefix("/").Handler(http.StripPrefix(uri, http.FileServer(http.Dir(dir))))
-	}
+	application.UrlPatterns = append(application.UrlPatterns, Pattern{Url: uris[0], Handler: dir})
 }
 
 // Run 服务启动函数
