@@ -53,7 +53,7 @@ func (application *Application) StartSession(sessionInterface SessionInterface, 
 
 // MountFileServer 挂载文件服务
 //  - dir 本地文件地址
-//  - uris 需要挂载的URI，只支持至多一个URI，输入多个则只取第一个，默认为/路径
+//  - uris 需要挂载的URI，只支持至多一个URI，输入多个则只取第一个，默认为/路径，URI尽量以/结尾，这样兼容性高一些
 func (application *Application) MountFileServer(dir string, uris ...string) {
 	if len(uris) == 0 {
 		uris = append(uris, "/")
