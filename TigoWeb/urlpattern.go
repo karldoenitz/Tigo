@@ -63,7 +63,10 @@ func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v interface {
 		urlPattern.router.HandleFunc(pattern.Url, middleware(v.Handle))
 		return
 	}
-	urlPattern.router.PathPrefix(pattern.Url).Handler(http.StripPrefix(pattern.Url, http.FileServer(http.Dir(filePath))))
+	fileRouter := urlPattern.router.PathPrefix(pattern.Url).Subrouter()
+	// TODO 此处加载gorilla的中间件
+	// fileRouter.Use()
+	fileRouter.PathPrefix("/").Handler(http.StripPrefix(pattern.Url, http.FileServer(http.Dir(filePath))))
 }
 
 // Init 初始化url映射，遍历UrlMapping，将handler与对应的URL依次挂载到http服务上
