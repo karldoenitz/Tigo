@@ -20,6 +20,10 @@ type Application struct {
 	muxRouter   *mux.Router // gorilla的路由
 }
 
+func (application *Application) GetRouter() (router *mux.Router) {
+	return application.muxRouter
+}
+
 // http服务启动函数
 func (application *Application) run() {
 	address := fmt.Sprintf("%s:%d", application.IPAddress, application.Port)
