@@ -20,6 +20,7 @@ type Application struct {
 	muxRouter   *mux.Router // gorilla的路由
 }
 
+// GetRouter 获取挂载在application上的路由，通过路由可以挂载开发者自己编写的中间件
 func (application *Application) GetRouter() (router *mux.Router) {
 	return application.muxRouter
 }
