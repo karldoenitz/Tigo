@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+// TODO 该模块将在v1.6.5中进行大改
+
 // Middleware http中间件
 type Middleware func(next http.HandlerFunc) http.HandlerFunc
 
