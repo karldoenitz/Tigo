@@ -9,11 +9,14 @@ import (
 
 // TODO 该模块将在v1.6.5中进行大改
 
-// Middleware http中间件
-type Middleware func(next http.HandlerFunc) http.HandlerFunc
+// middleware http中间件
+type middleware func(next http.HandlerFunc) http.HandlerFunc
+
+// Middleware Tigo的中间件类型，函数返回值true表示http请求继续处理，false表示请求结束，不再往下处理
+type Middleware func(*http.ResponseWriter, *http.Request) bool
 
 // chainMiddleware 是http中间件生成器
-func chainMiddleware(mw ...Middleware) Middleware {
+func chainMiddleware(mw ...middleware) middleware {
 	return func(final http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			last := final
