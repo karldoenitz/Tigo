@@ -56,8 +56,18 @@ func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v interface {
 	Handle(http.ResponseWriter, *http.Request)
 }) {
 	baseMiddleware := []middleware{HttpContextLogMiddleware, InternalServerErrorMiddleware}
-	// TODO 这里需要接入新的中间件
-	//baseMiddleware = append(baseMiddleware, pattern.Middleware...)
+	// TODO 这里需要调整一下逻辑，Tigo原生中间件和gorilla的分开配置
+	for _, v := range pattern.Middleware {
+		baseMiddleware = append(baseMiddleware, func(next http.HandlerFunc) http.HandlerFunc {
+			return func(w http.ResponseWriter, r *http.Request) {
+				// 此处需要判断请求是否继续交给下一个中间件处理
+				if isReturn := v(&w, r); isReturn {
+					return
+				}
+				next.ServeHTTP(w, r)
+			}
+		})
+	}
 	middlewares := chainMiddleware(baseMiddleware...)
 	filePath, isOK := pattern.Handler.(string)
 	if !isOK {
