@@ -61,10 +61,9 @@ func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v interface {
 		baseMiddleware = append(baseMiddleware, func(next http.HandlerFunc) http.HandlerFunc {
 			return func(w http.ResponseWriter, r *http.Request) {
 				// 此处需要判断请求是否继续交给下一个中间件处理
-				if isReturn := v(&w, r); isReturn {
-					return
+				if isGoOn := v(&w, r); isGoOn {
+					next.ServeHTTP(w, r)
 				}
-				next.ServeHTTP(w, r)
 			}
 		})
 	}
