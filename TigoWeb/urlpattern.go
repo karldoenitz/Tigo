@@ -55,12 +55,13 @@ type UrlPattern struct {
 func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v interface {
 	Handle(http.ResponseWriter, *http.Request)
 }) {
-	baseMiddleware := []Middleware{HttpContextLogMiddleware, InternalServerErrorMiddleware}
-	baseMiddleware = append(baseMiddleware, pattern.Middleware...)
-	middleware := chainMiddleware(baseMiddleware...)
+	baseMiddleware := []middleware{HttpContextLogMiddleware, InternalServerErrorMiddleware}
+	// TODO 这里需要接入新的中间件
+	//baseMiddleware = append(baseMiddleware, pattern.Middleware...)
+	middlewares := chainMiddleware(baseMiddleware...)
 	filePath, isOK := pattern.Handler.(string)
 	if !isOK {
-		urlPattern.router.HandleFunc(pattern.Url, middleware(v.Handle))
+		urlPattern.router.HandleFunc(pattern.Url, middlewares(v.Handle))
 		return
 	}
 	fileRouter := urlPattern.router.PathPrefix(pattern.Url).Subrouter()
