@@ -73,8 +73,17 @@ func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v interface {
 		return
 	}
 	fileRouter := urlPattern.router.PathPrefix(pattern.Url).Subrouter()
-	// TODO 此处加载gorilla的中间件
-	// fileRouter.Use()
+	var fileServerMiddleWares []mux.MiddlewareFunc
+	for _, v := range pattern.Middleware {
+		fileServerMiddleWares = append(fileServerMiddleWares, func(next http.Handler) http.Handler {
+			return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if isGoOn := v(&w, r); isGoOn {
+					next.ServeHTTP(w, r)
+				}
+			})
+		})
+	}
+	fileRouter.Use(fileServerMiddleWares...)
 	fileRouter.PathPrefix("/").Handler(http.StripPrefix(pattern.Url, http.FileServer(http.Dir(filePath))))
 }
 
