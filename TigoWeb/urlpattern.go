@@ -7,8 +7,8 @@ import (
 	"reflect"
 )
 
-// UrlPatternMidWare 是URL路由中间件
-type UrlPatternMidWare struct {
+// UrlPatternHandle 是URL路由句柄，用来驱动url路由以及其映射的handler
+type UrlPatternHandle struct {
 	Handler    interface{}
 	requestUrl string
 }
@@ -19,7 +19,7 @@ type UrlPatternMidWare struct {
 //  - 3、进行HTTP请求预处理，包括判断请求方式是否合法等；
 //  - 4、调用handler中的功能方法；
 //  - 5、进行HTTP请求结束处理。
-func (urlPatternMidWare UrlPatternMidWare) Handle(responseWriter http.ResponseWriter, request *http.Request) {
+func (urlPatternMidWare UrlPatternHandle) Handle(responseWriter http.ResponseWriter, request *http.Request) {
 	handlerType := reflect.TypeOf(urlPatternMidWare.Handler)
 	if handlerType.Kind() == reflect.Ptr {
 		handlerType = handlerType.Elem()
@@ -55,42 +55,44 @@ type UrlPattern struct {
 func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v interface {
 	Handle(http.ResponseWriter, *http.Request)
 }) {
-	filePath, isFileServer := pattern.Handler.(string)
-	if !isFileServer {
-		baseMiddleware := []middleware{HttpContextLogMiddleware, InternalServerErrorMiddleware}
+	// 判断是否是文件服务器
+	if filePath, isFileServer := pattern.Handler.(string); isFileServer {
+		fileRouter := urlPattern.router.PathPrefix(pattern.Url).Subrouter()
+		var fileServerMiddleWares []mux.MiddlewareFunc
 		for _, v := range pattern.Middleware {
-			baseMiddleware = append(baseMiddleware, func(next http.HandlerFunc) http.HandlerFunc {
-				return func(w http.ResponseWriter, r *http.Request) {
+			fileServerMiddleWares = append(fileServerMiddleWares, func(next http.Handler) http.Handler {
+				return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 					// 此处需要判断请求是否继续交给下一个中间件处理
 					if isGoOn := v(&w, r); isGoOn {
 						next.ServeHTTP(w, r)
 					}
-				}
+				})
 			})
 		}
-		middlewares := chainMiddleware(baseMiddleware...)
-		urlPattern.router.HandleFunc(pattern.Url, middlewares(v.Handle))
+		fileRouter.Use(fileServerMiddleWares...)
+		fileRouter.PathPrefix("/").Handler(http.StripPrefix(pattern.Url, http.FileServer(http.Dir(filePath))))
 		return
 	}
-	fileRouter := urlPattern.router.PathPrefix(pattern.Url).Subrouter()
-	var fileServerMiddleWares []mux.MiddlewareFunc
+	// 判断是否是handler
+	baseMiddleware := []middleware{HttpContextLogMiddleware, InternalServerErrorMiddleware}
 	for _, v := range pattern.Middleware {
-		fileServerMiddleWares = append(fileServerMiddleWares, func(next http.Handler) http.Handler {
-			return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		baseMiddleware = append(baseMiddleware, func(next http.HandlerFunc) http.HandlerFunc {
+			return func(w http.ResponseWriter, r *http.Request) {
+				// 此处需要判断请求是否继续交给下一个中间件处理
 				if isGoOn := v(&w, r); isGoOn {
 					next.ServeHTTP(w, r)
 				}
-			})
+			}
 		})
 	}
-	fileRouter.Use(fileServerMiddleWares...)
-	fileRouter.PathPrefix("/").Handler(http.StripPrefix(pattern.Url, http.FileServer(http.Dir(filePath))))
+	middlewares := chainMiddleware(baseMiddleware...)
+	urlPattern.router.HandleFunc(pattern.Url, middlewares(v.Handle))
 }
 
 // Init 初始化url映射，遍历UrlMapping，将handler与对应的URL依次挂载到http服务上
 func (urlPattern *UrlPattern) Init() {
 	for _, pattern := range urlPattern.UrlPatterns {
-		urlPattern.AppendRouterPattern(pattern, &UrlPatternMidWare{
+		urlPattern.AppendRouterPattern(pattern, &UrlPatternHandle{
 			Handler:    pattern.Handler,
 			requestUrl: pattern.Url,
 		})
