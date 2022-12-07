@@ -7,8 +7,8 @@ import (
 	"reflect"
 )
 
-// UrlPatternMidWare 是URL路由中间件
-type UrlPatternMidWare struct {
+// UrlPatternHandle 是URL路由句柄，用来驱动url路由以及其映射的handler
+type UrlPatternHandle struct {
 	Handler    interface{}
 	requestUrl string
 }
@@ -19,7 +19,7 @@ type UrlPatternMidWare struct {
 //  - 3、进行HTTP请求预处理，包括判断请求方式是否合法等；
 //  - 4、调用handler中的功能方法；
 //  - 5、进行HTTP请求结束处理。
-func (urlPatternMidWare UrlPatternMidWare) Handle(responseWriter http.ResponseWriter, request *http.Request) {
+func (urlPatternMidWare UrlPatternHandle) Handle(responseWriter http.ResponseWriter, request *http.Request) {
 	handlerType := reflect.TypeOf(urlPatternMidWare.Handler)
 	if handlerType.Kind() == reflect.Ptr {
 		handlerType = handlerType.Elem()
@@ -92,7 +92,7 @@ func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v interface {
 // Init 初始化url映射，遍历UrlMapping，将handler与对应的URL依次挂载到http服务上
 func (urlPattern *UrlPattern) Init() {
 	for _, pattern := range urlPattern.UrlPatterns {
-		urlPattern.AppendRouterPattern(pattern, &UrlPatternMidWare{
+		urlPattern.AppendRouterPattern(pattern, &UrlPatternHandle{
 			Handler:    pattern.Handler,
 			requestUrl: pattern.Url,
 		})
