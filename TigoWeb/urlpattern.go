@@ -67,14 +67,8 @@ func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v interface {
 		fileRouter := urlPattern.router.PathPrefix(pattern.Url).Subrouter()
 		var fileServerMiddleWares []mux.MiddlewareFunc
 		for _, v := range pattern.Middleware {
-			fileServerMiddleWares = append(fileServerMiddleWares, func(next http.Handler) http.Handler {
-				return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-					// 此处需要判断请求是否继续交给下一个中间件处理
-					if isGoOn := v(&w, r); isGoOn {
-						next.ServeHTTP(w, r)
-					}
-				})
-			})
+			m := convertHandleMV(v)
+			fileServerMiddleWares = append(fileServerMiddleWares, m)
 		}
 		fileRouter.Use(fileServerMiddleWares...)
 		fileRouter.PathPrefix("/").Handler(http.StripPrefix(pattern.Url, http.FileServer(http.Dir(filePath))))
@@ -98,6 +92,17 @@ func convertHandleFuncMV(v func(w *http.ResponseWriter, r *http.Request) bool) f
 				next.ServeHTTP(w, r)
 			}
 		}
+	}
+}
+
+func convertHandleMV(v func(w *http.ResponseWriter, r *http.Request) bool) func(next http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// 此处需要判断请求是否继续交给下一个中间件处理
+			if isGoOn := v(&w, r); isGoOn {
+				next.ServeHTTP(w, r)
+			}
+		})
 	}
 }
 
