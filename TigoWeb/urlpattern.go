@@ -84,7 +84,7 @@ func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v interface {
 	urlPattern.router.HandleFunc(pattern.Url, middlewares(v.Handle))
 }
 
-func convertHandleFuncMV(v func(w *http.ResponseWriter, r *http.Request) bool) func(next http.HandlerFunc) http.HandlerFunc {
+func convertHandleFuncMV(v Middleware) middleware {
 	return func(next http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			// 此处需要判断请求是否继续交给下一个中间件处理
@@ -95,7 +95,7 @@ func convertHandleFuncMV(v func(w *http.ResponseWriter, r *http.Request) bool) f
 	}
 }
 
-func convertHandleMV(v func(w *http.ResponseWriter, r *http.Request) bool) func(next http.Handler) http.Handler {
+func convertHandleMV(v Middleware) mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// 此处需要判断请求是否继续交给下一个中间件处理
