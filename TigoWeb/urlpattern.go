@@ -66,8 +66,8 @@ func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v interface {
 	if filePath, isFileServer := pattern.Handler.(string); isFileServer {
 		fileRouter := urlPattern.router.PathPrefix(pattern.Url).Subrouter()
 		var fileServerMiddleWares []mux.MiddlewareFunc
-		for _, v := range pattern.Middleware {
-			m := convertHandleMV(v)
+		for _, mv := range pattern.Middleware {
+			m := convertHandleMV(mv)
 			fileServerMiddleWares = append(fileServerMiddleWares, m)
 		}
 		fileRouter.Use(fileServerMiddleWares...)
@@ -76,8 +76,8 @@ func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v interface {
 	}
 	// 判断是否是handler
 	baseMiddleware := []middleware{HttpContextLogMiddleware, InternalServerErrorMiddleware}
-	for _, v := range pattern.Middleware {
-		m := convertHandleFuncMV(v)
+	for _, mv := range pattern.Middleware {
+		m := convertHandleFuncMV(mv)
 		baseMiddleware = append(baseMiddleware, m)
 	}
 	middlewares := chainMiddleware(baseMiddleware...)
