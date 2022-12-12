@@ -2,6 +2,7 @@ package TigoWeb
 
 import (
 	"errors"
+	"github.com/gorilla/mux"
 	"github.com/karldoenitz/Tigo/logger"
 	"net/http"
 	"time"
@@ -23,6 +24,28 @@ func chainMiddleware(mw ...middleware) middleware {
 			}
 			last(w, r)
 		}
+	}
+}
+
+func convertHandleFuncMV(v Middleware) middleware {
+	return func(next http.HandlerFunc) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			// 此处需要判断请求是否继续交给下一个中间件处理
+			if isGoOn := v(&w, r); isGoOn {
+				next.ServeHTTP(w, r)
+			}
+		}
+	}
+}
+
+func convertHandleMV(v Middleware) mux.MiddlewareFunc {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// 此处需要判断请求是否继续交给下一个中间件处理
+			if isGoOn := v(&w, r); isGoOn {
+				next.ServeHTTP(w, r)
+			}
+		})
 	}
 }
 
