@@ -7,11 +7,12 @@ import (
 	"reflect"
 )
 
+// 定义函数名
 const (
-	InitHandler     = "InitHandler"
-	PassJson        = "PassJson"
-	BeforeRequest   = "BeforeRequest"
-	TeardownRequest = "TeardownRequest"
+	FnInitHandler     = "InitHandler"
+	FnPassJson        = "PassJson"
+	FnBeforeRequest   = "BeforeRequest"
+	FnTeardownRequest = "TeardownRequest"
 )
 
 // UrlPatternHandle 是URL路由句柄，用来驱动url路由以及其映射的handler
@@ -34,15 +35,15 @@ func (urlPatternMidWare UrlPatternHandle) Handle(responseWriter http.ResponseWri
 	// 加载handler
 	handler := reflect.New(handlerType)
 	// 调用InitHandler方法
-	VoidFuncCall(handler, InitHandler, reflect.ValueOf(responseWriter), reflect.ValueOf(request))
+	VoidFuncCall(handler, FnInitHandler, reflect.ValueOf(responseWriter), reflect.ValueOf(request))
 	// 调用PassJson方法
-	VoidFuncCall(handler, PassJson)
+	VoidFuncCall(handler, FnPassJson)
 	// 调用BeforeRequest方法
-	VoidFuncCall(handler, BeforeRequest)
+	VoidFuncCall(handler, FnBeforeRequest)
 	// 根据http请求方式调用相关方法
 	VoidFuncCall(handler, MethodMapping[request.Method])
 	// 调用TeardownRequest方法
-	VoidFuncCall(handler, TeardownRequest)
+	VoidFuncCall(handler, FnTeardownRequest)
 }
 
 // Pattern 路由对象

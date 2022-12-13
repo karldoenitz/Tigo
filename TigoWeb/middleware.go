@@ -77,7 +77,7 @@ func HttpContextLogMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		startTime := time.Now()
 		requestMethod := r.Method
 		url := r.RequestURI
-		httpResponseWriter := HttpResponseWriter{w, 200}
+		httpResponseWriter := HttpResponseWriter{w, http.StatusOK}
 		defer func() {
 			status := httpResponseWriter.GetStatus()
 			duration := time.Now().Sub(startTime).Seconds() * 1e3
