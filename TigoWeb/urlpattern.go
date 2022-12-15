@@ -65,6 +65,7 @@ func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v interface {
 }) {
 	// 判断是否是文件服务器
 	if filePath, isFileServer := pattern.Handler.(string); isFileServer {
+		fileServer := http.FileServer(http.Dir(filePath))
 		fileRouter := urlPattern.router.PathPrefix(pattern.Url).Subrouter()
 		var fileServerMiddleWares []mux.MiddlewareFunc
 		for _, mv := range pattern.Middleware {
@@ -72,7 +73,7 @@ func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v interface {
 			fileServerMiddleWares = append(fileServerMiddleWares, m)
 		}
 		fileRouter.Use(fileServerMiddleWares...)
-		fileRouter.PathPrefix("/").Handler(http.StripPrefix(pattern.Url, http.FileServer(http.Dir(filePath))))
+		fileRouter.PathPrefix("/").Handler(http.StripPrefix(pattern.Url, fileServer))
 		return
 	}
 	// 判断是否是handler

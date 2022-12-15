@@ -8,34 +8,20 @@
 //
 //	func main() {
 //		application := TigoWeb.Application{UrlPatterns: urlRouter}
-//		application.PrepareStart()
-//		endless.DefaultReadTimeOut = 10 * time.Second
-//		endless.DefaultWriteTimeOut = 10 * time.Second
-//		err := endless.ListenAndServe(fmt.Sprintf(":%d", 4000), http.DefaultServeMux)
-//		if err != nil {
-//			panic(fmt.Sprintf("server err:%v", err))
-//		}
+//		application.EndlessStart()
 //	}
 //
-// 使用overseer平滑启动示例如下
+// 使用overseer平滑启动示例如下，`fetcher.File`是你的Tigo项目的二进制可执行文件的路径，Overseer按照Interval设置的时间轮询该文件是否更新，
+// 更新后会进行平滑重启。
 //
 // Basic Example:
 //
 //	func main() {
-//		overseer.Run(overseer.Config{
-//			Program: prog,
-//			Address: ":3000",
-//			Fetcher: &fetcher.File{
-//				Path:     "./test",
-//				Interval: 1 * time.Second,
-//			},
-//		})
+//      application := TigoWeb.Application{UrlPatterns: urlRouter}
+//      application.OverseerStart(&fetcher.File{
+//  		Path:     "path/to/your/app-file",
+//  		Interval: 1 * time.Second,
+//  	})
 //	}
 //
-//	func prog(state overseer.State) {
-//		log.Printf("app (%s) listening...", state.ID)
-//		application := TigoWeb.Application{UrlPatterns: urlRouter}
-//		application.InitApp()
-//		http.Serve(state.Listener, nil)
-//	}
 package TigoWeb
