@@ -399,11 +399,9 @@ Use this method to append a handler to an url and setup middleware to the handle
 Example:
 ```go
 // WithTracing get request uri
-func WithTracing(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("Tracing request for %s", r.RequestURI)
-		next.ServeHTTP(w, r)
-	}
+func WithTracing(w *http.ResponseWriter, r *http.Request) bool  {
+	log.Printf("Tracing request for %s", r.RequestURI)
+	return true
 }
 
 var routers = []TigoWeb.Pattern{
