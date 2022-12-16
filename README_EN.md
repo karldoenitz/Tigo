@@ -43,11 +43,8 @@ func (demoHandler *DemoHandler) Get() {
 }
 
 // Authorize Middleware
-func Authorize(next http.HandlerFunc) http.HandlerFunc {
-    return func(w http.ResponseWriter, r *http.Request) {
-        // 此处授权认证逻辑
-        next.ServeHTTP(w, r)
-    }
+func Authorize(w *http.ResponseWriter, r *http.Request) bool  {
+    return true
 }
 
 // Pattern

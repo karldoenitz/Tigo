@@ -43,11 +43,9 @@ func (demoHandler *DemoHandler) Get() {
 }
 
 // Authorize 中间件
-func Authorize(next http.HandlerFunc) http.HandlerFunc {
-    return func(w http.ResponseWriter, r *http.Request) {
-        // 此处授权认证逻辑
-        next.ServeHTTP(w, r)
-    }
+func Authorize(w *http.ResponseWriter, r *http.Request) bool {
+	// 此处返回true表示继续执行，false则直接返回，后续的中间件不会执行
+	return true
 }
 
 // 路由
@@ -76,7 +74,7 @@ go build main.go
 ```
 终端会有如下显示：
 ```
- INFO     2022/10/07 22:40:36  Server run on: 127.0.0.1:8080
+ INFO     2022/10/07 22:40:36  Server run on: http://127.0.0.1:8080
 ```
 打开浏览器访问地址```http://127.0.0.1:8888/hello-tigo```，就可以看到<font color=red>Hello Tigo</font>。
 

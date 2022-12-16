@@ -400,11 +400,9 @@ func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v interface {
 示例如下：
 ```go
 // WithTracing 中间件用来获取访问地址
-func WithTracing(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("Tracing request for %s", r.RequestURI)
-		next.ServeHTTP(w, r)
-	}
+func WithTracing(w *http.ResponseWriter, r *http.Request) bool {
+	log.Printf("Tracing request for %s", r.RequestURI)
+	return true
 }
 
 var routers = []TigoWeb.Pattern{
