@@ -20,4 +20,4 @@ var MethodMapping = map[string]string{
 	"TRACE":   "Trace",
 }
 
-const Version = "1.6.3"
+const Version = "1.6.5"
