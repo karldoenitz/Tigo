@@ -43,9 +43,9 @@ func (demoHandler *DemoHandler) Get() {
 }
 
 // Authorize 中间件
-func Authorize(w *http.ResponseWriter, r *http.Request) bool {
-	// 此处返回true表示继续执行，false则直接返回，后续的中间件不会执行
-	return true
+func Authorize(w *http.ResponseWriter, r *http.Request) bool { 
+    // 此处返回true表示继续执行，false则直接返回，后续的中间件不会执行 
+    return true
 }
 
 // 路由
