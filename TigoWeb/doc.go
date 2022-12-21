@@ -7,8 +7,8 @@
 // Basic Example:
 //
 //	func main() {
-//		application := TigoWeb.Application{UrlPatterns: urlRouter}
-//		application.EndlessStart()
+//	    application := TigoWeb.Application{UrlPatterns: urlRouter}
+//	    application.EndlessStart()
 //	}
 //
 // 使用overseer平滑启动示例如下，`fetcher.File`是你的Tigo项目的二进制可执行文件的路径，Overseer按照Interval设置的时间轮询该文件是否更新，
@@ -19,9 +19,9 @@
 //	func main() {
 //      application := TigoWeb.Application{UrlPatterns: urlRouter}
 //      application.OverseerStart(&fetcher.File{
-//  		Path:     "path/to/your/app-file",
-//  		Interval: 1 * time.Second,
-//  	})
+//          Path:     "path/to/your/app-file",
+//          Interval: 1 * time.Second,
+//      })
 //	}
 //
 package TigoWeb
