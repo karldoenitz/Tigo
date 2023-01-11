@@ -64,7 +64,9 @@ func main() {
 }
 
 `
-	handlerCode = `package handler
+	handlerCode = `// you can write your code here.
+// You can add 'Post', 'Put', 'Delete' and other methods to handler.
+package handler
 
 import (
 	"github.com/karldoenitz/Tigo/TigoWeb"
@@ -79,8 +81,10 @@ func (p *%s) Get() {
 	p.ResponseAsText("Pong")
 }
 
-// you can write your code here.
-// to add 'Post', 'Put', 'Delete' and other methods here.
+func (p *%s) Post() {
+	// write your code here
+	p.ResponseAsText("Pong")
+}
 
 `
 	configCodeJson = `{
