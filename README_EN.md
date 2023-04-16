@@ -1,6 +1,6 @@
 [![Badge](https://img.shields.io/badge/link-Tigo-blue.svg)](https://karldoenitz.github.io/Tigo-EN/)
 [![LICENSE](https://img.shields.io/badge/license-Tigo-blue.svg)](https://github.com/karldoenitz/Tigo/blob/master/LICENSE)
-[![Build Status](https://travis-ci.org/karldoenitz/Tigo.svg?branch=master)](https://travis-ci.org/karldoenitz/Tigo)
+[![Go](https://github.com/karldoenitz/Tigo/actions/workflows/go.yml/badge.svg)](https://github.com/karldoenitz/Tigo/actions/workflows/go.yml)
 [![Join the chat at https://gitter.im/karlooper/Tigo](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/karlooper/Tigo?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Open Source Helpers](https://www.codetriage.com/karldoenitz/tigo/badges/users.svg)](https://www.codetriage.com/karldoenitz/Tigo)
 [![Go Report Card](https://goreportcard.com/badge/github.com/karldoenitz/Tigo)](https://goreportcard.com/report/github.com/karldoenitz/Tigo)
