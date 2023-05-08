@@ -32,5 +32,8 @@ jobs:
         with:
           go-version: 1.19
 
+      - name: Init
+        run: go mod init Tigo
+
       - name: Test
         run: go test -v .
