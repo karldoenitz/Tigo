@@ -9,7 +9,7 @@ import (
 )
 
 func TestGet(t *testing.T) {
-	response, err := request.Get("https://life.qq.com/api/activity/detail?id=773947310848622080")
+	response, err := request.Get("https://storiesofjesus.github.io/js/info.json")
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -32,7 +32,7 @@ func TestPost(t *testing.T) {
 	postData := map[string]interface{}{
 		"chlid": "news_news_bj",
 	}
-	response, err := request.Post("https://life.qq.com/api/activity/get_good_act_list?cachedCount=0", postData, headers)
+	response, err := request.Post("https://storiesofjesus.github.io/js/info.json", postData, headers)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -46,7 +46,7 @@ func TestMakeRequest(t *testing.T) {
 		"Content-Type": "application/x-www-form-urlencoded",
 	}
 	postData := "chlid=news_news_bj"
-	response, err := request.MakeRequest("POST", "https://life.qq.com/api/activity/get_good_act_list?cachedCount=0", strings.NewReader(postData), headers)
+	response, err := request.MakeRequest("POST", "https://storiesofjesus.github.io/js/info.json", strings.NewReader(postData), headers)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
