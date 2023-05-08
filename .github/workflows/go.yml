@@ -33,4 +33,4 @@ jobs:
           go-version: 1.19
 
       - name: Test
-        run: go test test_case
+        run: cd Tigo & go test test_case
