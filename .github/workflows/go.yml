@@ -36,7 +36,7 @@ jobs:
         run: go mod init Tigo
 
       - name: Install dependencies
-        run: go get .
+        run: go get github.com/karldoenitz/Tigo/...
 
       - name: Test
         run: go test -v ./test_case
