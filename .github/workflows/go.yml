@@ -35,5 +35,8 @@ jobs:
       - name: Init
         run: go mod init Tigo
 
+      - name: Install dependencies
+        run: go get .
+
       - name: Test
         run: go test -v ./test_case
