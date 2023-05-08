@@ -36,4 +36,4 @@ jobs:
         run: go mod init Tigo
 
       - name: Test
-        run: go test -v .
+        run: go test -v ./test_case
