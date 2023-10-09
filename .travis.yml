@@ -1,5 +1,11 @@
 language: go
 
+on:
+  push:
+    branches:
+      - master
+      - feature-v2.0.0
+
 go:
   - "1.12"
   - "1.13"
