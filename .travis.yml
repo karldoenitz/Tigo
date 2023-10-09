@@ -2,7 +2,7 @@ name: Go
 
 on:
   push:
-    branches: ["master", "origin/feature-v*", "feature-v*"]
+    branches: ["master", 'origin/feature-v*', 'feature-v*']
 
 jobs:
 
