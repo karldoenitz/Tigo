@@ -1,22 +1,41 @@
-language: go
+name: Go
 
 on:
   push:
     branches:
-      - master
-      - 'feature-v*'
+      - "master"
+      - "feature-v*"
 
-go:
-  - "1.12"
-  - "1.13"
-  - "1.14"
-  - "1.15"
-  - "1.16"
-  - "1.17"
-  - "1.18"
-  - "1.19"
-  - "1.20"
-  - "1.21"
+jobs:
 
-install: 
-  - go get github.com/karldoenitz/Tigo/TigoWeb
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+
+      - name: Init
+        run: go mod init Tigo
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+
+      - name: Init
+        run: go mod init Tigo
+
+      - name: Install dependencies
+        run: go get github.com/karldoenitz/Tigo/...
+
+      - name: Test
+        run: go test -v ./test_case
