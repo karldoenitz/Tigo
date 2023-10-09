@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - feature-v2.0.0
+      - 'feature-v*'
 
 go:
   - "1.12"
