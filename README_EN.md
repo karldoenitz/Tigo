@@ -78,7 +78,7 @@ The info will display in terminal：
 Open web browser and visit ```http://127.0.0.1:8888/hello-tigo```, you will see <font color=red>Hello Tigo</font>.
 
 # Performance Comparison
-<img src="https://github.com/karldoenitz/Tigo/blob/master/documentation/chart_en.png" width="100%" height="300px" alt="Performance Comparison"/>
+<img src="https://raw.githubusercontent.com/karldoenitz/Tigo/master/documentation/chart.png" width="100%" height="300px" alt="Performance Comparison"/>
 
 # Documentation
 [Click Here](https://github.com/karldoenitz/Tigo/blob/master/documentation/documentation_en.md)
