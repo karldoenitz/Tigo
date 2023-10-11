@@ -42,6 +42,7 @@ type Cookie struct {
 // GetCookieEncodeValue 获取cookie加密值
 //   - IsSecurity如果设置为false，则返回原始值
 //   - IsSecurity如果设置为true，则返回加密后的值
+//
 // 如果加密失败，则抛出异常
 func (cookie *Cookie) GetCookieEncodeValue() (result string) {
 	if !cookie.IsSecurity {
@@ -49,13 +50,18 @@ func (cookie *Cookie) GetCookieEncodeValue() (result string) {
 	}
 	value := []byte(cookie.Value)
 	key := []byte(cookie.SecurityKey)
-	result = Encrypt(value, key)
+	var err error
+	result, err = Encrypt(value, key)
+	if err != nil {
+		logger.Error.Printf("get encode cookie error: %s", err.Error())
+	}
 	return result
 }
 
 // GetCookieDecodeValue 获取cookie解密值
 //   - IsSecurity如果设置为false，则返回原始值
 //   - IsSecurity如果设置为true，则返回加密后的值
+//
 // 如果解密失败，则抛出异常
 func (cookie *Cookie) GetCookieDecodeValue() (result string) {
 	if !cookie.IsSecurity {
@@ -63,7 +69,10 @@ func (cookie *Cookie) GetCookieDecodeValue() (result string) {
 	}
 	value := []byte(cookie.Value)
 	key := []byte(cookie.SecurityKey)
-	securityValue := Decrypt(value, key)
+	securityValue, err := Decrypt(value, key)
+	if err != nil {
+		logger.Error.Printf("get decode cookie error: %s", err.Error())
+	}
 	result = string(securityValue)
 	return result
 }
