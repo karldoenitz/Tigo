@@ -19,6 +19,8 @@ import (
 // Encrypt 方法用来根据key对原始数据进行加密，并将加密结果进行base64编码，
 // 加密失败则返回空
 //   - 此处以后会进行异常处理方面的优化
+//   - src: 原信息
+//   - key: 加密密钥
 func Encrypt(src []byte, key []byte) string {
 	encryptValue, _ := encrypt(src, key)
 	return base64.StdEncoding.EncodeToString(encryptValue)
@@ -27,6 +29,8 @@ func Encrypt(src []byte, key []byte) string {
 // Decrypt 方法会先对原始数据进行base64解码，然后根据key进行解密，
 // 解密失败则返回空
 //   - 此处以后会进行异常处理方面的优化
+//   - src: 加密后的数据
+//   - key: 加密时使用的密钥
 func Decrypt(src []byte, key []byte) []byte {
 	result, _ := base64.StdEncoding.DecodeString(string(src))
 	value, _ := decrypt(result, key)
@@ -126,9 +130,9 @@ func UrlDecode(value string) (result string) {
 
 // VoidFuncCall 调用某个指定的方法，通过反射获取某个变量的值，然后通过传入的方法名，调用这个变量中的方法；
 // 这个方法只适用于没有入参，且无返回值的函数调用
-//  - instance: 实例
-//  - funcName: 需要调用的方法名
-//  - funcParams: 调用函数所需要的参数
+//   - instance: 实例
+//   - funcName: 需要调用的方法名
+//   - funcParams: 调用函数所需要的参数
 func VoidFuncCall(instance reflect.Value, funcName string, funcParams ...reflect.Value) {
 	function := instance.MethodByName(funcName)
 	if function.IsValid() {
