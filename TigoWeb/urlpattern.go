@@ -22,11 +22,11 @@ type UrlPatternHandle struct {
 }
 
 // Handle 封装HTTP请求的中间件，主要有以下功能：
-//  - 1、根据反射找到挂载的handler；
-//  - 2、调用handler的InitHandler方法；
-//  - 3、进行HTTP请求预处理，包括判断请求方式是否合法等；
-//  - 4、调用handler中的功能方法；
-//  - 5、进行HTTP请求结束处理。
+//   - 1、根据反射找到挂载的handler；
+//   - 2、调用handler的InitHandler方法；
+//   - 3、进行HTTP请求预处理，包括判断请求方式是否合法等；
+//   - 4、调用handler中的功能方法；
+//   - 5、进行HTTP请求结束处理。
 func (urlPatternMidWare UrlPatternHandle) Handle(responseWriter http.ResponseWriter, request *http.Request) {
 	handlerType := reflect.TypeOf(urlPatternMidWare.Handler)
 	if handlerType.Kind() == reflect.Ptr {
@@ -41,7 +41,7 @@ func (urlPatternMidWare UrlPatternHandle) Handle(responseWriter http.ResponseWri
 	// 调用BeforeRequest方法
 	VoidFuncCall(handler, FnBeforeRequest)
 	// 根据http请求方式调用相关方法
-	VoidFuncCall(handler, MethodMapping[request.Method])
+	VoidFuncCall(handler, MethodEnum(request.Method))
 	// 调用TeardownRequest方法
 	VoidFuncCall(handler, FnTeardownRequest)
 }
