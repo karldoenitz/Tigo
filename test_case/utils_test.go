@@ -43,3 +43,14 @@ func TestMethodEnum(t *testing.T) {
 	}
 	t.Log("success")
 }
+
+func TestUrlEncode(t *testing.T) {
+	originData := "测试用例1"
+	encodedData := TigoWeb.UrlEncode(originData)
+	decodedData := TigoWeb.UrlDecode(encodedData)
+	if encodedData != decodedData {
+		t.Error("url encode decode failed")
+		return
+	}
+	t.Log("url encode decode testcase passed")
+}
