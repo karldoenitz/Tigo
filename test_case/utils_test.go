@@ -2,6 +2,7 @@ package test_case
 
 import (
 	"Tigo/TigoWeb"
+	"strings"
 	"testing"
 )
 
@@ -21,6 +22,24 @@ func TestEncryptDecrypt(t *testing.T) {
 	if string(decryptData) != originData {
 		t.Error("data invalid")
 		return
+	}
+	t.Log("success")
+}
+
+func TestMethodEnum(t *testing.T) {
+	methods := []string{
+		"get", "head", "put", "post", "delete", "connect", "options", "trace",
+	}
+	for _, method := range methods {
+		m := strings.ToUpper(string(method[0])) + method[1:]
+		if TigoWeb.MethodEnum(method) != m {
+			t.Error("MethodEnum test failed")
+			return
+		}
+		if TigoWeb.MethodEnum(strings.ToLower(method)) != m {
+			t.Error("MethodEnum test failed")
+			return
+		}
 	}
 	t.Log("success")
 }
