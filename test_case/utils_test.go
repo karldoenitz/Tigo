@@ -68,7 +68,7 @@ func (p *TestcaseStruct) Test1(param int) {
 }
 
 func (p *TestcaseStruct) Test2(param int) {
-	testIns = param
+	p.Element = param
 }
 
 func TestVoidFuncCall(t *testing.T) {
