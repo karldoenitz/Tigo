@@ -74,13 +74,14 @@ func (p *TestcaseStruct) Test2(param int) {
 func TestVoidFuncCall(t *testing.T) {
 	param := 9
 	ts := TestcaseStruct{}
-	TigoWeb.VoidFuncCall(reflect.New(reflect.TypeOf(ts)), "Test1", reflect.ValueOf(param))
+	nts := reflect.New(reflect.TypeOf(ts))
+	TigoWeb.VoidFuncCall(nts, "Test1", reflect.ValueOf(param))
 	if param != testIns {
 		t.Error("testcase1 VoidFuncCall failed")
 		return
 	}
-	TigoWeb.VoidFuncCall(reflect.New(reflect.TypeOf(ts)), "Test2", reflect.ValueOf(param))
-	if param != ts.Element {
+	TigoWeb.VoidFuncCall(nts, "Test2", reflect.ValueOf(param))
+	if param != int(nts.Elem().FieldByName("Element").Int()) {
 		t.Error("testcase2 VoidFuncCall failed")
 		return
 	}
