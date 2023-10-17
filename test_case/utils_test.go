@@ -2,6 +2,7 @@ package test_case
 
 import (
 	"Tigo/TigoWeb"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -53,4 +54,35 @@ func TestUrlEncode(t *testing.T) {
 		return
 	}
 	t.Log("url encode decode testcase passed")
+}
+
+var testIns int
+
+type TestcaseStruct struct {
+	// 测试反向映射调用结构体的函数
+	Element int
+}
+
+func (p *TestcaseStruct) Test1(param int) {
+	testIns = param
+}
+
+func (p *TestcaseStruct) Test2(param int) {
+	testIns = param
+}
+
+func TestVoidFuncCall(t *testing.T) {
+	param := 9
+	ts := TestcaseStruct{}
+	TigoWeb.VoidFuncCall(reflect.New(reflect.TypeOf(ts)), "Test1", reflect.ValueOf(param))
+	if param != testIns {
+		t.Error("testcase1 VoidFuncCall failed")
+		return
+	}
+	TigoWeb.VoidFuncCall(reflect.New(reflect.TypeOf(ts)), "Test2", reflect.ValueOf(param))
+	if param != ts.Element {
+		t.Error("testcase2 VoidFuncCall failed")
+		return
+	}
+	t.Log("success")
 }
