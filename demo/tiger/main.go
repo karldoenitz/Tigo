@@ -162,7 +162,7 @@ func getCmdArgs() (args []string, argNum int) {
 }
 
 // printCmdUsage 打印help
-//  - args: 命令行输入的参数
+//   - args: 命令行输入的参数
 func printCmdUsage(args []string) {
 	args = append(args, "")
 	cmd := args[1]
@@ -183,7 +183,7 @@ func printCmdUsage(args []string) {
 }
 
 // execEngine 执行引擎
-//  - args: 执行参数
+//   - args: 执行参数
 func execEngine(args []string) {
 	switch args[0] {
 	case "create":
@@ -199,7 +199,7 @@ func execEngine(args []string) {
 }
 
 // execCreate 执行create命令
-//  - arg create命令的参数
+//   - arg create命令的参数
 func execCreate(arg string) {
 	// 先创建目录
 	workDir := getWorkingDirPath()
@@ -245,7 +245,7 @@ func execCreate(arg string) {
 }
 
 // execCmd 执行cmd命令
-//  - commands: 需要执行的命令
+//   - commands: 需要执行的命令
 func execCmd(commands []string) bool {
 	cmd := exec.Command(commands[0], commands[1:]...)
 	err := cmd.Run()
@@ -267,7 +267,7 @@ func goMod() {
 }
 
 // execAddHandler 在当前Tigo项目中增加一个handler
-//  - handlerName: handler名字
+//   - handlerName: handler名字
 func execAddHandler(handlerName string) {
 	workDir := getWorkingDirPath()
 	handlerPath := fmt.Sprintf("%s/handler", workDir)
@@ -279,7 +279,7 @@ func execAddHandler(handlerName string) {
 		fmt.Println(err.Error())
 		return
 	}
-	_, _ = fHandler.WriteString(fmt.Sprintf(handlerCode, handlerName, handlerName))
+	_, _ = fHandler.WriteString(fmt.Sprintf(handlerCode, handlerName, handlerName, handlerName))
 	_ = fHandler.Close()
 	// 再判断是否有main文件
 	_, err = os.Stat(fmt.Sprintf("%s/main.go", workDir))
@@ -322,7 +322,7 @@ func execAddHandler(handlerName string) {
 }
 
 // execConf 增加配置文件
-//  - arg: 配置文件名称
+//   - arg: 配置文件名称
 func execConf(arg string) {
 	workDir := getWorkingDirPath()
 	configPath := fmt.Sprintf("%s/%s", workDir, arg)
