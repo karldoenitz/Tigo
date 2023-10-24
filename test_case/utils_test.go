@@ -98,3 +98,14 @@ func TestMD5(t *testing.T) {
 	}
 	t.Log("success")
 }
+
+func TestMD5m16(t *testing.T) {
+	origin := "testcase1"
+	md5 := "781ba6b3b703def7"
+	result := TigoWeb.MD5m16(origin)
+	if md5 != result {
+		t.Error("md5 encrypt failed")
+		return
+	}
+	t.Log("success")
+}
