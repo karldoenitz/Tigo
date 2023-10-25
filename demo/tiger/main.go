@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 )
 
 const (
@@ -332,12 +333,11 @@ func execConf(arg string) {
 		fmt.Println(err.Error())
 		return
 	}
+	currentTime := time.Now().String() + arg
 	if strings.HasSuffix(arg, ".json") {
-		// TODO 将arg换成时间戳+参数名进行md5加密并取前16位
-		_, _ = f.WriteString(fmt.Sprintf(configCodeJson, arg, workDir, workDir, workDir))
+		_, _ = f.WriteString(fmt.Sprintf(configCodeJson, TigoWeb.MD5m16(currentTime), workDir, workDir, workDir))
 	} else {
-		// TODO 将arg换成时间戳+参数名进行md5加密并取前16位
-		_, _ = f.WriteString(fmt.Sprintf(configCodeYaml, arg, workDir, workDir, workDir))
+		_, _ = f.WriteString(fmt.Sprintf(configCodeYaml, TigoWeb.MD5m16(currentTime), workDir, workDir, workDir))
 	}
 	_ = f.Close()
 	content, err := ioutil.ReadFile(fmt.Sprintf("%s/main.go", workDir))
