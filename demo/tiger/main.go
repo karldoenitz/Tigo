@@ -2,8 +2,8 @@
 package main
 
 import (
-	"Tigo/TigoWeb"
 	"fmt"
+	"github.com/karldoenitz/Tigo/TigoWeb"
 	"io/ioutil"
 	"os"
 	"os/exec"
