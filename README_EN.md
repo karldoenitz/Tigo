@@ -20,7 +20,9 @@ A web framework developed in go language.
 
 # Install
 ```
+export GO111MODULE=off; 
 go get github.com/karldoenitz/Tigo/...
+export GO111MODULE=on; 
 ```
 
 # Demo
