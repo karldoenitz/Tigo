@@ -1,7 +1,7 @@
 package test_case
 
 import (
-	"Tigo/TigoWeb"
+	"github.com/karldoenitz/Tigo/TigoWeb"
 	"reflect"
 	"strings"
 	"testing"

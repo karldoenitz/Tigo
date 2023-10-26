@@ -1,7 +1,7 @@
 package test_case
 
 import (
-	"Tigo/logger"
+	"github.com/karldoenitz/Tigo/logger"
 	"testing"
 )
 
