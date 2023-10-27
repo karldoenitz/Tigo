@@ -25,6 +25,13 @@ go get github.com/karldoenitz/Tigo/...
 export GO111MODULE=on; 
 ```
 
+# 升级
+```
+export GO111MODULE=off; 
+go get -u github.com/karldoenitz/Tigo/...
+export GO111MODULE=on; 
+```
+
 # 示例
 ## Hello Tigo
 ```go
