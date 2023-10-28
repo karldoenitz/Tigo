@@ -19,7 +19,7 @@
 [查看tission](https://github.com/karldoenitz/tission)
 
 # 安装
-```
+```shell
 export GO111MODULE=off; 
 go get github.com/karldoenitz/Tigo/...
 export GO111MODULE=on; 
