@@ -85,7 +85,7 @@ go build main.go
 ```
  INFO     2022/10/07 22:40:36  Server run on: http://127.0.0.1:8080
 ```
-打开浏览器访问地址```http://127.0.0.1:8888/demo```，就可以看到<font color=red>Hello Demo</font>。
+打开浏览器访问地址[```http://127.0.0.1:8888/demo```](http://127.0.0.1:8888/demo)，就可以看到<font color=red>Hello Demo</font>。
 
 # 性能对比
 <img src="https://raw.githubusercontent.com/karldoenitz/Tigo/master/documentation/chart.png" width="100%" height="300px" alt="性能对比"/> 
