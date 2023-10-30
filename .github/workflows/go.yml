@@ -34,8 +34,6 @@ jobs:
 
       - name: Build Check
         run: |
-          mkdir HelloWorld 
-          cd HelloWorld
           curl https://raw.githubusercontent.com/karldoenitz/GoUtils/master/Tigo/main.go > main.go
           go mod init
           go mod tidy
