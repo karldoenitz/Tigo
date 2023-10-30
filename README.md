@@ -26,7 +26,7 @@ export GO111MODULE=on;
 ```
 
 # 升级
-```
+```shell
 export GO111MODULE=off; 
 go get -u github.com/karldoenitz/Tigo/...
 export GO111MODULE=on; 
@@ -73,19 +73,19 @@ func main() {
 ```
 ### 编译
 打开终端，进入代码目录，运行如下命令：
-```
+```shell
 go build main.go
 ```
 ### 运行
 编译完成后，会有一个可执行文件```main```，运行如下命令：
-```
+```shell
 ./main
 ```
 终端会有如下显示：
 ```
  INFO     2022/10/07 22:40:36  Server run on: http://127.0.0.1:8080
 ```
-打开浏览器访问地址```http://127.0.0.1:8888/hello-tigo```，就可以看到<font color=red>Hello Tigo</font>。
+打开浏览器访问地址[```http://127.0.0.1:8888/demo```](http://127.0.0.1:8888/demo)，就可以看到<font color=red>Hello Demo</font>。
 
 # 性能对比
 <img src="https://raw.githubusercontent.com/karldoenitz/Tigo/master/documentation/chart.png" width="100%" height="300px" alt="性能对比"/> 
