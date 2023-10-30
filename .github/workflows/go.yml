@@ -34,8 +34,8 @@ jobs:
 
       - name: Build Check
         run: |
+          go mod init testBuild
           curl https://raw.githubusercontent.com/karldoenitz/GoUtils/master/Tigo/main.go > main.go
-          go mod init
           go mod tidy
           go mod vendor
           go build main.go
