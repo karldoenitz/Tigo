@@ -9,7 +9,7 @@ on:
 
 jobs:
 
-  build:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -21,6 +21,30 @@ jobs:
 
       - name: Init
         run: go mod init Tigo
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.21
+
+      - name: Init Project
+        run: go mod init testBuild
+
+      - name: Create Source Code
+        run: curl https://raw.githubusercontent.com/karldoenitz/GoUtils/master/Tigo/main.go > main.go
+
+      - name: Install Dependencies
+        run: |
+          go mod tidy 
+          go mod vendor
+
+      - name: Build Project
+        run: go build main.go
 
   test:
     runs-on: ubuntu-latest

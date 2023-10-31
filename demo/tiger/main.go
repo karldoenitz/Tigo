@@ -262,6 +262,7 @@ func goMod() {
 	dir, _ := os.Getwd()
 	splitPath := strings.Split(dir, "/")
 	proName := splitPath[len(splitPath)-1]
+	_ = os.Setenv("GO111MODULE", "on")
 	execCmd([]string{"go", "mod", "init", proName})
 	execCmd([]string{"go", "mod", "tidy"})
 	execCmd([]string{"go", "mod", "vendor"})
