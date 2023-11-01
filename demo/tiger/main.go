@@ -238,7 +238,7 @@ func execCreate(arg string) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	_, _ = fHandler.WriteString(fmt.Sprintf(handlerCode, "PingHandler", "PingHandler"))
+	_, _ = fHandler.WriteString(fmt.Sprintf(handlerCode, "PingHandler", "PingHandler", "PingHandler"))
 	_ = f.Close()
 	_ = fHandler.Close()
 	fmt.Printf("project `%s` created successfully\n", arg)
