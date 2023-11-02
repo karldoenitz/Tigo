@@ -19,9 +19,16 @@ A web framework developed in go language.
 [glance tission](https://github.com/karldoenitz/tission)  
 
 # Install
-```
+```shell
 export GO111MODULE=off; 
 go get github.com/karldoenitz/Tigo/...
+export GO111MODULE=on; 
+```
+
+# Update
+```shell
+export GO111MODULE=off; 
+go get -u github.com/karldoenitz/Tigo/...
 export GO111MODULE=on; 
 ```
 
@@ -65,12 +72,12 @@ func main() {
 ```
 ### Compile
 Open terminal, cd to target directory, input the command：
-```
+```shell
 go build main.go
 ```
 ### Run
 After compiled, there will be a runnable file named ```main```, input the command：
-```
+```shell
 ./main
 ```
 The info will display in terminal：
