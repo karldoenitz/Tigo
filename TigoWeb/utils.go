@@ -77,6 +77,21 @@ func decrypt(cipherText []byte, key []byte) ([]byte, error) {
 	return gcm.Open(nil, nonce, cipherText, nil)
 }
 
+// MD5 取字符串的md5值
+//   - origin: 原始字符串的值
+func MD5(origin string) string {
+	d := []byte(origin)
+	m := md5.New()
+	m.Write(d)
+	return hex.EncodeToString(m.Sum(nil))
+}
+
+// MD5m16 获取一个长度只有16位的md5值
+//   - origin: 原始字符串的值
+func MD5m16(origin string) string {
+	return MD5(origin)[:16]
+}
+
 //////////////////////////////////////////////////初始化全局配置//////////////////////////////////////////////////////////
 
 // InitGlobalConfig 方法用来初始化全局变量
@@ -137,19 +152,4 @@ func VoidFuncCall(instance reflect.Value, funcName string, funcParams ...reflect
 	if function.IsValid() {
 		function.Call(funcParams)
 	}
-}
-
-// MD5 取字符串的md5值
-//   - origin: 原始字符串的值
-func MD5(origin string) string {
-	d := []byte(origin)
-	m := md5.New()
-	m.Write(d)
-	return hex.EncodeToString(m.Sum(nil))
-}
-
-// MD5m16 获取一个长度只有16位的md5值
-//   - origin: 原始字符串的值
-func MD5m16(origin string) string {
-	return MD5(origin)[:16]
 }
