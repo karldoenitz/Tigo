@@ -52,9 +52,9 @@ func (application *Application) StartSession(sessionInterface SessionInterface, 
 }
 
 // MountFileServer 挂载文件服务
-//  - dir 本地文件地址
-//  - uris 需要挂载的URI，只支持至多一个URI，输入多个则只取第一个，默认为/路径，URI尽量以/结尾，这样兼容性高一些，比如：
-//  application.MountFileServer("/path/to/files", "/files/", "/", "/your/uri/")
+//   - dir 本地文件地址
+//   - uris 需要挂载的URI，只支持至多一个URI，输入多个则只取第一个，默认为/路径，URI尽量以/结尾，这样兼容性高一些，比如：
+//     application.MountFileServer("/path/to/files", "/files/", "/", "/your/uri/")
 func (application *Application) MountFileServer(dir string, uris ...string) {
 	if len(uris) == 0 {
 		uris = append(uris, "/")
@@ -97,7 +97,7 @@ func (application *Application) EndlessStart() {
 }
 
 // OverseerStart 使用overseer进行平滑启动
-//  - fc: overseer包中的fetcher接口，包括file、http、GitHub等
+//   - fc: overseer包中的fetcher接口，包括file、http、GitHub等
 func (application *Application) OverseerStart(fc fetcher.Interface) {
 	overseer.Run(overseer.Config{
 		Program: application.overseerProgram,

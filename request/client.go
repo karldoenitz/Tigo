@@ -90,10 +90,10 @@ func (response *Response) ToContentStr() string {
 }
 
 // Request 发送指定的Request请求
-//  - method 请求方式
-//  - requestUrl 请求地址
-//  - postParam 请求参数，k-v格式
-//  - headers 报文头，缺省
+//   - method 请求方式
+//   - requestUrl 请求地址
+//   - postParam 请求参数，k-v格式
+//   - headers 报文头，缺省
 func Request(method string, requestUrl string, postParams map[string]interface{}, headers ...map[string]string) (*Response, error) {
 	client := &HttpClient{http.DefaultClient}
 	requestHeaders := map[string]string{}
@@ -143,10 +143,10 @@ func Request(method string, requestUrl string, postParams map[string]interface{}
 }
 
 // MakeRequest 发送指定的Request请求
-//  - method 请求方式
-//  - requestUrl 请求地址
-//  - bodyReader 请求体
-//  - headers 报文头，缺省
+//   - method 请求方式
+//   - requestUrl 请求地址
+//   - bodyReader 请求体
+//   - headers 报文头，缺省
 func MakeRequest(method string, requestUrl string, bodyReader io.Reader, headers ...map[string]string) (*Response, error) {
 	client := &HttpClient{http.DefaultClient}
 	requestHeaders := map[string]string{}
@@ -239,7 +239,7 @@ func Delete(requestUrl string, headers ...map[string]string) (*Response, error) 
 ///////////////////////////////////////////////////utils////////////////////////////////////////////////////////////////
 
 // Map2Xml map转xml
-//  - versionAndEncode 版本号和编码，[]string{version, encode}
+//   - versionAndEncode 版本号和编码，[]string{version, encode}
 func Map2Xml(inputMap map[string]interface{}, versionAndEncode ...string) (xml string) {
 	version := "1.0"
 	encode := "utf-8"
