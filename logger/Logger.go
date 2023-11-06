@@ -51,6 +51,7 @@ var formatter = map[int]string{
 //   - Info     信息
 //   - Warning  预警
 //   - Error    错误
+//
 // discard: 丢弃，stdout: 终端输出，文件路径表示log具体输出的位置
 type LogLevel struct {
 	Trace    string `json:"trace"`
@@ -354,7 +355,7 @@ func sliceLog(logLevel LogLevel, current time.Time) {
 ////////////////////////////////////////////////////http相关工具函数//////////////////////////////////////////////////////
 
 // StatusColor 给http状态码进行终端着色
-//  - status: 状态码
+//   - status: 状态码
 func StatusColor(status int) (coloredStatus string) {
 	switch {
 	case status < http.StatusMultipleChoices:

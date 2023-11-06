@@ -11,17 +11,36 @@
 //	    application.EndlessStart()
 //	}
 //
+// ---------------------------------------------------------------------------------------------------------------------
+//
 // 使用overseer平滑启动示例如下，`fetcher.File`是你的Tigo项目的二进制可执行文件的路径，Overseer按照Interval设置的时间轮询该文件是否更新，
 // 更新后会进行平滑重启。
 //
 // Basic Example:
 //
-//	func main() {
-//      application := TigoWeb.Application{UrlPatterns: urlRouter}
-//      application.OverseerStart(&fetcher.File{
-//          Path:     "path/to/your/app-file",
-//          Interval: 1 * time.Second,
-//      })
+//		func main() {
+//	     application := TigoWeb.Application{UrlPatterns: urlRouter}
+//	     application.OverseerStart(&fetcher.File{
+//	         Path:     "path/to/your/app-file",
+//	         Interval: 1 * time.Second,
+//	     })
+//		}
+//
+// ---------------------------------------------------------------------------------------------------------------------
+//
+// 通过中间件可以设置context上下文，在中间件中设置`context.Context`后，可以在handler中获取，只要能获取`http.Request`，就可以从中获取在
+// 中间件中设置的`context.Context`。示例如下：
+//
+// Basic Example:
+//
+//	func Authorize(w *http.ResponseWriter, r *http.Request) bool {
+//		cxt := context.WithValue(r.Context(), "keyFat", "valueJu")
+//		*r = *r.WithContext(cxt)
+//		return true
 //	}
 //
+//	func (p *PingHandler) Post() {
+//		valueInCtx := p.Request.Context().Value("keyFat")
+//		p.ResponseAsText(valueInCtx)
+//	}
 package TigoWeb
