@@ -659,12 +659,10 @@ func (baseHandler *BaseHandler) SetCtxVal(key string, val interface{}) {
 	/*
 		在中间件中，如果初始化了一个handler，需要将handler内的Request和ResponseWriter作为参数传入到next.ServeHTTP中
 
-		func IsLogin(next http.HandlerFunc) http.HandlerFunc {
-			return func(w http.ResponseWriter, r *http.Request) {
-				handler := TigoWeb.BaseHandler{Request: r, ResponseWriter: w}
-				handler.SetCtxVal("key", "value")
-				next.ServeHTTP(handler.ResponseWriter, handler.Request)
-			}
+		func Authorize(w *http.ResponseWriter, r *http.Request) bool {
+			handler := TigoWeb.BaseHandler{Request: r, ResponseWriter: w}
+			handler.SetCtxVal("key", "value")
+			return true
 		}
 	*/
 	ctx := baseHandler.Request.Context()
