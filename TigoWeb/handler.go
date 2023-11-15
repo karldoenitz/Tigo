@@ -681,7 +681,7 @@ func (baseHandler *BaseHandler) GetCtxVal(key string) interface{} {
 
 // 获取http请求报文 TODO 校验此处是否正常
 func (baseHandler *BaseHandler) getHttpRequestMsg() string {
-	req, err := httputil.DumpRequestOut(baseHandler.Request, true)
+	req, err := httputil.DumpRequest(baseHandler.Request, true)
 	if err != nil {
 		return err.Error()
 	}
