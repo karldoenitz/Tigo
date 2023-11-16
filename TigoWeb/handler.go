@@ -667,7 +667,7 @@ func (baseHandler *BaseHandler) SetCtxVal(key string, val interface{}) {
 	*/
 	ctx := baseHandler.Request.Context()
 	ctx = context.WithValue(ctx, key, val)
-	baseHandler.Request = baseHandler.Request.WithContext(ctx)
+	*baseHandler.Request = *baseHandler.Request.WithContext(ctx)
 }
 
 // GetCtxVal 从上下文获取值
