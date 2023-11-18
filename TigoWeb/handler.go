@@ -9,10 +9,12 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/karldoenitz/Tigo/binding"
 	"github.com/karldoenitz/Tigo/logger"
+	"gorm.io/gorm"
 	"html/template"
 	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -70,7 +72,7 @@ func (baseHandler *BaseHandler) PassJson() {
 
 // ToJson 将对象转化为Json字符串，转换失败则返回空字符串。
 // 传入参数Response为一个interface，必须有成员函数Print。
-//  - response: 需要转换成json的实例
+//   - response: 需要转换成json的实例
 func (baseHandler *BaseHandler) ToJson(response interface{}) (result []byte) {
 	// 将该对象转换为byte字节数组
 	jsonResult, jsonErr := json.Marshal(response)
@@ -82,7 +84,7 @@ func (baseHandler *BaseHandler) ToJson(response interface{}) (result []byte) {
 
 // ToJsonStr 将对象转化为Json字符串，转换失败则返回空字符串。
 // 传入参数Response为一个interface，必须有成员函数Print。
-//  - response: 需要转换成json的实例
+//   - response: 需要转换成json的实例
 func (baseHandler *BaseHandler) ToJsonStr(response interface{}) (result string) {
 	// 将该对象转换为byte字节数组
 	jsonResult, jsonErr := json.Marshal(response)
@@ -95,8 +97,8 @@ func (baseHandler *BaseHandler) ToJsonStr(response interface{}) (result string) 
 }
 
 // ResponseAsJson 向客户端响应一个Json结果，默认字符集为utf-8
-//  - response: 需要响应给客户端的数据
-//  - charset: 数据集，默认utf-8编码
+//   - response: 需要响应给客户端的数据
+//   - charset: 数据集，默认utf-8编码
 func (baseHandler *BaseHandler) ResponseAsJson(response interface{}, charset ...string) {
 	// 将对象转换为Json字符串
 	jsonResult := baseHandler.ToJson(response)
@@ -112,7 +114,7 @@ func (baseHandler *BaseHandler) ResponseAsJson(response interface{}, charset ...
 }
 
 // ResponseAsText 向客户端响应一个Text结果
-//  - response: 需要返回的文本内容
+//   - response: 需要返回的文本内容
 func (baseHandler *BaseHandler) ResponseAsText(result string) {
 	if _, err := fmt.Fprintf(baseHandler.ResponseWriter, "%s", result); err != nil {
 		logger.Warning.Println(err.Error())
@@ -120,8 +122,8 @@ func (baseHandler *BaseHandler) ResponseAsText(result string) {
 }
 
 // ResponseAsHtml 向客户端响应一个html结果，默认字符集为utf-8
-//  - result: 相应的结果
-//  - charset: 字符集，默认utf-8
+//   - result: 相应的结果
+//   - charset: 字符集，默认utf-8
 func (baseHandler *BaseHandler) ResponseAsHtml(result string, charset ...string) {
 	cs := "text/html; charset=utf-8"
 	if len(charset) > 0 {
@@ -141,12 +143,64 @@ func (baseHandler *BaseHandler) Response(result ...interface{}) {
 }
 
 // ResponseFmt 向客户端响应一个字符串，支持format格式化字符串
-//  - format: 格式化母串
-//  - values: 返回的值
+//   - format: 格式化母串
+//   - values: 返回的值
 func (baseHandler *BaseHandler) ResponseFmt(format string, values ...interface{}) {
 	if _, err := fmt.Fprintf(baseHandler.ResponseWriter, format, values...); err != nil {
 		logger.Warning.Println(err.Error())
 	}
+}
+
+// ResponseWithFilter 通过filter返回请求结果，目前只会解析url上传的参数，当前只支持Get请求。
+//   - filter: 过滤器对象，不要传指针和引用
+//   - conn: 数据库的链接
+func (baseHandler *BaseHandler) ResponseWithFilter(filter interface{}, conn *gorm.DB, model interface{}) {
+	conn = conn.Model(model)
+	filterType := reflect.TypeOf(filter)
+	var offset, limit, params string
+	url := strings.Split(baseHandler.Request.URL.String(), "?")
+	if len(url) > 1 {
+		params = "&" + url[1]
+	}
+	for i := 0; i < filterType.NumField(); i++ {
+		field := filterType.Field(i)
+		urlParam := GetTagValue(field, "url")
+		columnName := GetTagValue(field, "column")
+		// 判断 url 上是否有这个形参，没有形参则忽略
+		if !strings.Contains(params, fmt.Sprintf("&%s=", urlParam)) {
+			continue
+		}
+		// 有形参则取值
+		value := baseHandler.Request.FormValue(urlParam)
+		// TODO 这里分页后续优化一下
+		if columnName == "offset" {
+			offset = value
+			continue
+		}
+		if columnName == "limit" {
+			limit = value
+			continue
+		}
+		conn = convertCondition(urlParam, columnName, value, conn)
+	}
+	var total, cnt int64
+	conn.Count(&total)
+	if offset != "" {
+		conn = convertCondition("offset", "offset", offset, conn)
+	}
+	if limit != "" {
+		conn = convertCondition("limit", "limit", limit, conn)
+	}
+	conn.Count(&cnt)
+	t := reflect.TypeOf(model)
+	d := reflect.New(reflect.MakeSlice(reflect.SliceOf(t), 0, 0).Type()).Interface()
+	conn.Find(d)
+	result := reflect.ValueOf(filter).MethodByName("Process").Call([]reflect.Value{reflect.ValueOf(d)})
+	baseHandler.ResponseAsJson(map[string]interface{}{
+		"total": total,
+		"count": cnt,
+		"data":  result[0].Interface(),
+	})
 }
 
 // ServerError 将服务器端发生的错误返回给客户端
@@ -200,35 +254,35 @@ func (baseHandler *BaseHandler) redirect(url string, status int, expire ...time.
 }
 
 // MovePermanently 向客户端永久性移动一个地址
-//  - url: 指定客户端要移动的目标地址
+//   - url: 指定客户端要移动的目标地址
 func (baseHandler *BaseHandler) MovePermanently(url string) {
 	baseHandler.redirectPermanently(url, http.StatusMovedPermanently)
 }
 
 // Move 向客户端暂时移动一个地址
-//  - url: 指定客户端要移动的目标地址
-//  - expire: 过期时间
+//   - url: 指定客户端要移动的目标地址
+//   - expire: 过期时间
 func (baseHandler *BaseHandler) Move(url string, expire ...time.Time) {
 	baseHandler.redirect(url, http.StatusFound, expire...)
 }
 
 // RedirectPermanently 向客户端永久重定向一个地址
-//  - url: 重定向的地址
+//   - url: 重定向的地址
 func (baseHandler *BaseHandler) RedirectPermanently(url string) {
 	baseHandler.redirectPermanently(url, http.StatusPermanentRedirect)
 }
 
 // Redirect 向客户端暂时重定向一个地址
-//  - url: 重定向的地址
-//  - expire: 过期时间
+//   - url: 重定向的地址
+//   - expire: 过期时间
 func (baseHandler *BaseHandler) Redirect(url string, expire ...time.Time) {
 	baseHandler.redirect(url, http.StatusTemporaryRedirect, expire...)
 }
 
 // RedirectTo 自定义重定向
-//  - url: 重定向的url
-//  - status: http状态码
-//  - expire: 过期时间
+//   - url: 重定向的url
+//   - status: http状态码
+//   - expire: 过期时间
 func (baseHandler *BaseHandler) RedirectTo(url string, status int, expire ...time.Time) {
 	baseHandler.redirect(url, status, expire...)
 }
@@ -237,15 +291,15 @@ func (baseHandler *BaseHandler) RedirectTo(url string, status int, expire ...tim
 
 // SetCookie 设置cookie
 // SetCookie未设置cookie的domain及path，此cookie仅对当前路径有效，设置其他路径cookie可参考SetAdvancedCookie
-//  - name: cookie的name
-//  - value: cookie的值
+//   - name: cookie的name
+//   - value: cookie的值
 func (baseHandler *BaseHandler) SetCookie(name string, value string) {
 	cookie := http.Cookie{Name: name, Value: value}
 	http.SetCookie(baseHandler.ResponseWriter, &cookie)
 }
 
 // SetCookieObject 设置高级cookie选项
-//  - cookie: 要设置的cookie对象
+//   - cookie: 要设置的cookie对象
 func (baseHandler *BaseHandler) SetCookieObject(cookie Cookie) {
 	responseCookie := cookie.ToHttpCookie()
 	http.SetCookie(baseHandler.ResponseWriter, &responseCookie)
@@ -270,17 +324,17 @@ func (baseHandler *BaseHandler) SetSecureCookie(name string, value string, key .
 }
 
 // SetAdvancedCookie 设置cookie
-//  - name cookie的名称
-//  - value cookie的value
-//  - attrs cookie的其他属性值，示例如下：
-//    - "path={{string}}" 设置cookie的有效作用地址
-//    - "domain={{string}}" 设置cookie的作用域
-//    - "raw={{string}}" 设置cookie的raw值
-//    - "maxAge={{int}}" 设置cookie的MaxAge，表示未指定“Max-Age”属性，表示现在删除cookie，相当于'Max-Age：0'，表示Max-Age属性存在并以秒为单位给出
-//    - "expires={{int}}" 设置cookie的过期时间，按秒计算
-//    - "secure={{bool}}" 设置cookie是否只限于加密传输
-//    - "httpOnly={{bool}}" 设置cookie是否只限于http/https传输
-//    - "isSecurity={{bool}}" 设置cookie是否要进行加密
+//   - name cookie的名称
+//   - value cookie的value
+//   - attrs cookie的其他属性值，示例如下：
+//   - "path={{string}}" 设置cookie的有效作用地址
+//   - "domain={{string}}" 设置cookie的作用域
+//   - "raw={{string}}" 设置cookie的raw值
+//   - "maxAge={{int}}" 设置cookie的MaxAge，表示未指定“Max-Age”属性，表示现在删除cookie，相当于'Max-Age：0'，表示Max-Age属性存在并以秒为单位给出
+//   - "expires={{int}}" 设置cookie的过期时间，按秒计算
+//   - "secure={{bool}}" 设置cookie是否只限于加密传输
+//   - "httpOnly={{bool}}" 设置cookie是否只限于http/https传输
+//   - "isSecurity={{bool}}" 设置cookie是否要进行加密
 func (baseHandler *BaseHandler) SetAdvancedCookie(name string, value string, attrs ...string) {
 	key := globalConfig.Cookie
 	var Path, Domain, Raw string
@@ -337,7 +391,7 @@ func (baseHandler *BaseHandler) SetAdvancedCookie(name string, value string, att
 }
 
 // GetCookie 获取cookie值，如果获取失败则返回空字符串
-//  - name: cookie的name
+//   - name: cookie的name
 func (baseHandler *BaseHandler) GetCookie(name string) (value string) {
 	cookie, err := baseHandler.Request.Cookie(name)
 	if err != nil {
@@ -348,8 +402,8 @@ func (baseHandler *BaseHandler) GetCookie(name string) (value string) {
 }
 
 // GetSecureCookie 获取加密cookie值，如果获取失败则返回空
-//  - name: cookie的name
-//  - key: cookie加密用的key
+//   - name: cookie的name
+//   - key: cookie加密用的key
 func (baseHandler *BaseHandler) GetSecureCookie(name string, key ...string) (value string) {
 	securityKey := ""
 	if len(key) > 0 {
@@ -398,7 +452,7 @@ func (baseHandler *BaseHandler) GetCookieObject(name ...string) (Cookie, error) 
 }
 
 // ClearCookie 清除本次请求当前path下的指定的cookie
-//  - name: 需要清楚的cookie的name
+//   - name: 需要清楚的cookie的name
 func (baseHandler *BaseHandler) ClearCookie(name string) {
 	cookie := Cookie{
 		Name:    name,
@@ -420,8 +474,8 @@ func (baseHandler *BaseHandler) ClearAllCookie() {
 /////////////////////////////////////////////////////session////////////////////////////////////////////////////////////
 
 // SetSession 根据key设置session值
-//  - key: session对应的键
-//  - value: session的值
+//   - key: session对应的键
+//   - value: session的值
 func (baseHandler *BaseHandler) SetSession(key string, value interface{}) (err error) {
 	sessionId := baseHandler.GetCookie(SessionCookieName)
 	var session Session
@@ -600,22 +654,20 @@ func (baseHandler *BaseHandler) Options() {
 //////////////////////////////////////////////////Context Method////////////////////////////////////////////////////////
 
 // SetCtxVal 在上下文中设置值
-//  - demo请查看源代码中的注释
+//   - demo请查看源代码中的注释
 func (baseHandler *BaseHandler) SetCtxVal(key string, val interface{}) {
 	/*
 		在中间件中，如果初始化了一个handler，需要将handler内的Request和ResponseWriter作为参数传入到next.ServeHTTP中
 
-		func IsLogin(next http.HandlerFunc) http.HandlerFunc {
-			return func(w http.ResponseWriter, r *http.Request) {
-				handler := TigoWeb.BaseHandler{Request: r, ResponseWriter: w}
-				handler.SetCtxVal("key", "value")
-				next.ServeHTTP(handler.ResponseWriter, handler.Request)
-			}
+		func Authorize(w *http.ResponseWriter, r *http.Request) bool {
+			handler := TigoWeb.BaseHandler{Request: r, ResponseWriter: w}
+			handler.SetCtxVal("key", "value")
+			return true
 		}
 	*/
 	ctx := baseHandler.Request.Context()
 	ctx = context.WithValue(ctx, key, val)
-	baseHandler.Request = baseHandler.Request.WithContext(ctx)
+	*baseHandler.Request = *baseHandler.Request.WithContext(ctx)
 }
 
 // GetCtxVal 从上下文获取值
@@ -625,25 +677,25 @@ func (baseHandler *BaseHandler) GetCtxVal(key string) interface{} {
 
 //////////////////////////////////////////////////http message dump/////////////////////////////////////////////////////
 
-// 获取http请求报文 TODO 校验此处是否正常
+// 获取http请求报文
 func (baseHandler *BaseHandler) getHttpRequestMsg() string {
-	req, err := httputil.DumpRequestOut(baseHandler.Request, true)
+	req, err := httputil.DumpRequest(baseHandler.Request, true)
 	if err != nil {
 		return err.Error()
 	}
 	if strings.Contains(baseHandler.GetHeader("Content-Type"), "application/x-www-form-urlencoded") {
-		bodyData := getFormDataStr(baseHandler.Request.Form)
+		bodyData := getFormDataStr(baseHandler.Request.PostForm)
 		return fmt.Sprintf("%s%s", string(req), bodyData)
 	}
 	return string(req)
 }
 
 // DumpHttpRequestMsg 获取http请求报文，根据logLevel值进行不同的输出
-//  - 1: 将http报文输出到trace级别日志中
-//  - 2: 将http报文输出到info级别日志中
-//  - 3: 将http报文输出到warning级别日志中
-//  - 4: 将http报文输出到error级别日志中
-//  - others: 将http报文输出到控制台
+//   - 1: 将http报文输出到trace级别日志中
+//   - 2: 将http报文输出到info级别日志中
+//   - 3: 将http报文输出到warning级别日志中
+//   - 4: 将http报文输出到error级别日志中
+//   - others: 将http报文输出到控制台
 func (baseHandler *BaseHandler) DumpHttpRequestMsg(logLevel int) {
 	reqMsg := baseHandler.getHttpRequestMsg()
 	switch logLevel {

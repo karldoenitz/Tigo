@@ -54,11 +54,11 @@ var formatter = map[int]string{
 //
 // discard: 丢弃，stdout: 终端输出，文件路径表示log具体输出的位置
 type LogLevel struct {
-	Trace    string `json:"trace"`
-	Info     string `json:"info"`
-	Warning  string `json:"warning"`
-	Error    string `json:"error"`
-	TimeRoll string `json:"time_roll"`
+	Trace    string `json:"trace" yaml:"trace"`
+	Info     string `json:"info" yaml:"info"`
+	Warning  string `json:"warning" yaml:"warning"`
+	Error    string `json:"error" yaml:"error"`
+	TimeRoll string `json:"time_roll" yaml:"timeRoll"`
 }
 
 // TiLog 是Tigo自定义的log结构体

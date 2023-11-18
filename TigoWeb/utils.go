@@ -9,9 +9,11 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"gorm.io/gorm"
 	"io"
 	"net/url"
 	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -152,4 +154,55 @@ func VoidFuncCall(instance reflect.Value, funcName string, funcParams ...reflect
 	if function.IsValid() {
 		function.Call(funcParams)
 	}
+}
+
+// GetTagValue 根据结构体字段获取tag标签的值
+//   - field: 通过反射获取的字段名称
+//   - tagKey: tag标签的key
+func GetTagValue(field reflect.StructField, tagKey string) (tagValue string) {
+	tagValue, isExisted := field.Tag.Lookup(tagKey)
+	if !isExisted || tagValue == "" {
+		tagValue = field.Name
+	}
+	return
+}
+
+// convertCondition 根据字段名，字段值，构建gorm的db查询
+//   - urlParam: url上挂载的参数名称
+//   - column: 字段名称
+//   - value: 字段值
+//   - db: 数据库连接
+func convertCondition(urlParam, column, value string, db *gorm.DB) *gorm.DB {
+	var condition string
+	switch {
+	case strings.HasSuffix(urlParam, "_gt"):
+		condition = fmt.Sprintf("%s > ?", column)
+		break
+	case strings.HasSuffix(urlParam, "_gte"):
+		condition = fmt.Sprintf("%s >= ?", column)
+		break
+	case strings.HasSuffix(urlParam, "_lt"):
+		condition = fmt.Sprintf("%s < ?", column)
+		break
+	case strings.HasSuffix(urlParam, "_lte"):
+		condition = fmt.Sprintf("%s <= ?", column)
+		break
+	case strings.HasSuffix(urlParam, "_!"):
+		condition = fmt.Sprintf("%s != ?", column)
+		break
+	case strings.HasSuffix(urlParam, "_in"):
+		condition = fmt.Sprintf("%s in ?", column)
+		values := strings.Split(value, ",")
+		return db.Where(condition, values)
+	case urlParam == "offset":
+		offset, _ := strconv.Atoi(value)
+		return db.Offset(offset)
+	case urlParam == "limit":
+		limit, _ := strconv.Atoi(value)
+		return db.Limit(limit)
+	default:
+		condition = fmt.Sprintf("%s = ?", column)
+	}
+	db = db.Where(condition, value)
+	return db
 }
