@@ -677,14 +677,14 @@ func (baseHandler *BaseHandler) GetCtxVal(key string) interface{} {
 
 //////////////////////////////////////////////////http message dump/////////////////////////////////////////////////////
 
-// 获取http请求报文 TODO 校验此处是否正常
+// 获取http请求报文
 func (baseHandler *BaseHandler) getHttpRequestMsg() string {
 	req, err := httputil.DumpRequest(baseHandler.Request, true)
 	if err != nil {
 		return err.Error()
 	}
 	if strings.Contains(baseHandler.GetHeader("Content-Type"), "application/x-www-form-urlencoded") {
-		bodyData := getFormDataStr(baseHandler.Request.Form)
+		bodyData := getFormDataStr(baseHandler.Request.PostForm)
 		return fmt.Sprintf("%s%s", string(req), bodyData)
 	}
 	return string(req)
