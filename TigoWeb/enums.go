@@ -1,6 +1,6 @@
 package TigoWeb
 
-const Version = "1.6.5"
+const Version = "2.0.0"
 
 const (
 	httpLowerGet     = "get"
