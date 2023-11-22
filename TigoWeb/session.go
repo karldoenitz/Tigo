@@ -1,5 +1,7 @@
 package TigoWeb
 
+// SessionInterface Tigo的session接口，第三方需要自定session底层的实现，每个SessionInterface必须包含NewSessionManager()函数。
+// 不想自己实现的可以看看这个插件，直接引入就能用。https://github.com/karldoenitz/tission
 type SessionInterface interface {
 	// NewSessionManager 新建一个SessionManager
 	NewSessionManager() SessionManager
