@@ -7,6 +7,7 @@ type SessionInterface interface {
 	NewSessionManager() SessionManager
 }
 
+// SessionManager session管理器，对session进行生成、获取、删除操作。
 type SessionManager interface {
 	// GenerateSession 生成session
 	GenerateSession(expire int) Session
