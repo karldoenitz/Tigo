@@ -17,6 +17,7 @@ type SessionManager interface {
 	DeleteSession(sid string)
 }
 
+// Session session接口，通过该类型的实例进行session的增删改查。
 type Session interface {
 	// Set 设置session值，设置失败返回error
 	Set(key string, value interface{}) error
