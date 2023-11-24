@@ -1,7 +1,6 @@
 package binding
 
 import (
-	"errors"
 	"fmt"
 	"github.com/karldoenitz/Tigo/logger"
 	"reflect"
@@ -88,7 +87,7 @@ func checkSliceField(field reflect.StructField, vField reflect.Value) error {
 			break
 		}
 		if err := checkObjBinding(t, v); err != nil {
-			return errors.New(fmt.Sprintf("Field %s=>index %d has an error: %s", field.Name, i, err.Error()))
+			return fmt.Errorf("field %s=>index %d has an error: %s", field.Name, i, err.Error())
 		}
 	}
 	return nil
