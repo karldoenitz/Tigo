@@ -29,5 +29,5 @@ type Session interface {
 	SessionId() string
 }
 
-var GlobalSessionManager SessionManager
-var SessionCookieName = "TigoSessionId"
+var GlobalSessionManager SessionManager // 全局session管理器
+var SessionCookieName = "TigoSessionId" // session的cookie名称
