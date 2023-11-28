@@ -34,17 +34,18 @@ export GO111MODULE=on;
 
 # Demo
 ## Hello Tigo
+
 ```go
 package main
 
 import (
-    "github.com/karldoenitz/Tigo/TigoWeb"
+    "github.com/karldoenitz/Tigo/web"
     "net/http"
 )
 
 // DemoHandler handler
 type DemoHandler struct {
-    TigoWeb.BaseHandler
+    web.BaseHandler
 }
 
 func (demoHandler *DemoHandler) Get() {
@@ -52,17 +53,17 @@ func (demoHandler *DemoHandler) Get() {
 }
 
 // Authorize Middleware
-func Authorize(w *http.ResponseWriter, r *http.Request) bool  {
+func Authorize(w *http.ResponseWriter, r *http.Request) bool {
     return true
 }
 
 // Pattern
-var urls = []TigoWeb.Pattern{
-    {"/demo", DemoHandler{}, []TigoWeb.Middleware{Authorize}},
+var urls = []web.Pattern{
+    {"/demo", DemoHandler{}, []web.Middleware{Authorize}},
 }
 
 func main() {
-    application := TigoWeb.Application{
+    application := web.Application{
         IPAddress:   "127.0.0.1",
         Port:        8888,
         UrlPatterns: urls,
