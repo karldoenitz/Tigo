@@ -1,7 +1,7 @@
 # Documentation([中文文档点击此处](https://github.com/karldoenitz/Tigo/blob/master/documentation/documentation.md))
 Tigo is a web framework developed in go language, based on net/http. In order to build web server quickly.  
 API index:
-- [TigoWeb](#tigotigoweb)
+- [web](#tigotigoweb)
   - [type BaseHandler](#type-basehandler)
     - [func InitHandler](#func-basehandlerinithandler)
     - [func GetJsonValue](#func-basehandlergetjsonvalue)
@@ -94,8 +94,8 @@ API index:
     - [func ValidateInstance](#func-validateinstance)
     - [func FormBytesToStructure](#func-formbytestostructure)
     - [func ParseFormToInstance](#func-parseformtoinstance)
-# Tigo.TigoWeb<a name="TigoWeb"></a>
-TigoWeb is the core part of Tigo framework, it contains Handler,URLpattern and Application.
+# Tigo.web<a name="web"></a>
+`web` is the core part of Tigo framework, it contains Handler,URLpattern and Application.
 ## type BaseHandler<a name="BaseHandler"></a>
 ```go
 type BaseHandler struct {
@@ -195,7 +195,7 @@ parameters:
 **Example:**
 ```go
 type DemoHandler struct {
-	TigoWeb.BaseHandler
+	web.BaseHandler
 }
 
 func (d *DemoHandler) Get() {
@@ -311,7 +311,7 @@ tag:
 example:
 ```go
 type TestParamCheckHandler struct {
-    TigoWeb.BaseHandler
+    web.BaseHandler
 }
 
 func (t *TestParamCheckHandler)Post() {
@@ -404,12 +404,12 @@ func WithTracing(w *http.ResponseWriter, r *http.Request) bool  {
 	return true
 }
 
-var routers = []TigoWeb.Pattern{
-	{Url: "/test", Handler: TestHandler{}, Middleware: []TigoWeb.Middleware{WithTracing}},
+var routers = []web.Pattern{
+	{Url: "/test", Handler: TestHandler{}, Middleware: []web.Middleware{WithTracing}},
 }
 
 func main() {
-	application := TigoWeb.Application{IPAddress: "0.0.0.0", Port: 8080, UrlPatterns: routers}
+	application := web.Application{IPAddress: "0.0.0.0", Port: 8080, UrlPatterns: routers}
 	application.Run()
 }
 ```
@@ -569,32 +569,33 @@ Use this method to initialize global configuration.
 Use this package to print log.  
 ## Demo<a name="logDemo"></a>
 The demo about using ```logger``` package in the web application developed by Tigo.
+
 ```go
 package main
 
 import (
-  "net/http"
-  "github.com/karldoenitz/Tigo/TigoWeb"
-  "github.com/karldoenitz/Tigo/logger"
+    "net/http"
+    "github.com/karldoenitz/Tigo/web"
+    "github.com/karldoenitz/Tigo/logger"
 )
 
 type HelloHandler struct {
-    TigoWeb.BaseHandler
+    web.BaseHandler
 }
 
-func (helloHandler *HelloHandler)Get() {
+func (helloHandler *HelloHandler) Get() {
     logger.Info.Printf("info data: %s", "test") // 此处打印log
     helloHandler.ResponseAsHtml("<p1 style='color: red'>Hello Tigo!</p1>")
 }
 
-var urls = []TigoWeb.Pattern{
+var urls = []web.Pattern{
     {"/hello-tigo", HelloHandler{}, nil},
 }
 
 func main() {
-    application := TigoWeb.Application{
+    application := web.Application{
         UrlPatterns: urls,
-        ConfigPath:  "./configuration.json",  // 此处配置文件，如果不适用配置文件，可以在代码中初始化LogLevel对象，使用该对象进行logger模块初始化。
+        ConfigPath:  "./configuration.json", // 此处配置文件，如果不适用配置文件，可以在代码中初始化LogLevel对象，使用该对象进行logger模块初始化。
     }
     application.Run()
 }
