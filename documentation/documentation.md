@@ -1,7 +1,7 @@
 # 文档([For English Documentation Click Here](https://github.com/karldoenitz/Tigo/blob/master/documentation/documentation_en.md))
 Tigo是一款用go开发的web应用框架，基于net/http库实现，目的是用来快速搭建restful服务。  
 API目录：
-- [TigoWeb](#tigotigoweb)
+- [web](#tigotigoweb)
   - [type BaseHandler](#type-basehandler)
     - [func InitHandler](#func-basehandlerinithandler)
     - [func GetJsonValue](#func-basehandlergetjsonvalue)
@@ -94,8 +94,8 @@ API目录：
     - [func ValidateInstance](#func-validateinstance)
     - [func FormBytesToStructure](#func-formbytestostructure)
     - [func ParseFormToInstance](#func-parseformtoinstance)
-# Tigo.TigoWeb<a name="TigoWeb"></a>
-TigoWeb是Tigo框架中的核心部分，Handler、URLpattern以及Application三大核心组件包含于此。
+# Tigo.web<a name="web"></a>
+web是Tigo框架中的核心部分，Handler、URLpattern以及Application三大核心组件包含于此。
 ## type BaseHandler<a name="BaseHandler"></a>
 ```go
 type BaseHandler struct {
@@ -196,7 +196,7 @@ func (baseHandler *BaseHandler) SetAdvancedCookie(name string, value string, att
 **示例如下：**
 ```go
 type DemoHandler struct {
-	TigoWeb.BaseHandler
+	web.BaseHandler
 }
 
 func (d *DemoHandler) Get() {
@@ -312,7 +312,7 @@ tag如下：
 示例：
 ```go
 type TestParamCheckHandler struct {
-    TigoWeb.BaseHandler
+    web.BaseHandler
 }
 
 func (t *TestParamCheckHandler)Post() {
@@ -405,12 +405,12 @@ func WithTracing(w *http.ResponseWriter, r *http.Request) bool {
 	return true
 }
 
-var routers = []TigoWeb.Pattern{
-	{Url: "/test", Handler: TestHandler{}, Middleware: []TigoWeb.Middleware{WithTracing}},
+var routers = []web.Pattern{
+	{Url: "/test", Handler: TestHandler{}, Middleware: []web.Middleware{WithTracing}},
 }
 
 func main() {
-	application := TigoWeb.Application{IPAddress: "0.0.0.0", Port: 8080, UrlPatterns: routers}
+	application := web.Application{IPAddress: "0.0.0.0", Port: 8080, UrlPatterns: routers}
 	application.Run()
 }
 ```
@@ -583,33 +583,34 @@ func InitGlobalConfigWithObj(config GlobalConfig)
 使用此模块打印log。
 ## Demo<a name="logDemo"></a>
 在Tigo框架中使用log模块，只要按照如下示例编写代码即可：
+
 ```go
 // 在Tigo框架中使用logger模块
 package main
 
 import (
     "net/http"
-    "github.com/karldoenitz/Tigo/TigoWeb"
+    "github.com/karldoenitz/Tigo/web"
     "github.com/karldoenitz/Tigo/logger"
 )
 
 type HelloHandler struct {
-    TigoWeb.BaseHandler
+    web.BaseHandler
 }
 
-func (helloHandler *HelloHandler)Get() {
+func (helloHandler *HelloHandler) Get() {
     logger.Info.Printf("info data: %s", "test") // 此处打印log
     helloHandler.ResponseAsHtml("<p1 style='color: red'>Hello Tigo!</p1>")
 }
 
-var urls = []TigoWeb.Pattern{
-  {"/hello-tigo", HelloHandler{}, nil},
+var urls = []web.Pattern{
+    {"/hello-tigo", HelloHandler{}, nil},
 }
 
 func main() {
-    application := TigoWeb.Application{
+    application := web.Application{
         UrlPatterns: urls,
-        ConfigPath:  "./configuration.json",  // 此处配置文件，如果不适用配置文件，可以在代码中初始化LogLevel对象，使用该对象进行logger模块初始化。
+        ConfigPath:  "./configuration.json", // 此处配置文件，如果不适用配置文件，可以在代码中初始化LogLevel对象，使用该对象进行logger模块初始化。
     }
     application.Run()
 }
