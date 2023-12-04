@@ -1,5 +1,5 @@
-// Package TigoWeb
-// TigoWeb 包是Tigo框架的基础包，内部封装了Handler、http context、middleware、application、session等相关模块的操作。
+// Package web
+// web 包是Tigo框架的基础包，内部封装了Handler、http context、middleware、application、session等相关模块的操作。
 //
 // 使用Tigo创建的服务，可以裸起，也可以通过endless、overseer等进行平滑启动。
 // 使用endless平滑启动的示例如下
@@ -7,7 +7,7 @@
 // Basic Example:
 //
 //	func main() {
-//	    application := TigoWeb.Application{UrlPatterns: urlRouter}
+//	    application := web.Application{UrlPatterns: urlRouter}
 //	    application.EndlessStart()
 //	}
 //
@@ -19,7 +19,7 @@
 // Basic Example:
 //
 //		func main() {
-//	     application := TigoWeb.Application{UrlPatterns: urlRouter}
+//	     application := web.Application{UrlPatterns: urlRouter}
 //	     application.OverseerStart(&fetcher.File{
 //	         Path:     "path/to/your/app-file",
 //	         Interval: 1 * time.Second,
@@ -43,4 +43,4 @@
 //		valueInCtx := p.Request.Context().Value("keyFat")
 //		p.ResponseAsText(valueInCtx)
 //	}
-package TigoWeb
+package web
