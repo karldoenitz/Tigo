@@ -1,5 +1,5 @@
-// Package TigoWeb 框架的基本功能包，此包包含了搭建服务的基础功能
-package TigoWeb
+// Package web 框架的基本功能包，此包包含了搭建服务的基础功能
+package web
 
 import (
 	"fmt"
