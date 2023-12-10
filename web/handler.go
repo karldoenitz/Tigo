@@ -1,5 +1,5 @@
-// Package TigoWeb Copyright 2018 The Tigo Authors. All rights reserved.
-package TigoWeb
+// Package web Copyright 2018 The Tigo Authors. All rights reserved.
+package web
 
 import (
 	"bytes"
@@ -660,7 +660,7 @@ func (baseHandler *BaseHandler) SetCtxVal(key string, val interface{}) {
 		在中间件中，如果初始化了一个handler，需要将handler内的Request和ResponseWriter作为参数传入到next.ServeHTTP中
 
 		func Authorize(w *http.ResponseWriter, r *http.Request) bool {
-			handler := TigoWeb.BaseHandler{Request: r, ResponseWriter: w}
+			handler := web.BaseHandler{Request: r, ResponseWriter: w}
 			handler.SetCtxVal("key", "value")
 			return true
 		}
