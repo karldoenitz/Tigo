@@ -1,3 +1,3 @@
-package TigoWeb
+package web
 
 var globalConfig = &GlobalConfig{}

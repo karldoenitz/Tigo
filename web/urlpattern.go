@@ -1,5 +1,5 @@
-// Package TigoWeb Copyright 2018 The Tigo Authors. All rights reserved.
-package TigoWeb
+// Package web Copyright 2018 The Tigo Authors. All rights reserved.
+package web
 
 import (
 	"github.com/gorilla/mux"

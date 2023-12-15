@@ -1,7 +1,7 @@
 package test_case
 
 import (
-	"github.com/karldoenitz/Tigo/TigoWeb"
+	"github.com/karldoenitz/Tigo/web"
 	"reflect"
 	"strings"
 	"testing"
@@ -10,12 +10,12 @@ import (
 func TestEncryptDecrypt(t *testing.T) {
 	originData := "test data"
 	key := "key"
-	encryptData, err := TigoWeb.Encrypt([]byte(originData), []byte(key))
+	encryptData, err := web.Encrypt([]byte(originData), []byte(key))
 	if err != nil {
 		t.Error(err.Error())
 		return
 	}
-	decryptData, err := TigoWeb.Decrypt([]byte(encryptData), []byte(key))
+	decryptData, err := web.Decrypt([]byte(encryptData), []byte(key))
 	if err != nil {
 		t.Error(err.Error())
 		return
@@ -33,11 +33,11 @@ func TestMethodEnum(t *testing.T) {
 	}
 	for _, method := range methods {
 		m := strings.ToUpper(string(method[0])) + method[1:]
-		if TigoWeb.MethodEnum(method) != m {
+		if web.MethodEnum(method) != m {
 			t.Error("MethodEnum test failed")
 			return
 		}
-		if TigoWeb.MethodEnum(strings.ToLower(method)) != m {
+		if web.MethodEnum(strings.ToLower(method)) != m {
 			t.Error("MethodEnum test failed")
 			return
 		}
@@ -47,8 +47,8 @@ func TestMethodEnum(t *testing.T) {
 
 func TestUrlEncode(t *testing.T) {
 	originData := "测试用例1"
-	encodedData := TigoWeb.UrlEncode(originData)
-	decodedData := TigoWeb.UrlDecode(encodedData)
+	encodedData := web.UrlEncode(originData)
+	decodedData := web.UrlDecode(encodedData)
 	if originData != decodedData {
 		t.Error("url encode decode failed")
 		return
@@ -75,12 +75,12 @@ func TestVoidFuncCall(t *testing.T) {
 	param := 9
 	ts := TestcaseStruct{}
 	nts := reflect.New(reflect.TypeOf(ts))
-	TigoWeb.VoidFuncCall(nts, "Test1", reflect.ValueOf(param))
+	web.VoidFuncCall(nts, "Test1", reflect.ValueOf(param))
 	if param != testIns {
 		t.Error("testcase1 VoidFuncCall failed")
 		return
 	}
-	TigoWeb.VoidFuncCall(nts, "Test2", reflect.ValueOf(param))
+	web.VoidFuncCall(nts, "Test2", reflect.ValueOf(param))
 	if param != int(nts.Elem().FieldByName("Element").Int()) {
 		t.Error("testcase2 VoidFuncCall failed")
 		return
@@ -91,7 +91,7 @@ func TestVoidFuncCall(t *testing.T) {
 func TestMD5(t *testing.T) {
 	origin := "testcase1"
 	md5 := "781ba6b3b703def7ede7e0ccc9b64899"
-	result := TigoWeb.MD5(origin)
+	result := web.MD5(origin)
 	if md5 != result {
 		t.Error("md5 encrypt failed")
 		return
@@ -102,7 +102,7 @@ func TestMD5(t *testing.T) {
 func TestMD5m16(t *testing.T) {
 	origin := "testcase1"
 	md5 := "781ba6b3b703def7"
-	result := TigoWeb.MD5m16(origin)
+	result := web.MD5m16(origin)
 	if md5 != result {
 		t.Error("md5 encrypt failed")
 		return

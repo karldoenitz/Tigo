@@ -3,7 +3,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/karldoenitz/Tigo/TigoWeb"
+	"github.com/karldoenitz/Tigo/web"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -15,12 +15,12 @@ const (
 	DemoCode = `package main
 
 import (
-	"github.com/karldoenitz/Tigo/TigoWeb"
+	"github.com/karldoenitz/Tigo/web"
 )
 
 // HelloHandler it's a demo handler
 type HelloHandler struct {
-    TigoWeb.BaseHandler
+    web.BaseHandler
 }
 
 // Get http get method
@@ -30,12 +30,12 @@ func (h *HelloHandler) Get() {
 }
 
 // urls url mapping
-var urls = []TigoWeb.Pattern{
+var urls = []web.Pattern{
 	{"/hello-world", HelloHandler{}, nil},
 }
 
 func main() {
-	application := TigoWeb.Application{
+	application := web.Application{
 		IPAddress:   "0.0.0.0",
 		Port:        8888,
 		UrlPatterns: urls,
@@ -46,17 +46,17 @@ func main() {
 	mainCode = `package main
 
 import (
-	"github.com/karldoenitz/Tigo/TigoWeb"
+	"github.com/karldoenitz/Tigo/web"
 	"%s/handler"
 )
 
 // Write you url mapping here
-var urls = []TigoWeb.Pattern{
+var urls = []web.Pattern{
 	{"/ping", handler.PingHandler{}, nil},
 }
 
 func main() {
-	application := TigoWeb.Application{
+	application := web.Application{
 		IPAddress:   "0.0.0.0",
 		Port:        8080,
 		UrlPatterns: urls,
@@ -70,11 +70,11 @@ func main() {
 package handler
 
 import (
-	"github.com/karldoenitz/Tigo/TigoWeb"
+	"github.com/karldoenitz/Tigo/web"
 )
 
 type %s struct {
-	TigoWeb.BaseHandler
+	web.BaseHandler
 }
 
 func (p *%s) Get() {
@@ -302,7 +302,7 @@ func execAddHandler(handlerName string) {
 	var newCodes []string
 	url := strings.Replace(fileName, "handler", "", -1)
 	for _, code := range codes {
-		if code == "var urls = []TigoWeb.Pattern{" {
+		if code == "var urls = []web.Pattern{" {
 			isFoundUrls = true
 		}
 		if code == "}" && isFoundUrls {
@@ -336,9 +336,9 @@ func execConf(arg string) {
 	}
 	currentTime := time.Now().String() + arg
 	if strings.HasSuffix(arg, ".json") {
-		_, _ = f.WriteString(fmt.Sprintf(configCodeJson, TigoWeb.MD5m16(currentTime), workDir, workDir, workDir))
+		_, _ = f.WriteString(fmt.Sprintf(configCodeJson, web.MD5m16(currentTime), workDir, workDir, workDir))
 	} else {
-		_, _ = f.WriteString(fmt.Sprintf(configCodeYaml, TigoWeb.MD5m16(currentTime), workDir, workDir, workDir))
+		_, _ = f.WriteString(fmt.Sprintf(configCodeYaml, web.MD5m16(currentTime), workDir, workDir, workDir))
 	}
 	_ = f.Close()
 	content, err := ioutil.ReadFile(fmt.Sprintf("%s/main.go", workDir))
@@ -389,7 +389,7 @@ func main() {
 		return
 	}
 	if args[0] == "version" {
-		fmt.Println(TigoWeb.Version)
+		fmt.Println(web.Version)
 		return
 	}
 	if args[0] == "help" {

@@ -1,4 +1,4 @@
-package TigoWeb
+package web
 
 const Version = "2.0.0"
 

@@ -1,4 +1,4 @@
-package TigoWeb
+package web
 
 import (
 	"errors"
