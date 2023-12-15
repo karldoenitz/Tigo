@@ -1,4 +1,4 @@
-package TigoWeb
+package web
 
 import (
 	"crypto/aes"
