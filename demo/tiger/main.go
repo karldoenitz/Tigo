@@ -124,7 +124,7 @@ The commands are:
     mod             to run go mod
     version         to show Tigo version
 
-Use "go help <command>" for more information about a command.
+Use "tiger help <command>" for more information about a command.
 
 `
 	cmdCreateVerbose = `
