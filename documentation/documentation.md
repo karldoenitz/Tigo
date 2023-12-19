@@ -28,6 +28,7 @@ API目录：
     - [func ResponseAsHtml](#func-basehandlerresponseashtml)
     - [func ResponseAsText](#func-basehandlerresponseastext)
     - [func ResponseAsJson](#func-basehandlerresponseasjson)
+    - [func ResponseWithFilter](#func-basehandlerresponsewithfilter)
     - [func ResponseFmt](#func-basehandler-responsefmt)
     - [func ServerError](#func-basehandler-servererror)
     - [func ToJson](#func-basehandlertojson)
@@ -274,6 +275,64 @@ func (baseHandler *BaseHandler)ResponseAsText(result string)
 func (baseHandler *BaseHandler)ResponseAsJson(response interface{}, charset ...string)
 ```
 ```ResponseAsJson```方法是将传入的对象转换成json字符串，然后响应给客户端，如果转换失败则会向客户端响应空字符串，默认字符集为utf-8。
+### func (*BaseHandler)ResponseWithFilter<a name="ResponseWithFilter"></a>
+```go
+func (baseHandler *BaseHandler)ResponseWithFilter(filter interface{}, conn *gorm.DB, model interface{})
+```
+```ResponseWithFilter```方法给用户提供了自定义使用filter返回数据的方式，用户可以自定义filter，filter可以根据用户的query，自动返回筛选结果。  
+代码示例如下：
+```golang
+package handler
+
+import (
+	"HelloTigo/config"
+	"HelloTigo/models"
+	"github.com/karldoenitz/Tigo/web"
+)
+
+type FilterHandler struct {
+	web.BaseHandler
+}
+
+// Filter 就是开发者自己定义的过滤器
+type Filter struct {  // tag解析: url的值表示http请求时，url上的参数名；column表示数据库字段名
+	LastName   string `url:"family_name" column:"last_name"`
+	Age        int    `url:"age" column:"age"`
+	AgeGte     int    `url:"age_gte" column:"age"`
+	AgeLte     int    `url:"age_lte" column:"age"`
+	AgeNot     int    `url:"age_!" column:"age"`
+	AgeIn      string `url:"age_in" column:"age"`
+	UpdateAtGt string `url:"update_gt" column:"update_at"`
+	UpdateAtLt string `url:"update_lt" column:"update_at"`
+	UpdateAt   string `url:"update" column:"update_at"`
+}
+
+// Process 就是开发者自己定义的过滤器处理函数，入参是过滤器筛选后的数据，如果需要对筛选后的数据进行特殊处理，可以实现此方法。
+func (f Filter) Process(dataS interface{}) interface{} {
+	infos := dataS.(*[]models.Staff)
+	for idx := range *infos {
+		if (*infos)[idx].Dept == 1 {
+			(*infos)[idx].Ext = "hb"
+		}
+	}
+	return infos
+}
+
+func (p *FilterHandler) Get() {
+	// write your code here
+	p.ResponseWithFilter(Filter{}, config.DB, models.Staff{})
+}
+```
+上面的这段代码，可以用下面的例子进行解释：
+``` http request
+GET /staff?family_name=狂徒张三&age_in=17,18,19&update_gt=2023-01-01
+Content-Type: application/json
+Cache-Control: no-cached
+```
+这段代码会在框架底层装换为如下sql:
+```sql
+SELECT * FROM staff WHERE last_name = '狂徒张三' AND age IN (17,18,19) AND update_at > '2023-01-01';
+```
 ### func (*BaseHandler) ResponseFmt
 ```go
 func (baseHandler *BaseHandler) ResponseFmt(format string, values... interface{})
