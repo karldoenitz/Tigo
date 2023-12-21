@@ -29,6 +29,7 @@ API index:
     - [func ResponseAsText](#func-basehandlerresponseastext)
     - [func ResponseAsJson](#func-basehandlerresponseasjson)
     - [func ResponseFmt](#func-basehandler-responsefmt)
+    - [func ResponseWithFilter](#func-basehandlerresponsewithfilter)
     - [func ServerError](#func-basehandler-servererror)
     - [func ToJson](#func-basehandlertojson)
     - [func DumpHttpRequestMsg](#func-basehandlerdumphttprequestmsg)
@@ -278,6 +279,64 @@ func (baseHandler *BaseHandler)ResponseAsJson(response interface{}, charset ...s
 func (baseHandler *BaseHandler) ResponseFmt(format string, values... interface{})
 ```
 ```ResponseFmt``` is the method to format the result and response to client.
+### func (*BaseHandler)ResponseWithFilter<a name="ResponseWithFilter"></a>
+```go
+func (baseHandler *BaseHandler)ResponseWithFilter(filter interface{}, conn *gorm.DB, model interface{})
+```
+```ResponseWithFilter```The method provides users with a way to customize the use of filter to return data. Users can customize the filter, and the filter can automatically return the filtered results based on the user’s query. 
+Demo：
+```golang
+package handler
+
+import (
+	"HelloTigo/config"
+	"HelloTigo/models"
+	"github.com/karldoenitz/Tigo/web"
+)
+
+type FilterHandler struct {
+	web.BaseHandler
+}
+
+// Filter developer defined data filter
+type Filter struct {  // tag: url: the param in request url; column: the database column name
+	LastName   string `url:"family_name" column:"last_name"`
+	Age        int    `url:"age" column:"age"`
+	AgeGte     int    `url:"age_gte" column:"age"`
+	AgeLte     int    `url:"age_lte" column:"age"`
+	AgeNot     int    `url:"age_!" column:"age"`
+	AgeIn      string `url:"age_in" column:"age"`
+	UpdateAtGt string `url:"update_gt" column:"update_at"`
+	UpdateAtLt string `url:"update_lt" column:"update_at"`
+	UpdateAt   string `url:"update" column:"update_at"`
+}
+
+// Process developer defined data filter processing
+func (f Filter) Process(dataS interface{}) interface{} {
+	infos := dataS.(*[]models.Staff)
+	for idx := range *infos {
+		if (*infos)[idx].Dept == 1 {
+			(*infos)[idx].Ext = "hb"
+		}
+	}
+	return infos
+}
+
+func (p *FilterHandler) Get() {
+	// write your code here
+	p.ResponseWithFilter(Filter{}, config.DB, models.Staff{})
+}
+```
+The above piece of code can be explained with the following example.
+``` http request
+GET /staff?family_name=狂徒张三&age_in=17,18,19&update_gt=2023-01-01
+Content-Type: application/json
+Cache-Control: no-cached
+```
+it's equals to this sql:
+```sql
+SELECT * FROM staff WHERE last_name = '狂徒张三' AND age IN (17,18,19) AND update_at > '2023-01-01';
+```
 ### func (*BaseHandler) ServerError
 ```go
 func (baseHandler *BaseHandler) ServerError(err error)
