@@ -32,6 +32,11 @@ go get -u github.com/karldoenitz/Tigo/...
 export GO111MODULE=on; 
 ```
 
+# Update to defined version
+```shell
+go get github.com/karldoenitz/Tigo@version
+```
+
 # Demo
 ## Hello Tigo
 
