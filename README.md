@@ -34,7 +34,7 @@ export GO111MODULE=on;
 
 # 升级到指定版本
 ```shell
-go get github.com/karldoenitz/Tigo@version
+go get github.com/karldoenitz/Tigo@{version}
 ```
 
 # 示例
