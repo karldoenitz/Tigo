@@ -34,7 +34,7 @@ export GO111MODULE=on;
 
 # Update to defined version
 ```shell
-go get github.com/karldoenitz/Tigo@version
+go get github.com/karldoenitz/Tigo@{version}
 ```
 
 # Demo
