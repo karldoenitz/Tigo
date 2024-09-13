@@ -333,6 +333,7 @@ Cache-Control: no-cached
 ```sql
 SELECT * FROM staff WHERE last_name = '狂徒张三' AND age IN (17,18,19) AND update_at > '2023-01-01';
 ```
+注：`staff`即是model中Staff对应的数据库表名。
 ### func (*BaseHandler) ResponseFmt
 ```go
 func (baseHandler *BaseHandler) ResponseFmt(format string, values... interface{})
