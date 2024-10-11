@@ -3,7 +3,7 @@
 [![Go](https://github.com/karldoenitz/Tigo/actions/workflows/go.yml/badge.svg)](https://github.com/karldoenitz/Tigo/actions/workflows/go.yml)
 [![Join the chat at https://gitter.im/karlooper/Tigo](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/karlooper/Tigo?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Open Source Helpers](https://www.codetriage.com/karldoenitz/tigo/badges/users.svg)](https://www.codetriage.com/karldoenitz/Tigo)
-[![Go Report Card](https://goreportcard.com/badge/github.com/karldoenitz/Tigo)](https://goreportcard.com/report/github.com/karldoenitz/Tigo)
+[![Go Report Card](https://goreportcard.com/badge/github.com/karldoenitz/tigo)](https://goreportcard.com/report/github.com/karldoenitz/tigo)
 [![GoDoc](https://godoc.org/github.com/karldoenitz/Tigo?status.svg)](https://pkg.go.dev/github.com/karldoenitz/Tigo)
 [![Release](https://img.shields.io/github/release/karldoenitz/Tigo.svg)](https://github.com/karldoenitz/Tigo/releases)  
 ![Tigo logo](https://raw.githubusercontent.com/karldoenitz/Tigo/master/documentation/tigo_logo.jpg "this is Tigo logo")
