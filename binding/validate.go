@@ -215,6 +215,8 @@ func checkBasicField(field reflect.StructField, vField reflect.Value) error {
 		}
 		vField.SetFloat(value)
 		break
+	default:
+		logger.Error.Print("unhandled default case")
 	}
 	return nil
 }
