@@ -360,7 +360,7 @@ func StatusColor(status int) (coloredStatus string) {
 	switch {
 	case status < http.StatusMultipleChoices:
 		coloredStatus = fmt.Sprintf("\x1B[6;30;32m[%d]\x1B[0m", status)
-	case http.StatusMultipleChoices <= status && status < http.StatusBadRequest:
+	case status < http.StatusBadRequest:
 		coloredStatus = fmt.Sprintf("\x1B[6;30;34m[%d]\x1B[0m", status)
 	case http.StatusBadRequest <= status && status < http.StatusInternalServerError:
 		coloredStatus = fmt.Sprintf("\x1B[6;30;33m[%d]\x1B[0m", status)
