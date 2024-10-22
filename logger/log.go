@@ -362,7 +362,7 @@ func StatusColor(status int) (coloredStatus string) {
 		coloredStatus = fmt.Sprintf("\x1B[6;30;32m[%d]\x1B[0m", status)
 	case status < http.StatusBadRequest:
 		coloredStatus = fmt.Sprintf("\x1B[6;30;34m[%d]\x1B[0m", status)
-	case http.StatusBadRequest <= status && status < http.StatusInternalServerError:
+	case status < http.StatusInternalServerError:
 		coloredStatus = fmt.Sprintf("\x1B[6;30;33m[%d]\x1B[0m", status)
 	default:
 		coloredStatus = fmt.Sprintf("\x1B[6;30;31m[%d]\x1B[0m", status)
