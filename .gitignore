@@ -12,6 +12,6 @@
 *.out
 .idea/
 *.log
-demo/*/main
+external_tools/*/main
 *plan.md
 ignores/
