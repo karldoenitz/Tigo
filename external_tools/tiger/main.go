@@ -237,6 +237,7 @@ func execCreate(arg string) {
 	fHandler, err := os.Create(fmt.Sprintf("%s/handler/pinghandler.go", projectPath))
 	if err != nil {
 		fmt.Println(err.Error())
+		return
 	}
 	_, _ = fHandler.WriteString(fmt.Sprintf(handlerCode, "PingHandler", "PingHandler", "PingHandler"))
 	_ = f.Close()
