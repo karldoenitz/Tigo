@@ -292,7 +292,7 @@ func execAddHandler(handlerName string) {
 		return
 	}
 	// 如果有则检测代码，并在urls中插入一个url映射
-	content, err := ioutil.ReadFile(fmt.Sprintf("%s/main.go", workDir))
+	content, err := os.ReadFile(fmt.Sprintf("%s/main.go", workDir))
 	if err != nil {
 		fmt.Printf("read file error:%v\n", err)
 		return
