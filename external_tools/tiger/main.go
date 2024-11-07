@@ -4,7 +4,6 @@ package main
 import (
 	"fmt"
 	"github.com/karldoenitz/Tigo/web"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
@@ -342,7 +341,7 @@ func execConf(arg string) {
 		_, _ = f.WriteString(fmt.Sprintf(configCodeYaml, web.MD5m16(currentTime), workDir, workDir, workDir))
 	}
 	_ = f.Close()
-	content, err := ioutil.ReadFile(fmt.Sprintf("%s/main.go", workDir))
+	content, err := os.ReadFile(fmt.Sprintf("%s/main.go", workDir))
 	if err != nil {
 		fmt.Printf("read file error:%v\n", err)
 		return
