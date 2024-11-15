@@ -372,7 +372,7 @@ func execConf(arg string) {
 
 func main() {
 	// 获取命令行参数，根据参数判断是否是创建demo，
-	// 如果创建demo，则直接把`DemoCode`注入到目标文件中就行
+	// 如果创建demo，则直接把常变量`DemoCode`注入到目标文件中就行
 	// tiger支持的命令:
 	//  - create xxx: 创建项目
 	//  - addHandler xxx: 增加xxx命名的handler
