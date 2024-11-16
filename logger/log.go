@@ -114,7 +114,7 @@ func initLogger() {
 		log.Fatalln("Failed to open error log file: ", err)
 	}
 	Trace = &TiLog{}
-	Trace.Logger = log.New(ioutil.Discard, "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
+	Trace.Logger = log.New(io.Discard, "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
 	Trace.Level = TraceLevel
 	// 将运行日志写入控制台
 	Info = &TiLog{}
