@@ -156,7 +156,7 @@ func InitLoggerWithConfigFile(filePath string) {
 	if filePath == "" {
 		return
 	}
-	raw, err := ioutil.ReadFile(filePath)
+	raw, err := os.ReadFile(filePath)
 	if err != nil {
 		println(err.Error())
 		os.Exit(1)
