@@ -210,7 +210,7 @@ func InitInfo(level string) {
 	Info.Level = InfoLevel
 	switch {
 	case level == "" || level == "discard":
-		Info.Logger = log.New(ioutil.Discard, "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
+		Info.Logger = log.New(io.Discard, "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	case level == "stdout":
 		Info.Logger = log.New(os.Stdout, "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
