@@ -194,7 +194,7 @@ func InitTrace(level string) {
 	Trace.Level = TraceLevel
 	switch {
 	case level == "" || level == "discard":
-		Trace.Logger = log.New(ioutil.Discard, "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
+		Trace.Logger = log.New(io.Discard, "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	case level == "stdout":
 		Trace.Logger = log.New(os.Stdout, "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
@@ -210,7 +210,7 @@ func InitInfo(level string) {
 	Info.Level = InfoLevel
 	switch {
 	case level == "" || level == "discard":
-		Info.Logger = log.New(ioutil.Discard, "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
+		Info.Logger = log.New(io.Discard, "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	case level == "stdout":
 		Info.Logger = log.New(os.Stdout, "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
