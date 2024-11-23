@@ -227,7 +227,7 @@ func InitWarning(level string) {
 	Warning.Level = WarningLevel
 	switch {
 	case level == "" || level == "discard":
-		Warning.Logger = log.New(ioutil.Discard, "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
+		Warning.Logger = log.New(io.Discard, "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	case level == "stdout":
 		Warning.Logger = log.New(os.Stdout, "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
