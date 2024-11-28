@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"gopkg.in/yaml.v2"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -244,7 +243,7 @@ func InitError(level string) {
 	Error.Level = ErrorLevel
 	switch {
 	case level == "" || level == "discard":
-		Error.Logger = log.New(ioutil.Discard, "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
+		Error.Logger = log.New(io.Discard, "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	case level == "stdout":
 		Error.Logger = log.New(os.Stdout, "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
