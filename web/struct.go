@@ -165,7 +165,7 @@ func (globalConfig *GlobalConfig) Init(configPath string) {
 
 // 根据yaml文件进行配置
 func (globalConfig *GlobalConfig) initWithYaml(configPath string) {
-	raw, err := ioutil.ReadFile(configPath)
+	raw, err := os.ReadFile(configPath)
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
