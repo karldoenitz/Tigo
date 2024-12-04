@@ -11,6 +11,7 @@ import (
 	"github.com/karldoenitz/Tigo/logger"
 	"gorm.io/gorm"
 	"html/template"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
@@ -42,7 +43,7 @@ func (baseHandler *BaseHandler) InitHandler(responseWriter http.ResponseWriter, 
 // GetBody 获取HTTP报文体
 func (baseHandler *BaseHandler) GetBody() []byte {
 	if _, ok := baseHandler.ctxValMap["body"]; !ok {
-		body, err := ioutil.ReadAll(baseHandler.Request.Body)
+		body, err := io.ReadAll(baseHandler.Request.Body)
 		if err != nil {
 			logger.Error.Println(err.Error())
 			return nil

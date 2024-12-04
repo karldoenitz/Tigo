@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/karldoenitz/Tigo/logger"
 	"gopkg.in/yaml.v2"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"reflect"
@@ -165,7 +164,7 @@ func (globalConfig *GlobalConfig) Init(configPath string) {
 
 // 根据yaml文件进行配置
 func (globalConfig *GlobalConfig) initWithYaml(configPath string) {
-	raw, err := ioutil.ReadFile(configPath)
+	raw, err := os.ReadFile(configPath)
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
@@ -180,7 +179,7 @@ func (globalConfig *GlobalConfig) initWithYaml(configPath string) {
 
 // 根据json文件进行配置
 func (globalConfig *GlobalConfig) initWithJson(configPath string) {
-	raw, err := ioutil.ReadFile(configPath)
+	raw, err := os.ReadFile(configPath)
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
