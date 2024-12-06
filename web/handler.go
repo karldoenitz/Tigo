@@ -437,7 +437,7 @@ func (baseHandler *BaseHandler) GetCookieObject(name ...string) (Cookie, error) 
 		cookieName = ""
 	case length == 1:
 		cookieName = name[0]
-	case length > 1:
+	default:
 		cookieName = name[0]
 		key = name[1]
 	}
