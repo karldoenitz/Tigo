@@ -12,7 +12,6 @@ import (
 	"gorm.io/gorm"
 	"html/template"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
 	"reflect"
@@ -49,7 +48,7 @@ func (baseHandler *BaseHandler) GetBody() []byte {
 			return nil
 		}
 		defer func() {
-			ioReader := ioutil.NopCloser(bytes.NewBuffer(body))
+			ioReader := io.NopCloser(bytes.NewBuffer(body))
 			baseHandler.Request.Body = ioReader
 		}()
 		baseHandler.ctxValMap["body"] = body
