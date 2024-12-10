@@ -74,6 +74,7 @@ func (client HttpClient) request(method, uri string, headers map[string]string, 
 			res.Content, err = io.ReadAll(response.Body)
 		}
 	}
+	logger.Info.Printf("Request %s %s StatusCode: %d\n", method, uri, response.StatusCode)
 	return
 }
 
