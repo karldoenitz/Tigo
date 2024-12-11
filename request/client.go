@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"github.com/karldoenitz/Tigo/logger"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -72,9 +71,10 @@ func (client HttpClient) request(method, uri string, headers map[string]string, 
 				res.Content = append(res.Content, buf...)
 			}
 		default:
-			res.Content, err = ioutil.ReadAll(response.Body)
+			res.Content, err = io.ReadAll(response.Body)
 		}
 	}
+	logger.Info.Printf("Request %s %s StatusCode: %d\n", method, uri, response.StatusCode)
 	return
 }
 
