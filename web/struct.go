@@ -217,9 +217,9 @@ func (jsonParam *ReqParams) ToString() string {
 			return "true"
 		}
 		return "false"
+	default:
+		return fmt.Sprintf("%v", jsonParam.Value)
 	}
-	logger.Warning.Println("format to string failed")
-	return ""
 }
 
 // ToBool 将json中的参数值转换为bool
