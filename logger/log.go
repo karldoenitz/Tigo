@@ -250,7 +250,7 @@ func InitError(level string) {
 		break
 	default:
 		logFile := logFileMapping[level]
-		Error.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
+		Error.Logger = log.New(io.MultiWriter(logFile, os.Stderr), " ERROR: ", log.Ldate|log.Ltime)
 		break
 	}
 }
