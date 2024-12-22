@@ -125,7 +125,7 @@ func initLogger() {
 	Warning.Level = WarningLevel
 	// 将错误日志写入log文件
 	Error = &TiLog{}
-	Error.Logger = log.New(io.MultiWriter(file, os.Stderr), "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
+	Error.Logger = log.New(file, " ERROR   ", log.Ldate|log.Ltime)
 	Error.Level = ErrorLevel
 }
 
@@ -201,7 +201,7 @@ func InitTrace(level string) {
 		break
 	default:
 		logFile := logFileMapping[level]
-		Trace.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
+		Trace.Logger = log.New(logFile, " TRACE  ", log.Ldate|log.Ltime)
 	}
 }
 
@@ -217,7 +217,7 @@ func InitInfo(level string) {
 		break
 	default:
 		logFile := logFileMapping[level]
-		Info.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
+		Info.Logger = log.New(logFile, " INFO    ", log.Ldate|log.Ltime)
 		break
 	}
 }
@@ -234,7 +234,7 @@ func InitWarning(level string) {
 		break
 	default:
 		logFile := logFileMapping[level]
-		Warning.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
+		Warning.Logger = log.New(logFile, " WARNING ", log.Ldate|log.Ltime)
 		break
 	}
 }
@@ -251,7 +251,7 @@ func InitError(level string) {
 		break
 	default:
 		logFile := logFileMapping[level]
-		Error.Logger = log.New(io.MultiWriter(logFile, os.Stderr), " ERROR: ", log.Ldate|log.Ltime)
+		Error.Logger = log.New(logFile, " ERROR: ", log.Ldate|log.Ltime)
 		break
 	}
 }
