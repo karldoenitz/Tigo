@@ -18,6 +18,7 @@ import (
 
 // Trace 等变量不同级别的log实例
 var (
+	Console *TiLog
 	Trace   *TiLog
 	Info    *TiLog
 	Warning *TiLog
