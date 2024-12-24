@@ -18,11 +18,15 @@ import (
 
 // Trace 等变量不同级别的log实例
 var (
-	Console *TiLog
 	Trace   *TiLog
 	Info    *TiLog
 	Warning *TiLog
 	Error   *TiLog
+
+	TraceConsole   *TiLog
+	InfoConsole    *TiLog
+	WarningConsole *TiLog
+	ErrorConsole   *TiLog
 )
 
 // TraceLevel 等变量表示log实例的级别
@@ -42,6 +46,13 @@ var formatter = map[int]string{
 	InfoLevel:    "\x1b[34m %s \x1b[0m",
 	WarningLevel: "\x1b[33m %s \x1b[0m",
 	ErrorLevel:   "\x1b[31m %s \x1b[0m",
+}
+
+var consoleLogger = map[int]*TiLog{
+	TraceLevel:   TraceConsole,
+	InfoLevel:    InfoConsole,
+	WarningLevel: WarningConsole,
+	ErrorLevel:   ErrorConsole,
 }
 
 ////////////////////////////////////////////////////结构体///////////////////////////////////////////////////////////////
@@ -70,22 +81,33 @@ type TiLog struct {
 // Printf 格式化输出log
 func (l *TiLog) Printf(format string, v ...interface{}) {
 	formatStr := formatter[l.Level]
-	format = fmt.Sprintf(formatStr, format)
 	_ = l.Output(2, fmt.Sprintf(format, v...))
+	// 仅输出到控制台
+	console := consoleLogger[l.Level]
+	consoleFormat := fmt.Sprintf(formatStr, format)
+	_ = console.Output(2, fmt.Sprintf(consoleFormat, v...))
 }
 
 // Print 打印log，不换行
 func (l *TiLog) Print(v ...interface{}) {
-	formatStr := formatter[l.Level]
-	logInfo := fmt.Sprintf(formatStr, fmt.Sprint(v...))
+	logInfo := fmt.Sprintf(" %s ", fmt.Sprint(v...))
 	_ = l.Output(2, logInfo)
+	// 仅输出到控制台
+	formatStr := formatter[l.Level]
+	console := consoleLogger[l.Level]
+	consoleLogInfo := fmt.Sprintf(formatStr, fmt.Sprint(v...))
+	_ = console.Output(2, consoleLogInfo)
 }
 
 // Println 打印log并且换行
 func (l *TiLog) Println(v ...interface{}) {
-	formatStr := formatter[l.Level]
-	logInfo := fmt.Sprintf(formatStr, fmt.Sprintln(v...))
+	logInfo := fmt.Sprintf(" %s ", fmt.Sprintln(v...))
 	_ = l.Output(2, logInfo)
+	// 仅输出到控制台
+	console := consoleLogger[l.Level]
+	formatStr := formatter[l.Level]
+	consoleLogInfo := fmt.Sprintf(formatStr, fmt.Sprintln(v...))
+	_ = console.Output(2, consoleLogInfo)
 }
 
 ////////////////////////////////////////////////////初始化logger的方法集//////////////////////////////////////////////////
@@ -200,6 +222,7 @@ func InitTrace(level string) {
 		Trace.Logger = log.New(os.Stdout, "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	default:
+		TraceConsole.Logger = log.New(os.Stdout, "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
 		logFile := logFileMapping[level]
 		Trace.Logger = log.New(logFile, " TRACE  ", log.Ldate|log.Ltime)
 	}
@@ -216,6 +239,7 @@ func InitInfo(level string) {
 		Info.Logger = log.New(os.Stdout, "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	default:
+		InfoConsole.Logger = log.New(os.Stdout, "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
 		logFile := logFileMapping[level]
 		Info.Logger = log.New(logFile, " INFO    ", log.Ldate|log.Ltime)
 		break
@@ -233,6 +257,7 @@ func InitWarning(level string) {
 		Warning.Logger = log.New(os.Stdout, "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	default:
+		WarningConsole.Logger = log.New(os.Stdout, "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
 		logFile := logFileMapping[level]
 		Warning.Logger = log.New(logFile, " WARNING ", log.Ldate|log.Ltime)
 		break
@@ -250,6 +275,7 @@ func InitError(level string) {
 		Error.Logger = log.New(os.Stdout, "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	default:
+		ErrorConsole.Logger = log.New(os.Stdout, "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
 		logFile := logFileMapping[level]
 		Error.Logger = log.New(logFile, " ERROR: ", log.Ldate|log.Ltime)
 		break
