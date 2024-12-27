@@ -93,9 +93,9 @@ func (p *%s) Post() {
 	"port": 8080,
 	"log": {
 		"trace": "stdout",
-		"info": "%s/log/run-info.log",
-		"warning": "%s/log/run.log",
-		"error": "%s/log/run.log"
+		"info": "%s/log/tigo-framework-info.log",
+		"warning": "%s/log/tigo-framework-warning.log",
+		"error": "%s/log/tigo-framework-info-error.log"
 	}
 }
 `
@@ -104,9 +104,9 @@ ip: 0.0.0.0
 port: 8080
 log:
   trace: stdout
-  info: "%s/log/run-info.log"
-  warning: "%s/log/run.log"
-  error: "%s/log/run.log"
+  info: "%s/log/tigo-framework-info.log"
+  warning: "%s/log/tigo-framework-warning.log"
+  error: "%s/log/tigo-framework-info-error.log"
 `
 	cmdVerbose = `
 use command tiger to create a Tigo projection.
