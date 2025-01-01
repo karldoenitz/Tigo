@@ -93,9 +93,9 @@ func (p *%s) Post() {
 	"port": 8080,
 	"log": {
 		"trace": "stdout",
-		"info": "%s/log/run-info.log",
-		"warning": "%s/log/run.log",
-		"error": "%s/log/run.log"
+		"info": "%s/log/tigo-framework-info.log",
+		"warning": "%s/log/tigo-framework-warning.log",
+		"error": "%s/log/tigo-framework-info-error.log"
 	}
 }
 `
@@ -104,9 +104,9 @@ ip: 0.0.0.0
 port: 8080
 log:
   trace: stdout
-  info: "%s/log/run-info.log"
-  warning: "%s/log/run.log"
-  error: "%s/log/run.log"
+  info: "%s/log/tigo-framework-info.log"
+  warning: "%s/log/tigo-framework-warning.log"
+  error: "%s/log/tigo-framework-info-error.log"
 `
 	cmdVerbose = `
 use command tiger to create a Tigo projection.
@@ -120,6 +120,7 @@ The commands are:
     addHandler      to add a handler for Tigo projection
     create          to create a Tigo projection
     conf            to add a configuration for Tigo projection
+    logger          to add a logger for Tigo projection
     mod             to run go mod
     version         to show Tigo version
 
@@ -194,6 +195,9 @@ func execEngine(args []string) {
 		break
 	case "addHandler":
 		execAddHandler(args[1])
+		break
+	case "logger":
+		execAddLogger()
 		break
 	}
 }
@@ -321,6 +325,11 @@ func execAddHandler(handlerName string) {
 	}
 	_, _ = f.WriteString(newCode)
 	_ = f.Close()
+}
+
+// execAddLogger 增加日志配置
+func execAddLogger() {
+	// TODO 这里增加logrus配置
 }
 
 // execConf 增加配置文件
