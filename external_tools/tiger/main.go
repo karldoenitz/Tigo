@@ -87,6 +87,22 @@ func (p *%s) Post() {
 }
 
 `
+	logCode = `// you can write your code here.
+// You can modify the log level and add more logs.
+package logger
+
+import (
+	"os"
+	"github.com/sirupsen/logrus"
+)
+
+var Logger = logrus.New()
+
+func init() {
+	Logger.SetOutput(os.Stdout)
+	Logger.SetLevel(logrus.InfoLevel)
+}
+`
 	configCodeJson = `{
 	"cookie": "%s",
 	"ip": "0.0.0.0",
