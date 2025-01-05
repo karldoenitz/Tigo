@@ -346,6 +346,17 @@ func execAddHandler(handlerName string) {
 // execAddLogger 增加日志配置
 func execAddLogger() {
 	// TODO 这里增加logrus配置
+	workDir := getWorkingDirPath()
+	loggerPath := fmt.Sprintf("%s/common", workDir)
+	_ = os.Mkdir(loggerPath, os.ModePerm)
+	// 如果有则新建一个handler文件，并注入代码
+	lHandler, err := os.Create(fmt.Sprintf("%s/logger.go", loggerPath))
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	_, _ = lHandler.WriteString(fmt.Sprintf(logCode))
+	_ = lHandler.Close()
 }
 
 // execConf 增加配置文件
