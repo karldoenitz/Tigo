@@ -4,7 +4,6 @@ package logger
 import (
 	"encoding/json"
 	"fmt"
-	"gopkg.in/yaml.v2"
 	"io"
 	"log"
 	"net/http"
@@ -12,9 +11,11 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"gopkg.in/yaml.v2"
 )
 
-////////////////////////////////////////////////////常量/////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////常量/////////////////////////////////////////////////////////////////
 
 // Trace 等变量不同级别的log实例
 var (
@@ -43,7 +44,7 @@ var formatter = map[int]string{
 	ErrorLevel:   "\x1b[31m %s \x1b[0m",
 }
 
-////////////////////////////////////////////////////结构体///////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////结构体///////////////////////////////////////////////////////////////
 
 // LogLevel 是log分级结构体
 //   - Trace    跟踪
@@ -63,7 +64,8 @@ type LogLevel struct {
 // TiLog 是Tigo自定义的log结构体
 type TiLog struct {
 	*log.Logger
-	Level int
+	Level         int
+	consoleLogger *log.Logger // console = log.New(os.Stdout, "\x1b[0m", log.Ldate|log.Ltime)  // TODO Debug模式下的log，非debug模式不输出到控制台
 }
 
 // Printf 格式化输出log
@@ -87,9 +89,9 @@ func (l *TiLog) Println(v ...interface{}) {
 	_ = l.Output(2, logInfo)
 }
 
-////////////////////////////////////////////////////初始化logger的方法集//////////////////////////////////////////////////
+// //////////////////////////////////////////////////初始化logger的方法集//////////////////////////////////////////////////
 
-// log文件路径与文件对象的关系映射
+// log文件路径与文件对象的关系映射 TODO 这个换成syncMap
 var logFileMapping = map[string]*os.File{}
 
 // 更新log文件路径与log文件对象的映射关系
@@ -106,7 +108,7 @@ func updateLogMapping(filePath string) {
 	}
 }
 
-// 初始化log模块
+// 初始化log模块 TODO 这里所有的日志都写入到了logPath指定的文件中
 func initLogger() {
 	file, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
@@ -140,12 +142,13 @@ func init() {
 }
 
 // SetLogPath 设置log输出路径，警告：若使用了InitLoggerWithConfigFile和InitLoggerWithObject请不要使用此方法，会覆盖原有的log输出结构。
+// TODO 这个函数需要删除
 func SetLogPath(defineLogPath string) {
 	logPath = defineLogPath
 	initLogger()
 }
 
-// InitLoggerWithConfigFile 根据配置文件路径初始化log模块；
+// InitLoggerWithConfigFile 根据配置文件路径初始化log模块； TODO 这个函数删除掉
 // 配置文件需要配置如下部分：
 //   - trace    "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
 //   - info     "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
@@ -188,7 +191,7 @@ func InitLoggerWithObject(logLevel LogLevel) {
 	InitError(logLevel.Error)
 }
 
-// InitTrace 初始化Trace，默认情况下不输出
+// InitTrace 初始化Trace，默认情况下不输出 TODO 后面的输出到控制台的log需要去掉，只保留写入到文件的日志
 func InitTrace(level string) {
 	Trace.Level = TraceLevel
 	switch {
@@ -262,7 +265,7 @@ func startTimer(F func(LogLevel, time.Time), logLevel LogLevel) {
 		return
 	}
 	var ch chan int
-	//定时任务
+	// 定时任务
 	timeRollingFrequency := getTimeRollingFrequency(logLevel)
 	ticker := time.NewTicker(timeRollingFrequency)
 	go func() {
@@ -351,7 +354,7 @@ func sliceLog(logLevel LogLevel, current time.Time) {
 	InitError(logLevel.Error)
 }
 
-////////////////////////////////////////////////////http相关工具函数//////////////////////////////////////////////////////
+// //////////////////////////////////////////////////http相关工具函数//////////////////////////////////////////////////////
 
 // StatusColor 给http状态码进行终端着色
 //   - status: 状态码
