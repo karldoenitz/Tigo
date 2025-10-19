@@ -10,6 +10,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"gopkg.in/yaml.v2"
@@ -92,18 +93,19 @@ func (l *TiLog) Println(v ...interface{}) {
 // //////////////////////////////////////////////////初始化logger的方法集//////////////////////////////////////////////////
 
 // log文件路径与文件对象的关系映射 TODO 这个换成syncMap
-var logFileMapping = map[string]*os.File{}
+// var logFileMapping = map[string]*os.File{}
+var logFileMapping = sync.Map{}
 
 // 更新log文件路径与log文件对象的映射关系
 func updateLogMapping(filePath string) {
 	if filePath != "" && filePath != "discard" && filePath != "stdout" {
-		_, isExist := logFileMapping[filePath]
+		_, isExist := logFileMapping.Load(filePath)
 		if !isExist {
 			file, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 			if err != nil {
 				log.Fatalln("Failed to open error log file: ", err)
 			}
-			logFileMapping[filePath] = file
+			logFileMapping.Store(filePath, file)
 		}
 	}
 }
@@ -202,8 +204,12 @@ func InitTrace(level string) {
 		Trace.Logger = log.New(os.Stdout, "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	default:
-		logFile := logFileMapping[level]
-		Trace.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
+		logFile, ok := logFileMapping.Load(level)
+		if !ok {
+			log.Print("Failed to open trace log file: ", level)
+			break
+		}
+		Trace.Logger = log.New(io.MultiWriter(logFile.(*os.File), os.Stderr), "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
 	}
 }
 
@@ -218,8 +224,12 @@ func InitInfo(level string) {
 		Info.Logger = log.New(os.Stdout, "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	default:
-		logFile := logFileMapping[level]
-		Info.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
+		logFile, ok := logFileMapping.Load(level)
+		if !ok {
+			log.Print("Failed to open info log file: ", level)
+			break
+		}
+		Info.Logger = log.New(io.MultiWriter(logFile.(*os.File), os.Stderr), "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	}
 }
@@ -235,8 +245,12 @@ func InitWarning(level string) {
 		Warning.Logger = log.New(os.Stdout, "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	default:
-		logFile := logFileMapping[level]
-		Warning.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
+		logFile, ok := logFileMapping.Load(level)
+		if !ok {
+			log.Print("Failed to open warning log file: ", level)
+			break
+		}
+		Warning.Logger = log.New(io.MultiWriter(logFile.(*os.File), os.Stderr), "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	}
 }
@@ -252,8 +266,12 @@ func InitError(level string) {
 		Error.Logger = log.New(os.Stdout, "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	default:
-		logFile := logFileMapping[level]
-		Error.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
+		logFile, ok := logFileMapping.Load(level)
+		if !ok {
+			log.Print("Failed to open error log file: ", level)
+			break
+		}
+		Error.Logger = log.New(io.MultiWriter(logFile.(*os.File), os.Stderr), "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	}
 }
@@ -320,10 +338,10 @@ func getTimeRollingFrequency(logLevel LogLevel) time.Duration {
 // 日志切分函数
 func sliceLog(logLevel LogLevel, current time.Time) {
 	// 获取上一个切分节点的日志对象
-	TraceLogFile, isTraceExisted := logFileMapping[logLevel.Trace]
-	InfoLogFile, isInfoExisted := logFileMapping[logLevel.Info]
-	WarningLogFile, isWarningExisted := logFileMapping[logLevel.Warning]
-	ErrorLogFile, isErrorExisted := logFileMapping[logLevel.Error]
+	TraceLogFile, isTraceExisted := logFileMapping.Load(logLevel.Trace)
+	InfoLogFile, isInfoExisted := logFileMapping.Load(logLevel.Info)
+	WarningLogFile, isWarningExisted := logFileMapping.Load(logLevel.Warning)
+	ErrorLogFile, isErrorExisted := logFileMapping.Load(logLevel.Error)
 	// 获取当前切分节点的日志名称
 	nowTimeStr := current.Format(dateFormatter)
 	logLevel.Trace += nowTimeStr
@@ -336,16 +354,16 @@ func sliceLog(logLevel LogLevel, current time.Time) {
 	updateLogMapping(logLevel.Error)
 	// 如果上一份日志文件没有关闭则进行关闭
 	if isTraceExisted && TraceLogFile != nil {
-		_ = TraceLogFile.Close()
+		_ = TraceLogFile.(*os.File).Close()
 	}
 	if isInfoExisted && InfoLogFile != nil {
-		_ = InfoLogFile.Close()
+		_ = InfoLogFile.(*os.File).Close()
 	}
 	if isWarningExisted && WarningLogFile != nil {
-		_ = WarningLogFile.Close()
+		_ = WarningLogFile.(*os.File).Close()
 	}
 	if isErrorExisted && ErrorLogFile != nil {
-		_ = ErrorLogFile.Close()
+		_ = ErrorLogFile.(*os.File).Close()
 	}
 	// 重新初始化当前日志
 	InitTrace(logLevel.Trace)
