@@ -92,7 +92,7 @@ func (l *TiLog) Println(v ...interface{}) {
 
 // //////////////////////////////////////////////////初始化logger的方法集//////////////////////////////////////////////////
 
-// log文件路径与文件对象的关系映射 TODO 这个换成syncMap
+// log文件路径与文件对象的关系映射
 // var logFileMapping = map[string]*os.File{}
 var logFileMapping = sync.Map{}
 
