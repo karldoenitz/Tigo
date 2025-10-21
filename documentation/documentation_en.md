@@ -69,7 +69,6 @@ API index:
   - [structure](#structure)
     - [type LogLevel](#type-loglevel)
   - [functions](#logger-inner-functions)
-    - [func SetLogPath](#func-setlogpath)
     - [func InitLoggerWithConfigFile](#func-initloggerwithconfigfile)
     - [func InitLoggerWithObject](#func-initloggerwithobject)
     - [func InitTrace](#func-inittrace)
@@ -701,20 +700,6 @@ TimeRoll:
 - M: slice log file by Minute, E.g: "M*6" slice log file every six minutes.
 - S: slice log file by Second, E.g: "S*6" slice log file every six seconds.
 ## logger inner functions<a name="loggerFunctions"></a>
-### func SetLogPath<a name="SetLogPath"></a>
-Set Log file's Path<a name="SetLogPath"></a>
-```go
-func SetLogPath(logPath string)
-```
-example：
-```go
-import "github.com/karldoenitz/Tigo/logger"
-
-logger.Info.Printf("It is a test...")
-logger.Warning.Printf("warning!")
-logger.Error.Printf("ERROR!!!")
-```
-Attention: this method can override the config you set before.
 ### func InitLoggerWithConfigFile<a name="InitLoggerWithConfigFile"></a>
 ```go
 func InitLoggerWithConfigFile(filePath string)
