@@ -69,7 +69,6 @@ API目录：
   - [structure](#structure)
     - [type LogLevel](#type-loglevel)
   - [functions](#logger模块内置方法)
-    - [func SetLogPath](#func-setlogpath)
     - [func InitLoggerWithConfigFile](#func-initloggerwithconfigfile)
     - [func InitLoggerWithObject](#func-initloggerwithobject)
     - [func InitTrace](#func-inittrace)
@@ -717,20 +716,6 @@ TimeRoll：
 - M：表示按分钟切分日志，例如："M*6"则表示每6分钟切分一次日志
 - S：表示按秒切分日志，例如："S*6"则表示每6秒切分一次日志
 ## logger模块内置方法<a name="loggerFunctions"></a>
-### func SetLogPath<a name="SetLogPath"></a>
-设置log文件的路径
-```go
-func SetLogPath(logPath string)
-```
-示例：
-```go
-import "github.com/karldoenitz/Tigo/logger"
-
-logger.Info.Printf("It is a test...")
-logger.Warning.Printf("warning!")
-logger.Error.Printf("ERROR!!!")
-```
-注意：使用此方法会使原先的log配置失效。
 ### func InitLoggerWithConfigFile<a name="InitLoggerWithConfigFile"></a>
 ```go
 func InitLoggerWithConfigFile(filePath string)
