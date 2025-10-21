@@ -4,17 +4,19 @@ package logger
 import (
 	"encoding/json"
 	"fmt"
-	"gopkg.in/yaml.v2"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
+
+	"gopkg.in/yaml.v2"
 )
 
-////////////////////////////////////////////////////常量/////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////常量/////////////////////////////////////////////////////////////////
 
 // Trace 等变量不同级别的log实例
 var (
@@ -43,7 +45,7 @@ var formatter = map[int]string{
 	ErrorLevel:   "\x1b[31m %s \x1b[0m",
 }
 
-////////////////////////////////////////////////////结构体///////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////结构体///////////////////////////////////////////////////////////////
 
 // LogLevel 是log分级结构体
 //   - Trace    跟踪
@@ -63,7 +65,8 @@ type LogLevel struct {
 // TiLog 是Tigo自定义的log结构体
 type TiLog struct {
 	*log.Logger
-	Level int
+	Level         int
+	consoleLogger *log.Logger // console = log.New(os.Stdout, "\x1b[0m", log.Ldate|log.Ltime)  // TODO Debug模式下的log，非debug模式不输出到控制台
 }
 
 // Printf 格式化输出log
@@ -87,26 +90,27 @@ func (l *TiLog) Println(v ...interface{}) {
 	_ = l.Output(2, logInfo)
 }
 
-////////////////////////////////////////////////////初始化logger的方法集//////////////////////////////////////////////////
+// //////////////////////////////////////////////////初始化logger的方法集//////////////////////////////////////////////////
 
 // log文件路径与文件对象的关系映射
-var logFileMapping = map[string]*os.File{}
+// var logFileMapping = map[string]*os.File{}
+var logFileMapping = sync.Map{}
 
 // 更新log文件路径与log文件对象的映射关系
 func updateLogMapping(filePath string) {
 	if filePath != "" && filePath != "discard" && filePath != "stdout" {
-		_, isExist := logFileMapping[filePath]
+		_, isExist := logFileMapping.Load(filePath)
 		if !isExist {
 			file, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 			if err != nil {
 				log.Fatalln("Failed to open error log file: ", err)
 			}
-			logFileMapping[filePath] = file
+			logFileMapping.Store(filePath, file)
 		}
 	}
 }
 
-// 初始化log模块
+// 初始化log模块 TODO 这里所有的日志都写入到了logPath指定的文件中
 func initLogger() {
 	file, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
@@ -140,12 +144,13 @@ func init() {
 }
 
 // SetLogPath 设置log输出路径，警告：若使用了InitLoggerWithConfigFile和InitLoggerWithObject请不要使用此方法，会覆盖原有的log输出结构。
+// TODO 这个函数需要删除
 func SetLogPath(defineLogPath string) {
 	logPath = defineLogPath
 	initLogger()
 }
 
-// InitLoggerWithConfigFile 根据配置文件路径初始化log模块；
+// InitLoggerWithConfigFile 根据配置文件路径初始化log模块； TODO 这个函数删除掉
 // 配置文件需要配置如下部分：
 //   - trace    "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
 //   - info     "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
@@ -188,7 +193,7 @@ func InitLoggerWithObject(logLevel LogLevel) {
 	InitError(logLevel.Error)
 }
 
-// InitTrace 初始化Trace，默认情况下不输出
+// InitTrace 初始化Trace，默认情况下不输出 TODO 后面的输出到控制台的log需要去掉，只保留写入到文件的日志
 func InitTrace(level string) {
 	Trace.Level = TraceLevel
 	switch {
@@ -199,8 +204,12 @@ func InitTrace(level string) {
 		Trace.Logger = log.New(os.Stdout, "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	default:
-		logFile := logFileMapping[level]
-		Trace.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
+		logFile, ok := logFileMapping.Load(level)
+		if !ok {
+			log.Print("Failed to open trace log file: ", level)
+			break
+		}
+		Trace.Logger = log.New(io.MultiWriter(logFile.(*os.File), os.Stderr), "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
 	}
 }
 
@@ -215,8 +224,12 @@ func InitInfo(level string) {
 		Info.Logger = log.New(os.Stdout, "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	default:
-		logFile := logFileMapping[level]
-		Info.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
+		logFile, ok := logFileMapping.Load(level)
+		if !ok {
+			log.Print("Failed to open info log file: ", level)
+			break
+		}
+		Info.Logger = log.New(io.MultiWriter(logFile.(*os.File), os.Stderr), "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	}
 }
@@ -232,8 +245,12 @@ func InitWarning(level string) {
 		Warning.Logger = log.New(os.Stdout, "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	default:
-		logFile := logFileMapping[level]
-		Warning.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
+		logFile, ok := logFileMapping.Load(level)
+		if !ok {
+			log.Print("Failed to open warning log file: ", level)
+			break
+		}
+		Warning.Logger = log.New(io.MultiWriter(logFile.(*os.File), os.Stderr), "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	}
 }
@@ -249,8 +266,12 @@ func InitError(level string) {
 		Error.Logger = log.New(os.Stdout, "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	default:
-		logFile := logFileMapping[level]
-		Error.Logger = log.New(io.MultiWriter(logFile, os.Stderr), "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
+		logFile, ok := logFileMapping.Load(level)
+		if !ok {
+			log.Print("Failed to open error log file: ", level)
+			break
+		}
+		Error.Logger = log.New(io.MultiWriter(logFile.(*os.File), os.Stderr), "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
 		break
 	}
 }
@@ -262,7 +283,7 @@ func startTimer(F func(LogLevel, time.Time), logLevel LogLevel) {
 		return
 	}
 	var ch chan int
-	//定时任务
+	// 定时任务
 	timeRollingFrequency := getTimeRollingFrequency(logLevel)
 	ticker := time.NewTicker(timeRollingFrequency)
 	go func() {
@@ -317,10 +338,10 @@ func getTimeRollingFrequency(logLevel LogLevel) time.Duration {
 // 日志切分函数
 func sliceLog(logLevel LogLevel, current time.Time) {
 	// 获取上一个切分节点的日志对象
-	TraceLogFile, isTraceExisted := logFileMapping[logLevel.Trace]
-	InfoLogFile, isInfoExisted := logFileMapping[logLevel.Info]
-	WarningLogFile, isWarningExisted := logFileMapping[logLevel.Warning]
-	ErrorLogFile, isErrorExisted := logFileMapping[logLevel.Error]
+	TraceLogFile, isTraceExisted := logFileMapping.Load(logLevel.Trace)
+	InfoLogFile, isInfoExisted := logFileMapping.Load(logLevel.Info)
+	WarningLogFile, isWarningExisted := logFileMapping.Load(logLevel.Warning)
+	ErrorLogFile, isErrorExisted := logFileMapping.Load(logLevel.Error)
 	// 获取当前切分节点的日志名称
 	nowTimeStr := current.Format(dateFormatter)
 	logLevel.Trace += nowTimeStr
@@ -333,16 +354,16 @@ func sliceLog(logLevel LogLevel, current time.Time) {
 	updateLogMapping(logLevel.Error)
 	// 如果上一份日志文件没有关闭则进行关闭
 	if isTraceExisted && TraceLogFile != nil {
-		_ = TraceLogFile.Close()
+		_ = TraceLogFile.(*os.File).Close()
 	}
 	if isInfoExisted && InfoLogFile != nil {
-		_ = InfoLogFile.Close()
+		_ = InfoLogFile.(*os.File).Close()
 	}
 	if isWarningExisted && WarningLogFile != nil {
-		_ = WarningLogFile.Close()
+		_ = WarningLogFile.(*os.File).Close()
 	}
 	if isErrorExisted && ErrorLogFile != nil {
-		_ = ErrorLogFile.Close()
+		_ = ErrorLogFile.(*os.File).Close()
 	}
 	// 重新初始化当前日志
 	InitTrace(logLevel.Trace)
@@ -351,7 +372,7 @@ func sliceLog(logLevel LogLevel, current time.Time) {
 	InitError(logLevel.Error)
 }
 
-////////////////////////////////////////////////////http相关工具函数//////////////////////////////////////////////////////
+// //////////////////////////////////////////////////http相关工具函数//////////////////////////////////////////////////////
 
 // StatusColor 给http状态码进行终端着色
 //   - status: 状态码
