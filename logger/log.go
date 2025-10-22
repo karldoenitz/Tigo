@@ -143,13 +143,6 @@ func init() {
 	initLogger()
 }
 
-// SetLogPath 设置log输出路径，警告：若使用了InitLoggerWithConfigFile和InitLoggerWithObject请不要使用此方法，会覆盖原有的log输出结构。
-// TODO 这个函数需要删除
-func SetLogPath(defineLogPath string) {
-	logPath = defineLogPath
-	initLogger()
-}
-
 // InitLoggerWithConfigFile 根据配置文件路径初始化log模块； TODO 这个函数删除掉
 // 配置文件需要配置如下部分：
 //   - trace    "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
