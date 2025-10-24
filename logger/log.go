@@ -2,7 +2,6 @@
 package logger
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -12,8 +11,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-
-	"gopkg.in/yaml.v2"
 )
 
 // //////////////////////////////////////////////////常量/////////////////////////////////////////////////////////////////
@@ -140,31 +137,6 @@ func init() {
 	}
 	logPath = dir + "/log.log"
 	initLogger()
-}
-
-// InitLoggerWithConfigFile 根据配置文件路径初始化log模块； TODO 这个函数删除掉
-// 配置文件需要配置如下部分：
-//   - trace    "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
-//   - info     "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
-//   - warning  "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
-//   - error    "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
-func InitLoggerWithConfigFile(filePath string) {
-	if filePath == "" {
-		return
-	}
-	raw, err := os.ReadFile(filePath)
-	if err != nil {
-		println(err.Error())
-		os.Exit(1)
-	}
-	logLevel := LogLevel{}
-	if strings.HasSuffix(filePath, ".json") {
-		_ = json.Unmarshal(raw, &logLevel)
-	}
-	if strings.HasSuffix(filePath, ".yaml") || strings.HasSuffix(filePath, "yml") {
-		_ = yaml.Unmarshal(raw, &logLevel)
-	}
-	InitLoggerWithObject(logLevel)
 }
 
 // InitLoggerWithObject 根据LogLevel结构体的实例初始化log模块；
