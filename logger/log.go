@@ -63,7 +63,7 @@ type LogLevel struct {
 type TiLog struct {
 	*log.Logger
 	Level         int
-	consoleLogger *log.Logger // console = log.New(os.Stdout, "\x1b[0m", log.Ldate|log.Ltime)  // TODO Debug模式下的log，非debug模式不输出到控制台
+	consoleLogger *log.Logger // console = log.New(os.Stdout, "\x1b[0m", log.Ldate|log.Ltime)  // TODO Debug模式下的log，非debug模式不输出到控制台，打印的时候做双向输出
 }
 
 // Printf 格式化输出log
