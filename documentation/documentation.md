@@ -69,7 +69,6 @@ API目录：
   - [structure](#structure)
     - [type LogLevel](#type-loglevel)
   - [functions](#logger模块内置方法)
-    - [func InitLoggerWithConfigFile](#func-initloggerwithconfigfile)
     - [func InitLoggerWithObject](#func-initloggerwithobject)
     - [func InitTrace](#func-inittrace)
     - [func InitInfo](#func-initinfo)
@@ -716,11 +715,6 @@ TimeRoll：
 - M：表示按分钟切分日志，例如："M*6"则表示每6分钟切分一次日志
 - S：表示按秒切分日志，例如："S*6"则表示每6秒切分一次日志
 ## logger模块内置方法<a name="loggerFunctions"></a>
-### func InitLoggerWithConfigFile<a name="InitLoggerWithConfigFile"></a>
-```go
-func InitLoggerWithConfigFile(filePath string)
-```
-根据配置文件初始化logger模块。
 ### func InitLoggerWithObject<a name="InitLoggerWithObject"></a>
 ```go
 func InitLoggerWithObject(logLevel LogLevel)

@@ -2,7 +2,6 @@
 package logger
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -12,8 +11,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-
-	"gopkg.in/yaml.v2"
 )
 
 // //////////////////////////////////////////////////常量/////////////////////////////////////////////////////////////////
@@ -66,7 +63,7 @@ type LogLevel struct {
 type TiLog struct {
 	*log.Logger
 	Level         int
-	consoleLogger *log.Logger // console = log.New(os.Stdout, "\x1b[0m", log.Ldate|log.Ltime)  // TODO Debug模式下的log，非debug模式不输出到控制台
+	consoleLogger *log.Logger // console = log.New(os.Stdout, "\x1b[0m", log.Ldate|log.Ltime)  // TODO Debug模式下的log，非debug模式不输出到控制台，打印的时候做双向输出
 }
 
 // Printf 格式化输出log
@@ -92,8 +89,7 @@ func (l *TiLog) Println(v ...interface{}) {
 
 // //////////////////////////////////////////////////初始化logger的方法集//////////////////////////////////////////////////
 
-// log文件路径与文件对象的关系映射
-// var logFileMapping = map[string]*os.File{}
+// log文件路径与文件对象的关系映射 值类型为*os.File
 var logFileMapping = sync.Map{}
 
 // 更新log文件路径与log文件对象的映射关系
@@ -141,38 +137,6 @@ func init() {
 	}
 	logPath = dir + "/log.log"
 	initLogger()
-}
-
-// SetLogPath 设置log输出路径，警告：若使用了InitLoggerWithConfigFile和InitLoggerWithObject请不要使用此方法，会覆盖原有的log输出结构。
-// TODO 这个函数需要删除
-func SetLogPath(defineLogPath string) {
-	logPath = defineLogPath
-	initLogger()
-}
-
-// InitLoggerWithConfigFile 根据配置文件路径初始化log模块； TODO 这个函数删除掉
-// 配置文件需要配置如下部分：
-//   - trace    "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
-//   - info     "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
-//   - warning  "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
-//   - error    "discard": 不输出；"stdout": 终端输出不打印到文件；"/path/demo.log": 输出到指定文件
-func InitLoggerWithConfigFile(filePath string) {
-	if filePath == "" {
-		return
-	}
-	raw, err := os.ReadFile(filePath)
-	if err != nil {
-		println(err.Error())
-		os.Exit(1)
-	}
-	logLevel := LogLevel{}
-	if strings.HasSuffix(filePath, ".json") {
-		_ = json.Unmarshal(raw, &logLevel)
-	}
-	if strings.HasSuffix(filePath, ".yaml") || strings.HasSuffix(filePath, "yml") {
-		_ = yaml.Unmarshal(raw, &logLevel)
-	}
-	InitLoggerWithObject(logLevel)
 }
 
 // InitLoggerWithObject 根据LogLevel结构体的实例初始化log模块；
