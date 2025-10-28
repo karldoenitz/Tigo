@@ -63,7 +63,7 @@ type LogLevel struct {
 type TiLog struct {
 	*log.Logger
 	Level         int
-	consoleLogger *log.Logger // console = log.New(os.Stdout, "\x1b[0m", log.Ldate|log.Ltime)  // TODO Debug模式下的log，非debug模式不输出到控制台，打印的时候做双向输出
+	consoleLogger *log.Logger
 }
 
 // Printf 格式化输出log
@@ -106,26 +106,29 @@ func updateLogMapping(filePath string) {
 	}
 }
 
-// 初始化log模块 TODO 这里所有的日志都写入到了logPath指定的文件中
+// 初始化log模块
 func initLogger() {
 	file, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalln("Failed to open error log file: ", err)
 	}
 	Trace = &TiLog{}
-	Trace.Logger = log.New(io.Discard, "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
+	Trace.Logger = log.New(io.MultiWriter(file), "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
 	Trace.Level = TraceLevel
-	// 将运行日志写入控制台
+	Trace.consoleLogger = log.New(os.Stdout, "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
 	Info = &TiLog{}
-	Info.Logger = log.New(os.Stdout, "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
+	Info.Logger = log.New(io.MultiWriter(file), "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
 	Info.Level = InfoLevel
+	Info.consoleLogger = log.New(os.Stdout, "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
 	Warning = &TiLog{}
-	Warning.Logger = log.New(os.Stdout, "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
+	Warning.Logger = log.New(io.MultiWriter(file), "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
 	Warning.Level = WarningLevel
+	Warning.consoleLogger = log.New(os.Stdout, "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
 	// 将错误日志写入log文件
 	Error = &TiLog{}
 	Error.Logger = log.New(io.MultiWriter(file, os.Stderr), "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
 	Error.Level = ErrorLevel
+	Error.consoleLogger = log.New(os.Stdout, "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
 }
 
 // 初始化函数，加载log模块时运行
