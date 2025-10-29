@@ -113,20 +113,20 @@ func initLogger() {
 		log.Fatalln("Failed to open error log file: ", err)
 	}
 	Trace = &TiLog{}
-	Trace.Logger = log.New(io.MultiWriter(file), "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
+	Trace.Logger = log.New(io.MultiWriter(file), "TRACE   ", log.Ldate|log.Ltime)
 	Trace.Level = TraceLevel
 	Trace.consoleLogger = log.New(os.Stdout, "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
 	Info = &TiLog{}
-	Info.Logger = log.New(io.MultiWriter(file), "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
+	Info.Logger = log.New(io.MultiWriter(file), "INFO    ", log.Ldate|log.Ltime)
 	Info.Level = InfoLevel
 	Info.consoleLogger = log.New(os.Stdout, "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
 	Warning = &TiLog{}
-	Warning.Logger = log.New(io.MultiWriter(file), "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
+	Warning.Logger = log.New(io.MultiWriter(file), "WARNING ", log.Ldate|log.Ltime)
 	Warning.Level = WarningLevel
 	Warning.consoleLogger = log.New(os.Stdout, "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
 	// 将错误日志写入log文件
 	Error = &TiLog{}
-	Error.Logger = log.New(io.MultiWriter(file, os.Stderr), "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
+	Error.Logger = log.New(io.MultiWriter(file, os.Stderr), "ERROR   ", log.Ldate|log.Ltime)
 	Error.Level = ErrorLevel
 	Error.consoleLogger = log.New(os.Stdout, "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
 }
