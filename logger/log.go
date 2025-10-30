@@ -68,23 +68,26 @@ type TiLog struct {
 
 // Printf 格式化输出log
 func (l *TiLog) Printf(format string, v ...interface{}) {
+	_ = l.Output(2, fmt.Sprintf(format, v...))
 	formatStr := formatter[l.Level]
 	format = fmt.Sprintf(formatStr, format)
-	_ = l.Output(2, fmt.Sprintf(format, v...))
+	_ = l.consoleLogger.Output(2, fmt.Sprintf(format, v...))
 }
 
 // Print 打印log，不换行
 func (l *TiLog) Print(v ...interface{}) {
+	_ = l.Output(2, fmt.Sprintf("%s", fmt.Sprint(v...)))
 	formatStr := formatter[l.Level]
 	logInfo := fmt.Sprintf(formatStr, fmt.Sprint(v...))
-	_ = l.Output(2, logInfo)
+	_ = l.consoleLogger.Output(2, logInfo)
 }
 
 // Println 打印log并且换行
 func (l *TiLog) Println(v ...interface{}) {
+	_ = l.Output(2, fmt.Sprintf("%s", fmt.Sprintln(v...)))
 	formatStr := formatter[l.Level]
 	logInfo := fmt.Sprintf(formatStr, fmt.Sprintln(v...))
-	_ = l.Output(2, logInfo)
+	_ = l.consoleLogger.Output(2, logInfo)
 }
 
 // //////////////////////////////////////////////////初始化logger的方法集//////////////////////////////////////////////////
@@ -160,7 +163,7 @@ func InitLoggerWithObject(logLevel LogLevel) {
 	InitError(logLevel.Error)
 }
 
-// InitTrace 初始化Trace，默认情况下不输出 TODO 后面的输出到控制台的log需要去掉，只保留写入到文件的日志
+// InitTrace 初始化Trace，默认情况下不输出
 func InitTrace(level string) {
 	Trace.Level = TraceLevel
 	switch {
@@ -176,7 +179,7 @@ func InitTrace(level string) {
 			log.Print("Failed to open trace log file: ", level)
 			break
 		}
-		Trace.Logger = log.New(io.MultiWriter(logFile.(*os.File), os.Stderr), "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
+		Trace.Logger = log.New(io.MultiWriter(logFile.(*os.File), os.Stderr), "TRACE   ", log.Ldate|log.Ltime)
 	}
 }
 
@@ -196,7 +199,7 @@ func InitInfo(level string) {
 			log.Print("Failed to open info log file: ", level)
 			break
 		}
-		Info.Logger = log.New(io.MultiWriter(logFile.(*os.File), os.Stderr), "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
+		Info.Logger = log.New(io.MultiWriter(logFile.(*os.File), os.Stderr), "INFO    ", log.Ldate|log.Ltime)
 		break
 	}
 }
@@ -217,7 +220,7 @@ func InitWarning(level string) {
 			log.Print("Failed to open warning log file: ", level)
 			break
 		}
-		Warning.Logger = log.New(io.MultiWriter(logFile.(*os.File), os.Stderr), "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
+		Warning.Logger = log.New(io.MultiWriter(logFile.(*os.File), os.Stderr), "WARNING ", log.Ldate|log.Ltime)
 		break
 	}
 }
@@ -238,7 +241,7 @@ func InitError(level string) {
 			log.Print("Failed to open error log file: ", level)
 			break
 		}
-		Error.Logger = log.New(io.MultiWriter(logFile.(*os.File), os.Stderr), "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
+		Error.Logger = log.New(io.MultiWriter(logFile.(*os.File), os.Stderr), "ERROR   ", log.Ldate|log.Ltime)
 		break
 	}
 }
