@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -31,15 +30,60 @@ const (
 	ErrorLevel
 )
 
+var consoleWriter = &ConsoleWriter{writer: os.Stdout}
+
 var dateFormatter = ".2006-01-02_15:04:05"
 
 var logPath = ""
 
+// TODO 删除无效变量
 var formatter = map[int]string{
 	TraceLevel:   "\x1b[32m %s \x1b[0m",
 	InfoLevel:    "\x1b[34m %s \x1b[0m",
 	WarningLevel: "\x1b[33m %s \x1b[0m",
 	ErrorLevel:   "\x1b[31m %s \x1b[0m",
+}
+
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// 定义控制台日志的配色常量（ANSI 转义码）
+const (
+	colorRed    = "\033[31m"
+	colorGreen  = "\033[32m"
+	colorYellow = "\033[33m"
+	colorBlue   = "\033[34m"
+	colorReset  = "\033[0m"
+)
+
+// ConsoleWriter 自定义控制台 Writer，为日志添加配色
+type ConsoleWriter struct {
+	writer io.Writer // 底层输出（如 os.Stdout）
+}
+
+// Write 方法：为控制台输出添加配色（根据日志级别关键字判断）
+func (c *ConsoleWriter) Write(p []byte) (n int, err error) {
+	logStr := string(p)
+	// 简单示例：根据日志前缀（如 "ERROR"、"WARN"）添加颜色
+	switch {
+	case strings.Contains(logStr, "ERROR"):
+		logStr = colorRed + logStr + colorReset
+	case strings.Contains(logStr, "WARN"):
+		logStr = colorYellow + logStr + colorReset
+	case strings.Contains(logStr, "INFO"):
+		logStr = colorGreen + logStr + colorReset
+	case strings.Contains(logStr, "TRACE"):
+		logStr = colorBlue + logStr + colorReset
+	}
+	return c.writer.Write([]byte(logStr))
+}
+
+// FileWriter 自定义文件 Writer，无配色（直接输出原始内容）
+type FileWriter struct {
+	writer io.Writer // 底层输出（文件）
+}
+
+func (f *FileWriter) Write(p []byte) (n int, err error) {
+	// 直接输出原始内容，不添加任何配色
+	return f.writer.Write(p)
 }
 
 // //////////////////////////////////////////////////结构体///////////////////////////////////////////////////////////////
@@ -62,29 +106,22 @@ type LogLevel struct {
 // TiLog 是Tigo自定义的log结构体
 type TiLog struct {
 	*log.Logger
-	Level         int
-	consoleLogger *log.Logger // console = log.New(os.Stdout, "\x1b[0m", log.Ldate|log.Ltime)  // TODO Debug模式下的log，非debug模式不输出到控制台，打印的时候做双向输出
+	Level int
 }
 
 // Printf 格式化输出log
 func (l *TiLog) Printf(format string, v ...interface{}) {
-	formatStr := formatter[l.Level]
-	format = fmt.Sprintf(formatStr, format)
 	_ = l.Output(2, fmt.Sprintf(format, v...))
 }
 
 // Print 打印log，不换行
 func (l *TiLog) Print(v ...interface{}) {
-	formatStr := formatter[l.Level]
-	logInfo := fmt.Sprintf(formatStr, fmt.Sprint(v...))
-	_ = l.Output(2, logInfo)
+	_ = l.Output(2, fmt.Sprintf("%s", fmt.Sprint(v...)))
 }
 
 // Println 打印log并且换行
 func (l *TiLog) Println(v ...interface{}) {
-	formatStr := formatter[l.Level]
-	logInfo := fmt.Sprintf(formatStr, fmt.Sprintln(v...))
-	_ = l.Output(2, logInfo)
+	_ = l.Output(2, fmt.Sprintf("%s", fmt.Sprintln(v...)))
 }
 
 // //////////////////////////////////////////////////初始化logger的方法集//////////////////////////////////////////////////
@@ -106,25 +143,24 @@ func updateLogMapping(filePath string) {
 	}
 }
 
-// 初始化log模块 TODO 这里所有的日志都写入到了logPath指定的文件中
+// 初始化log模块
 func initLogger() {
 	file, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalln("Failed to open error log file: ", err)
 	}
+	var fileWriter = &FileWriter{writer: file}
 	Trace = &TiLog{}
-	Trace.Logger = log.New(io.Discard, "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
+	Trace.Logger = log.New(io.MultiWriter(consoleWriter, fileWriter), "TRACE   ", log.Ldate|log.Ltime)
 	Trace.Level = TraceLevel
-	// 将运行日志写入控制台
 	Info = &TiLog{}
-	Info.Logger = log.New(os.Stdout, "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
+	Info.Logger = log.New(io.MultiWriter(consoleWriter, fileWriter), "INFO    ", log.Ldate|log.Ltime)
 	Info.Level = InfoLevel
 	Warning = &TiLog{}
-	Warning.Logger = log.New(os.Stdout, "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
+	Warning.Logger = log.New(io.MultiWriter(consoleWriter, fileWriter), "WARNING ", log.Ldate|log.Ltime)
 	Warning.Level = WarningLevel
-	// 将错误日志写入log文件
 	Error = &TiLog{}
-	Error.Logger = log.New(io.MultiWriter(file, os.Stderr), "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
+	Error.Logger = log.New(io.MultiWriter(consoleWriter, fileWriter), "ERROR   ", log.Ldate|log.Ltime)
 	Error.Level = ErrorLevel
 }
 
@@ -157,15 +193,15 @@ func InitLoggerWithObject(logLevel LogLevel) {
 	InitError(logLevel.Error)
 }
 
-// InitTrace 初始化Trace，默认情况下不输出 TODO 后面的输出到控制台的log需要去掉，只保留写入到文件的日志
+// InitTrace 初始化Trace，默认情况下不输出
 func InitTrace(level string) {
 	Trace.Level = TraceLevel
 	switch {
 	case level == "" || level == "discard":
-		Trace.Logger = log.New(io.Discard, "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
+		Trace.Logger = log.New(io.Discard, "TRACE   ", log.Ldate|log.Ltime)
 		break
 	case level == "stdout":
-		Trace.Logger = log.New(os.Stdout, "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
+		Trace.Logger = log.New(io.MultiWriter(consoleWriter), "TRACE   ", log.Ldate|log.Ltime)
 		break
 	default:
 		logFile, ok := logFileMapping.Load(level)
@@ -173,7 +209,7 @@ func InitTrace(level string) {
 			log.Print("Failed to open trace log file: ", level)
 			break
 		}
-		Trace.Logger = log.New(io.MultiWriter(logFile.(*os.File), os.Stderr), "\x1b[42m TRACE   \x1b[0m ", log.Ldate|log.Ltime)
+		Trace.Logger = log.New(io.MultiWriter(logFile.(*os.File), consoleWriter), "TRACE   ", log.Ldate|log.Ltime)
 	}
 }
 
@@ -182,10 +218,10 @@ func InitInfo(level string) {
 	Info.Level = InfoLevel
 	switch {
 	case level == "" || level == "discard":
-		Info.Logger = log.New(io.Discard, "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
+		Info.Logger = log.New(io.Discard, "INFO    ", log.Ldate|log.Ltime)
 		break
 	case level == "stdout":
-		Info.Logger = log.New(os.Stdout, "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
+		Info.Logger = log.New(io.MultiWriter(consoleWriter), "INFO    ", log.Ldate|log.Ltime)
 		break
 	default:
 		logFile, ok := logFileMapping.Load(level)
@@ -193,7 +229,7 @@ func InitInfo(level string) {
 			log.Print("Failed to open info log file: ", level)
 			break
 		}
-		Info.Logger = log.New(io.MultiWriter(logFile.(*os.File), os.Stderr), "\x1b[44m INFO    \x1b[0m ", log.Ldate|log.Ltime)
+		Info.Logger = log.New(io.MultiWriter(logFile.(*os.File), consoleWriter), "INFO    ", log.Ldate|log.Ltime)
 		break
 	}
 }
@@ -203,10 +239,10 @@ func InitWarning(level string) {
 	Warning.Level = WarningLevel
 	switch {
 	case level == "" || level == "discard":
-		Warning.Logger = log.New(io.Discard, "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
+		Warning.Logger = log.New(io.Discard, "WARNING ", log.Ldate|log.Ltime)
 		break
 	case level == "stdout":
-		Warning.Logger = log.New(os.Stdout, "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
+		Warning.Logger = log.New(io.MultiWriter(consoleWriter), "WARNING ", log.Ldate|log.Ltime)
 		break
 	default:
 		logFile, ok := logFileMapping.Load(level)
@@ -214,7 +250,7 @@ func InitWarning(level string) {
 			log.Print("Failed to open warning log file: ", level)
 			break
 		}
-		Warning.Logger = log.New(io.MultiWriter(logFile.(*os.File), os.Stderr), "\x1b[43m WARNING \x1b[0m ", log.Ldate|log.Ltime)
+		Warning.Logger = log.New(io.MultiWriter(logFile.(*os.File), consoleWriter), "WARNING ", log.Ldate|log.Ltime)
 		break
 	}
 }
@@ -224,10 +260,10 @@ func InitError(level string) {
 	Error.Level = ErrorLevel
 	switch {
 	case level == "" || level == "discard":
-		Error.Logger = log.New(io.Discard, "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
+		Error.Logger = log.New(io.Discard, "ERROR   ", log.Ldate|log.Ltime)
 		break
 	case level == "stdout":
-		Error.Logger = log.New(os.Stdout, "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
+		Error.Logger = log.New(io.MultiWriter(consoleWriter), "ERROR   ", log.Ldate|log.Ltime)
 		break
 	default:
 		logFile, ok := logFileMapping.Load(level)
@@ -235,7 +271,7 @@ func InitError(level string) {
 			log.Print("Failed to open error log file: ", level)
 			break
 		}
-		Error.Logger = log.New(io.MultiWriter(logFile.(*os.File), os.Stderr), "\x1b[41m ERROR   \x1b[0m ", log.Ldate|log.Ltime)
+		Error.Logger = log.New(io.MultiWriter(logFile.(*os.File), consoleWriter), "ERROR   ", log.Ldate|log.Ltime)
 		break
 	}
 }
@@ -334,22 +370,4 @@ func sliceLog(logLevel LogLevel, current time.Time) {
 	InitInfo(logLevel.Info)
 	InitWarning(logLevel.Warning)
 	InitError(logLevel.Error)
-}
-
-// //////////////////////////////////////////////////http相关工具函数//////////////////////////////////////////////////////
-
-// StatusColor 给http状态码进行终端着色
-//   - status: 状态码
-func StatusColor(status int) (coloredStatus string) {
-	switch {
-	case status < http.StatusMultipleChoices:
-		coloredStatus = fmt.Sprintf("\x1B[6;30;32m[%d]\x1B[0m", status)
-	case status < http.StatusBadRequest:
-		coloredStatus = fmt.Sprintf("\x1B[6;30;34m[%d]\x1B[0m", status)
-	case status < http.StatusInternalServerError:
-		coloredStatus = fmt.Sprintf("\x1B[6;30;33m[%d]\x1B[0m", status)
-	default:
-		coloredStatus = fmt.Sprintf("\x1B[6;30;31m[%d]\x1B[0m", status)
-	}
-	return
 }
