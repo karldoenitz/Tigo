@@ -2,10 +2,11 @@ package web
 
 import (
 	"errors"
-	"github.com/gorilla/mux"
-	"github.com/karldoenitz/Tigo/logger"
 	"net/http"
 	"time"
+
+	"github.com/gorilla/mux"
+	"github.com/karldoenitz/Tigo/logger"
 )
 
 // middleware http中间件
@@ -83,10 +84,10 @@ func HttpContextLogMiddleware(next http.HandlerFunc) http.HandlerFunc {
 			duration := time.Now().Sub(startTime).Seconds() * 1e3
 			switch status {
 			case http.StatusInternalServerError:
-				logger.Error.Printf("%s | %fms | %s %s", logger.StatusColor(status), duration, requestMethod, url)
+				logger.Error.Printf("%d | %fms | %s %s", status, duration, requestMethod, url)
 				break
 			default:
-				logger.Info.Printf("%s | %fms | %s %s", logger.StatusColor(status), duration, requestMethod, url)
+				logger.Info.Printf("%d | %fms | %s %s", status, duration, requestMethod, url)
 			}
 		}()
 		next.ServeHTTP(&httpResponseWriter, r)
