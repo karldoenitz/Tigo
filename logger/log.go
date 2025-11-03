@@ -34,15 +34,8 @@ var consoleWriter = &ConsoleWriter{writer: os.Stdout}
 
 var dateFormatter = ".2006-01-02_15:04:05"
 
+// TODO 删除这一行，默认情况下框架日志不往文件写
 var logPath = ""
-
-// TODO 删除无效变量
-var formatter = map[int]string{
-	TraceLevel:   "\x1b[32m %s \x1b[0m",
-	InfoLevel:    "\x1b[34m %s \x1b[0m",
-	WarningLevel: "\x1b[33m %s \x1b[0m",
-	ErrorLevel:   "\x1b[31m %s \x1b[0m",
-}
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 定义控制台日志的配色常量（ANSI 转义码）
