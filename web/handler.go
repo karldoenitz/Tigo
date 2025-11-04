@@ -6,10 +6,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
-	"github.com/karldoenitz/Tigo/binding"
-	"github.com/karldoenitz/Tigo/logger"
-	"gorm.io/gorm"
 	"html/template"
 	"io"
 	"net/http"
@@ -18,6 +14,11 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/gorilla/mux"
+	"github.com/karldoenitz/Tigo/binding"
+	"github.com/karldoenitz/Tigo/logger"
+	"gorm.io/gorm"
 )
 
 // BaseHandler 是Handler的基础类，开发者开发的handler继承此类
@@ -68,7 +69,7 @@ func (baseHandler *BaseHandler) PassJson() {
 	}
 }
 
-/////////////////////////////////////////////////////output/////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////output/////////////////////////////////////////////////////////////
 
 // ToJson 将对象转化为Json字符串，转换失败则返回空字符串。
 // 传入参数Response为一个interface，必须有成员函数Print。
@@ -287,7 +288,7 @@ func (baseHandler *BaseHandler) RedirectTo(url string, status int, expire ...tim
 	baseHandler.redirect(url, status, expire...)
 }
 
-/////////////////////////////////////////////////////cookie/////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////cookie/////////////////////////////////////////////////////////////
 
 // SetCookie 设置cookie
 // SetCookie未设置cookie的domain及path，此cookie仅对当前路径有效，设置其他路径cookie可参考SetAdvancedCookie
@@ -471,7 +472,7 @@ func (baseHandler *BaseHandler) ClearAllCookie() {
 	}
 }
 
-/////////////////////////////////////////////////////session////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////session////////////////////////////////////////////////////////////
 
 // SetSession 根据key设置session值
 //   - key: session对应的键
@@ -537,7 +538,7 @@ func (baseHandler *BaseHandler) DelSession() {
 	baseHandler.SetAdvancedCookie(SessionCookieName, "", "maxAge=0", "path=/")
 }
 
-/////////////////////////////////////////////////////input//////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////input//////////////////////////////////////////////////////////////
 
 // GetHeader 获取header
 func (baseHandler *BaseHandler) GetHeader(name string) (value string) {
@@ -575,7 +576,7 @@ func (baseHandler *BaseHandler) GetParameter(key string) (value *ReqParams) {
 func (baseHandler *BaseHandler) GetJsonValue(key string) interface{} {
 	var mapResult map[string]interface{}
 	jsonData := baseHandler.GetBody()
-	//使用 json.Unmarshal(data []byte, v interface{})进行转换，返回 error 信息
+	// 使用 json.Unmarshal(data []byte, v interface{})进行转换，返回 error 信息
 	err := json.Unmarshal(jsonData, &mapResult)
 	if err != nil {
 		return ""
@@ -605,7 +606,7 @@ func (baseHandler *BaseHandler) TeardownRequest() {
 	return
 }
 
-//////////////////////////////////////////////////HTTP Method///////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////HTTP Method///////////////////////////////////////////////////////////
 
 // 请求方法不合法
 func (baseHandler *BaseHandler) methodNotAllowed() {
@@ -651,7 +652,7 @@ func (baseHandler *BaseHandler) Options() {
 	baseHandler.methodNotAllowed()
 }
 
-//////////////////////////////////////////////////Context Method////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////Context Method////////////////////////////////////////////////////////
 
 // SetCtxVal 在上下文中设置值
 //   - demo请查看源代码中的注释
@@ -675,7 +676,7 @@ func (baseHandler *BaseHandler) GetCtxVal(key string) interface{} {
 	return baseHandler.Request.Context().Value(key)
 }
 
-//////////////////////////////////////////////////http message dump/////////////////////////////////////////////////////
+// ////////////////////////////////////////////////http message dump/////////////////////////////////////////////////////
 
 // 获取http请求报文
 func (baseHandler *BaseHandler) getHttpRequestMsg() string {
@@ -690,7 +691,7 @@ func (baseHandler *BaseHandler) getHttpRequestMsg() string {
 	return string(req)
 }
 
-// DumpHttpRequestMsg 获取http请求报文，根据logLevel值进行不同的输出
+// DumpHttpRequestMsg 获取http请求报文，根据logLevel值进行不同的输出 TODO 这个函数需要改造一下
 //   - 1: 将http报文输出到trace级别日志中
 //   - 2: 将http报文输出到info级别日志中
 //   - 3: 将http报文输出到warning级别日志中
@@ -712,7 +713,7 @@ func (baseHandler *BaseHandler) DumpHttpRequestMsg(logLevel int) {
 	}
 }
 
-////////////////////////////////////////////////////////utils///////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////utils///////////////////////////////////////////////////////////
 
 // CheckJsonBinding 检查提交的json是否符合要求
 func (baseHandler *BaseHandler) CheckJsonBinding(obj interface{}) error {
