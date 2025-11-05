@@ -691,26 +691,11 @@ func (baseHandler *BaseHandler) getHttpRequestMsg() string {
 	return string(req)
 }
 
-// DumpHttpRequestMsg 获取http请求报文，根据logLevel值进行不同的输出 TODO 这个函数需要改造一下
-//   - 1: 将http报文输出到trace级别日志中
-//   - 2: 将http报文输出到info级别日志中
-//   - 3: 将http报文输出到warning级别日志中
-//   - 4: 将http报文输出到error级别日志中
-//   - others: 将http报文输出到控制台
-func (baseHandler *BaseHandler) DumpHttpRequestMsg(logLevel int) {
+// DumpHttpRequestMsg 获取http请求报文并打印到info日志中
+func (baseHandler *BaseHandler) DumpHttpRequestMsg() string {
 	reqMsg := baseHandler.getHttpRequestMsg()
-	switch logLevel {
-	case logger.TraceLevel:
-		logger.Trace.Println(reqMsg)
-	case logger.InfoLevel:
-		logger.Info.Println(reqMsg)
-	case logger.WarningLevel:
-		logger.Warning.Println(reqMsg)
-	case logger.ErrorLevel:
-		logger.Error.Println(reqMsg)
-	default:
-		fmt.Println(reqMsg)
-	}
+	logger.Info.Println(reqMsg)
+	return reqMsg
 }
 
 // //////////////////////////////////////////////////////utils///////////////////////////////////////////////////////////
