@@ -127,7 +127,7 @@ func updateLogMapping(filePath string) {
 	}
 }
 
-// 初始化log模块
+// 初始化log模块 TODO 简化代码，删除默认情况下输出到文件的逻辑
 func initLogger() {
 	file, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
