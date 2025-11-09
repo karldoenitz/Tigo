@@ -22,27 +22,12 @@ var (
 	Error   *TiLog
 )
 
-// TraceLevel 等变量表示log实例的级别
-const (
-	TraceLevel int = iota + 1
-	InfoLevel
-	WarningLevel
-	ErrorLevel
-)
-
 var consoleWriter = &ConsoleWriter{writer: os.Stdout}
 
 var dateFormatter = ".2006-01-02_15:04:05"
 
+// TODO 删除这一行，默认情况下框架日志不往文件写
 var logPath = ""
-
-// TODO 删除无效变量
-var formatter = map[int]string{
-	TraceLevel:   "\x1b[32m %s \x1b[0m",
-	InfoLevel:    "\x1b[34m %s \x1b[0m",
-	WarningLevel: "\x1b[33m %s \x1b[0m",
-	ErrorLevel:   "\x1b[31m %s \x1b[0m",
-}
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 定义控制台日志的配色常量（ANSI 转义码）
@@ -106,7 +91,6 @@ type LogLevel struct {
 // TiLog 是Tigo自定义的log结构体
 type TiLog struct {
 	*log.Logger
-	Level int
 }
 
 // Printf 格式化输出log
@@ -143,7 +127,7 @@ func updateLogMapping(filePath string) {
 	}
 }
 
-// 初始化log模块
+// 初始化log模块 TODO 简化代码，删除默认情况下输出到文件的逻辑
 func initLogger() {
 	file, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
@@ -152,16 +136,12 @@ func initLogger() {
 	var fileWriter = &FileWriter{writer: file}
 	Trace = &TiLog{}
 	Trace.Logger = log.New(io.MultiWriter(consoleWriter, fileWriter), "TRACE   ", log.Ldate|log.Ltime)
-	Trace.Level = TraceLevel
 	Info = &TiLog{}
 	Info.Logger = log.New(io.MultiWriter(consoleWriter, fileWriter), "INFO    ", log.Ldate|log.Ltime)
-	Info.Level = InfoLevel
 	Warning = &TiLog{}
 	Warning.Logger = log.New(io.MultiWriter(consoleWriter, fileWriter), "WARNING ", log.Ldate|log.Ltime)
-	Warning.Level = WarningLevel
 	Error = &TiLog{}
 	Error.Logger = log.New(io.MultiWriter(consoleWriter, fileWriter), "ERROR   ", log.Ldate|log.Ltime)
-	Error.Level = ErrorLevel
 }
 
 // 初始化函数，加载log模块时运行
@@ -195,7 +175,6 @@ func InitLoggerWithObject(logLevel LogLevel) {
 
 // InitTrace 初始化Trace，默认情况下不输出
 func InitTrace(level string) {
-	Trace.Level = TraceLevel
 	switch {
 	case level == "" || level == "discard":
 		Trace.Logger = log.New(io.Discard, "TRACE   ", log.Ldate|log.Ltime)
@@ -215,7 +194,6 @@ func InitTrace(level string) {
 
 // InitInfo 初始化Info，默认情况下输出到终端
 func InitInfo(level string) {
-	Info.Level = InfoLevel
 	switch {
 	case level == "" || level == "discard":
 		Info.Logger = log.New(io.Discard, "INFO    ", log.Ldate|log.Ltime)
@@ -236,7 +214,6 @@ func InitInfo(level string) {
 
 // InitWarning 初始化Warning，默认情况下输出到终端
 func InitWarning(level string) {
-	Warning.Level = WarningLevel
 	switch {
 	case level == "" || level == "discard":
 		Warning.Logger = log.New(io.Discard, "WARNING ", log.Ldate|log.Ltime)
@@ -257,7 +234,6 @@ func InitWarning(level string) {
 
 // InitError 初始化Error，默认情况下输出到文件
 func InitError(level string) {
-	Error.Level = ErrorLevel
 	switch {
 	case level == "" || level == "discard":
 		Error.Logger = log.New(io.Discard, "ERROR   ", log.Ldate|log.Ltime)
