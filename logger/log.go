@@ -26,9 +26,6 @@ var consoleWriter = &ConsoleWriter{writer: os.Stdout}
 
 var dateFormatter = ".2006-01-02_15:04:05"
 
-// TODO 删除这一行，默认情况下框架日志不往文件写
-var logPath = ""
-
 // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 定义控制台日志的配色常量（ANSI 转义码）
 const (
@@ -141,12 +138,6 @@ func initLogger() {
 
 // 初始化函数，加载log模块时运行
 func init() {
-	dir, err := os.Getwd()
-	if err != nil {
-		println(err.Error())
-		dir = "/var"
-	}
-	logPath = dir + "/log.log"
 	initLogger()
 }
 
