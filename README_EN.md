@@ -20,16 +20,12 @@ A web framework developed in go language.
 
 # Install
 ```shell
-export GO111MODULE=off; 
-go get github.com/karldoenitz/Tigo/...
-export GO111MODULE=on; 
+go install github.com/karldoenitz/Tigo/external_tools/tiger@latest
 ```
 
-# Update
+# Create Project
 ```shell
-export GO111MODULE=off; 
-go get -u github.com/karldoenitz/Tigo/...
-export GO111MODULE=on; 
+tiger create aowuProject
 ```
 
 # Update to defined version
