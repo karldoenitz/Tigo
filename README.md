@@ -20,16 +20,12 @@
 
 # 安装
 ```shell
-export GO111MODULE=off; 
-go get github.com/karldoenitz/Tigo/...
-export GO111MODULE=on; 
+go install github.com/karldoenitz/Tigo/external_tools/tiger@latest
 ```
 
-# 升级
+# 初始化工程
 ```shell
-export GO111MODULE=off; 
-go get -u github.com/karldoenitz/Tigo/...
-export GO111MODULE=on; 
+tiger create aowuProject
 ```
 
 # 升级到指定版本
@@ -44,8 +40,9 @@ go get github.com/karldoenitz/Tigo@{version}
 package main
 
 import (
-    "github.com/karldoenitz/Tigo/web"
-    "net/http"
+	"net/http"
+
+	"github.com/karldoenitz/Tigo/web"
 )
 
 // DemoHandler handler

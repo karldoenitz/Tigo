@@ -26,9 +26,6 @@ var consoleWriter = &ConsoleWriter{writer: os.Stdout}
 
 var dateFormatter = ".2006-01-02_15:04:05"
 
-// TODO 删除这一行，默认情况下框架日志不往文件写
-var logPath = ""
-
 // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 定义控制台日志的配色常量（ANSI 转义码）
 const (
@@ -127,31 +124,20 @@ func updateLogMapping(filePath string) {
 	}
 }
 
-// 初始化log模块 TODO 简化代码，删除默认情况下输出到文件的逻辑
+// 初始化log模块
 func initLogger() {
-	file, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatalln("Failed to open error log file: ", err)
-	}
-	var fileWriter = &FileWriter{writer: file}
 	Trace = &TiLog{}
-	Trace.Logger = log.New(io.MultiWriter(consoleWriter, fileWriter), "TRACE   ", log.Ldate|log.Ltime)
+	Trace.Logger = log.New(io.MultiWriter(consoleWriter), "TRACE   ", log.Ldate|log.Ltime)
 	Info = &TiLog{}
-	Info.Logger = log.New(io.MultiWriter(consoleWriter, fileWriter), "INFO    ", log.Ldate|log.Ltime)
+	Info.Logger = log.New(io.MultiWriter(consoleWriter), "INFO    ", log.Ldate|log.Ltime)
 	Warning = &TiLog{}
-	Warning.Logger = log.New(io.MultiWriter(consoleWriter, fileWriter), "WARNING ", log.Ldate|log.Ltime)
+	Warning.Logger = log.New(io.MultiWriter(consoleWriter), "WARNING ", log.Ldate|log.Ltime)
 	Error = &TiLog{}
-	Error.Logger = log.New(io.MultiWriter(consoleWriter, fileWriter), "ERROR   ", log.Ldate|log.Ltime)
+	Error.Logger = log.New(io.MultiWriter(consoleWriter), "ERROR   ", log.Ldate|log.Ltime)
 }
 
 // 初始化函数，加载log模块时运行
 func init() {
-	dir, err := os.Getwd()
-	if err != nil {
-		println(err.Error())
-		dir = "/var"
-	}
-	logPath = dir + "/log.log"
 	initLogger()
 }
 

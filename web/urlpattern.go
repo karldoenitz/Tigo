@@ -2,9 +2,10 @@
 package web
 
 import (
-	"github.com/gorilla/mux"
 	"net/http"
 	"reflect"
+
+	"github.com/gorilla/mux"
 )
 
 // 定义函数名
@@ -17,7 +18,7 @@ const (
 
 // UrlPatternHandle 是URL路由句柄，用来驱动url路由以及其映射的handler
 type UrlPatternHandle struct {
-	Handler    interface{}
+	Handler    reflect.Type
 	requestUrl string
 }
 
@@ -28,12 +29,8 @@ type UrlPatternHandle struct {
 //   - 4、调用handler中的功能方法；
 //   - 5、进行HTTP请求结束处理。
 func (urlPatternMidWare UrlPatternHandle) Handle(responseWriter http.ResponseWriter, request *http.Request) {
-	handlerType := reflect.TypeOf(urlPatternMidWare.Handler)
-	if handlerType.Kind() == reflect.Ptr {
-		handlerType = handlerType.Elem()
-	}
 	// 加载handler
-	handler := reflect.New(handlerType)
+	handler := reflect.New(urlPatternMidWare.Handler)
 	// 调用InitHandler方法
 	VoidFuncCall(handler, FnInitHandler, reflect.ValueOf(responseWriter), reflect.ValueOf(request))
 	// 调用PassJson方法
@@ -89,8 +86,12 @@ func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v interface {
 // Init 初始化url映射，遍历UrlMapping，将handler与对应的URL依次挂载到http服务上
 func (urlPattern *UrlPattern) Init() {
 	for _, pattern := range urlPattern.UrlPatterns {
+		handlerType := reflect.TypeOf(pattern.Handler)
+		if handlerType.Kind() == reflect.Ptr {
+			handlerType = handlerType.Elem()
+		}
 		urlPattern.AppendRouterPattern(pattern, &UrlPatternHandle{
-			Handler:    pattern.Handler,
+			Handler:    handlerType,
 			requestUrl: pattern.Url,
 		})
 	}

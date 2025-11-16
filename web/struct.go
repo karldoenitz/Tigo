@@ -3,17 +3,18 @@ package web
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/karldoenitz/Tigo/logger"
-	"gopkg.in/yaml.v2"
 	"net/http"
 	"os"
 	"reflect"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/karldoenitz/Tigo/logger"
+	"gopkg.in/yaml.v2"
 )
 
-////////////////////////////////////// Structure Cookie ////////////////////////////////////////////////////////////////
+// //////////////////////////////////// Structure Cookie ///////////////////////////////////////////////////////////////
 
 // Cookie 是自定义Cookie结构体，可参看http.Cookie
 type Cookie struct {
@@ -117,7 +118,7 @@ func (cookie *Cookie) SetSecurityKey(key string) {
 	cookie.IsSecurity = true
 }
 
-////////////////////////////////////// Structure HttpResponseWriter ////////////////////////////////////////////////////
+// //////////////////////////////////// Structure HttpResponseWriter ///////////////////////////////////////////////////
 
 // HttpResponseWriter Http响应写入器，用于在中间件中修改http响应报文
 type HttpResponseWriter struct {
@@ -136,7 +137,7 @@ func (httpResponseWriter *HttpResponseWriter) GetStatus() int {
 	return httpResponseWriter.status
 }
 
-////////////////////////////////////// Structure GlobalConfig //////////////////////////////////////////////////////////
+// //////////////////////////////////// Structure GlobalConfig /////////////////////////////////////////////////////////
 
 // GlobalConfig 全局配置对象
 type GlobalConfig struct {
@@ -174,6 +175,7 @@ func (globalConfig *GlobalConfig) initWithYaml(configPath string) {
 		fmt.Println(ymlErr.Error())
 		os.Exit(1)
 	}
+	// TODO 简化日志处理
 	logger.InitLoggerWithObject(globalConfig.Log)
 }
 
@@ -189,10 +191,11 @@ func (globalConfig *GlobalConfig) initWithJson(configPath string) {
 		fmt.Println(jsonErr.Error())
 		os.Exit(1)
 	}
+	// TODO 简化日志处理
 	logger.InitLoggerWithObject(globalConfig.Log)
 }
 
-////////////////////////////////////// Json Param Structure ////////////////////////////////////////////////////////////
+// //////////////////////////////////// Json Param Structure ///////////////////////////////////////////////////////////
 
 // ReqParams 请求参数结构体
 type ReqParams struct {
@@ -330,7 +333,7 @@ func (jsonParam *ReqParams) To(result interface{}) {
 	}
 }
 
-/////////////////////////////////////////////// Path Param /////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////// Path Param ////////////////////////////////////////////////////////////
 
 type PathParam string
 
