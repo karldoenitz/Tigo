@@ -40,8 +40,9 @@ go get github.com/karldoenitz/Tigo@{version}
 package main
 
 import (
-    "github.com/karldoenitz/Tigo/web"
-    "net/http"
+	"net/http"
+
+	"github.com/karldoenitz/Tigo/web"
 )
 
 // DemoHandler handler
