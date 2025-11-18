@@ -238,7 +238,7 @@ func InitError(level string) {
 	}
 }
 
-// 开启定时器，传入日志切分函数，日至等级对象
+// 开启定时器，传入日志切分函数，日至等级对象 @TODO 日志切分这里，后续需要优化
 func startTimer(F func(LogLevel, time.Time), logLevel LogLevel) {
 	// 如果没有设置日志切分，则直接返回，不设置定时任务
 	if logLevel.TimeRoll == "" {
