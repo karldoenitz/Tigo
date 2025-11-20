@@ -257,7 +257,7 @@ func startTimer(F func(LogLevel, time.Time), logLevel LogLevel) {
 	<-ch
 }
 
-// 解析time_roll配置文件，获取定时任务运行频率
+// 解析time_roll配置文件，获取定时任务运行频率 @ TODO 这个切分规则后续也要改一下
 // time_roll格式必须为:
 //   - D*intN: 每N天切分一次日志
 //   - H*intN: 每N小时切分一次日志
