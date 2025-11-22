@@ -169,6 +169,7 @@ func InitTrace(level string) {
 		Trace.Logger = log.New(io.MultiWriter(consoleWriter), "TRACE   ", log.Ldate|log.Ltime)
 		break
 	default:
+		// TODO 这里后续需要优化，判断logFile类型，是否为*os.File，从syncMap中取出数据，必须校验类型
 		logFile, ok := logFileMapping.Load(level)
 		if !ok {
 			log.Print("Failed to open trace log file: ", level)
