@@ -169,6 +169,7 @@ func InitTrace(level string) {
 		Trace.Logger = log.New(io.MultiWriter(consoleWriter), "TRACE   ", log.Ldate|log.Ltime)
 		break
 	default:
+		// TODO 这里后续需要优化，判断logFile类型，是否为*os.File，从syncMap中取出数据，必须校验类型
 		logFile, ok := logFileMapping.Load(level)
 		if !ok {
 			log.Print("Failed to open trace log file: ", level)
@@ -238,7 +239,7 @@ func InitError(level string) {
 	}
 }
 
-// 开启定时器，传入日志切分函数，日至等级对象
+// 开启定时器，传入日志切分函数，日至等级对象 @TODO 日志切分这里，后续需要优化
 func startTimer(F func(LogLevel, time.Time), logLevel LogLevel) {
 	// 如果没有设置日志切分，则直接返回，不设置定时任务
 	if logLevel.TimeRoll == "" {
@@ -257,7 +258,7 @@ func startTimer(F func(LogLevel, time.Time), logLevel LogLevel) {
 	<-ch
 }
 
-// 解析time_roll配置文件，获取定时任务运行频率
+// 解析time_roll配置文件，获取定时任务运行频率 @ TODO 这个切分规则后续也要改一下
 // time_roll格式必须为:
 //   - D*intN: 每N天切分一次日志
 //   - H*intN: 每N小时切分一次日志
