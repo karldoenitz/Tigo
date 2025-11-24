@@ -175,7 +175,12 @@ func InitTrace(level string) {
 			log.Print("Failed to open trace log file: ", level)
 			break
 		}
-		Trace.Logger = log.New(io.MultiWriter(logFile.(*os.File), consoleWriter), "TRACE   ", log.Ldate|log.Ltime)
+		loggerFile, ok := logFile.(*os.File)
+		if !ok {
+			log.Print("Failed to convert trace log file type: ", level)
+			break
+		}
+		Trace.Logger = log.New(io.MultiWriter(loggerFile, consoleWriter), "TRACE   ", log.Ldate|log.Ltime)
 	}
 }
 
