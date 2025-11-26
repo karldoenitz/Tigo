@@ -169,7 +169,6 @@ func InitTrace(level string) {
 		Trace.Logger = log.New(io.MultiWriter(consoleWriter), "TRACE   ", log.Ldate|log.Ltime)
 		break
 	default:
-		// TODO 这里后续需要优化，判断logFile类型，是否为*os.File，从syncMap中取出数据，必须校验类型
 		logFile, ok := logFileMapping.Load(level)
 		if !ok {
 			log.Print("Failed to open trace log file: ", level)
@@ -199,7 +198,12 @@ func InitInfo(level string) {
 			log.Print("Failed to open info log file: ", level)
 			break
 		}
-		Info.Logger = log.New(io.MultiWriter(logFile.(*os.File), consoleWriter), "INFO    ", log.Ldate|log.Ltime)
+		loggerFile, ok := logFile.(*os.File)
+		if !ok {
+			log.Print("Failed to convert info log file type: ", level)
+			break
+		}
+		Info.Logger = log.New(io.MultiWriter(loggerFile, consoleWriter), "INFO    ", log.Ldate|log.Ltime)
 		break
 	}
 }
@@ -214,6 +218,7 @@ func InitWarning(level string) {
 		Warning.Logger = log.New(io.MultiWriter(consoleWriter), "WARNING ", log.Ldate|log.Ltime)
 		break
 	default:
+		// TODO 这里后续需要优化，判断logFile类型，是否为*os.File，从syncMap中取出数据，必须校验类型
 		logFile, ok := logFileMapping.Load(level)
 		if !ok {
 			log.Print("Failed to open warning log file: ", level)
