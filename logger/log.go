@@ -113,14 +113,11 @@ var logFileMapping = sync.Map{}
 // 更新log文件路径与log文件对象的映射关系
 func updateLogMapping(filePath string) {
 	if filePath != "" && filePath != "discard" && filePath != "stdout" {
-		_, isExist := logFileMapping.Load(filePath)
-		if !isExist {
-			file, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-			if err != nil {
-				log.Fatalln("Failed to open error log file: ", err)
-			}
-			logFileMapping.Store(filePath, file)
+		file, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+		if err != nil {
+			log.Fatalln("Failed to open error log file: ", err)
 		}
+		logFileMapping.Store(filePath, file)
 	}
 }
 
@@ -253,7 +250,7 @@ func InitError(level string) {
 	}
 }
 
-// 开启定时器，传入日志切分函数，日至等级对象 @TODO 日志切分这里，后续需要优化
+// 开启定时器，传入日志切分函数，日至等级对象
 func startTimer(F func(LogLevel, time.Time), logLevel LogLevel) {
 	// 如果没有设置日志切分，则直接返回，不设置定时任务
 	if logLevel.TimeRoll == "" {
@@ -272,7 +269,7 @@ func startTimer(F func(LogLevel, time.Time), logLevel LogLevel) {
 	<-ch
 }
 
-// 解析time_roll配置文件，获取定时任务运行频率 @ TODO 这个切分规则后续也要改一下
+// 解析time_roll配置文件，获取定时任务运行频率
 // time_roll格式必须为:
 //   - D*intN: 每N天切分一次日志
 //   - H*intN: 每N小时切分一次日志
@@ -321,27 +318,31 @@ func sliceLog(logLevel LogLevel, current time.Time) {
 	ErrorLogFile, isErrorExisted := logFileMapping.Load(logLevel.Error)
 	// 获取当前切分节点的日志名称
 	nowTimeStr := current.Format(dateFormatter)
-	logLevel.Trace += nowTimeStr
-	logLevel.Info += nowTimeStr
-	logLevel.Warning += nowTimeStr
-	logLevel.Error += nowTimeStr
+	traceLogFileName := logLevel.Trace + nowTimeStr
+	infoLogFileName := logLevel.Info + nowTimeStr
+	warningLogFileName := logLevel.Warning + nowTimeStr
+	errorLogFileName := logLevel.Error + nowTimeStr
+	// 如果上一份日志文件没有关闭则进行关闭
+	if isTraceExisted && TraceLogFile != nil {
+		_ = os.Rename(logLevel.Trace, traceLogFileName)
+		_ = TraceLogFile.(*os.File).Close()
+	}
+	if isInfoExisted && InfoLogFile != nil {
+		_ = os.Rename(logLevel.Info, infoLogFileName)
+		_ = InfoLogFile.(*os.File).Close()
+	}
+	if isWarningExisted && WarningLogFile != nil {
+		_ = os.Rename(logLevel.Warning, warningLogFileName)
+		_ = WarningLogFile.(*os.File).Close()
+	}
+	if isErrorExisted && ErrorLogFile != nil {
+		_ = os.Rename(logLevel.Error, errorLogFileName)
+		_ = ErrorLogFile.(*os.File).Close()
+	}
 	updateLogMapping(logLevel.Trace)
 	updateLogMapping(logLevel.Info)
 	updateLogMapping(logLevel.Warning)
 	updateLogMapping(logLevel.Error)
-	// 如果上一份日志文件没有关闭则进行关闭
-	if isTraceExisted && TraceLogFile != nil {
-		_ = TraceLogFile.(*os.File).Close()
-	}
-	if isInfoExisted && InfoLogFile != nil {
-		_ = InfoLogFile.(*os.File).Close()
-	}
-	if isWarningExisted && WarningLogFile != nil {
-		_ = WarningLogFile.(*os.File).Close()
-	}
-	if isErrorExisted && ErrorLogFile != nil {
-		_ = ErrorLogFile.(*os.File).Close()
-	}
 	// 重新初始化当前日志
 	InitTrace(logLevel.Trace)
 	InitInfo(logLevel.Info)
