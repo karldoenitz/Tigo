@@ -112,13 +112,14 @@ var logFileMapping = sync.Map{}
 
 // 更新log文件路径与log文件对象的映射关系
 func updateLogMapping(filePath string) {
-	if filePath != "" && filePath != "discard" && filePath != "stdout" {
-		file, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-		if err != nil {
-			log.Fatalln("Failed to open error log file: ", err)
-		}
-		logFileMapping.Store(filePath, file)
+	if filePath == "" || filePath == "discard" || filePath == "stdout" {
+		return
 	}
+	file, err := os.OpenFile(filePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalln("Failed to open error log file: ", err)
+	}
+	logFileMapping.Store(filePath, file)
 }
 
 // 初始化log模块
