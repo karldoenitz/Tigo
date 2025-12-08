@@ -3,11 +3,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/karldoenitz/Tigo/web"
 	"os"
 	"os/exec"
 	"strings"
 	"time"
+
+	"github.com/karldoenitz/Tigo/web"
 )
 
 const (
@@ -261,6 +262,7 @@ func execCreate(arg string) {
 	_, _ = fHandler.WriteString(fmt.Sprintf(handlerCode, "PingHandler", "PingHandler", "PingHandler"))
 	_ = f.Close()
 	_ = fHandler.Close()
+
 	fmt.Printf("project `%s` created successfully\n", arg)
 	fmt.Println("Execute go mod")
 }
