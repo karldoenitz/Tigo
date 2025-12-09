@@ -305,7 +305,7 @@ func execAddHandler(handlerName string) {
 	}
 	_, _ = fHandler.WriteString(fmt.Sprintf(handlerCode, handlerName, handlerName, handlerName))
 	_ = fHandler.Close()
-	// 再判断是否有main文件
+	// 判断是否有main文件
 	_, err = os.Stat(fmt.Sprintf("%s/main.go", workDir))
 	if err != nil {
 		// 如果没有则退出
