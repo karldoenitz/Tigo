@@ -247,6 +247,9 @@ func execCreate(arg string) {
 	if err != nil {
 		panic(err.Error())
 	}
+	defer func() {
+		_ = f.Close()
+	}()
 	if _, err := f.WriteString(fmt.Sprintf(mainCode, arg)); err != nil {
 		panic(err)
 	}
