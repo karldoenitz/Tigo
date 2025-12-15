@@ -103,6 +103,7 @@ func init() {
 	Logger.SetOutput(os.Stdout)
 	Logger.SetLevel(logrus.InfoLevel)
 }
+
 `
 	configCodeJson = `{
 	"cookie": "%s",
@@ -247,6 +248,9 @@ func execCreate(arg string) {
 	if err != nil {
 		panic(err.Error())
 	}
+	defer func() {
+		_ = f.Close()
+	}()
 	if _, err := f.WriteString(fmt.Sprintf(mainCode, arg)); err != nil {
 		panic(err)
 	}
@@ -305,7 +309,7 @@ func execAddHandler(handlerName string) {
 	}
 	_, _ = fHandler.WriteString(fmt.Sprintf(handlerCode, handlerName, handlerName, handlerName))
 	_ = fHandler.Close()
-	// 再判断是否有main文件
+	// 判断是否有 main 文件
 	_, err = os.Stat(fmt.Sprintf("%s/main.go", workDir))
 	if err != nil {
 		// 如果没有则退出
@@ -347,7 +351,7 @@ func execAddHandler(handlerName string) {
 
 // execAddLogger 增加日志配置
 func execAddLogger() {
-	// TODO 这里增加logrus配置
+	// TODO 这里增加logrus配置，后续增加支持，目前只实现一个入口，具体逻辑还没添加，工作太忙了，没空维护
 	workDir := getWorkingDirPath()
 	loggerPath := fmt.Sprintf("%s/common", workDir)
 	_ = os.Mkdir(loggerPath, os.ModePerm)
