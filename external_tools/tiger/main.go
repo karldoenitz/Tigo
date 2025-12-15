@@ -103,6 +103,7 @@ func init() {
 	Logger.SetOutput(os.Stdout)
 	Logger.SetLevel(logrus.InfoLevel)
 }
+
 `
 	configCodeJson = `{
 	"cookie": "%s",
