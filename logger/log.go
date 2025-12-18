@@ -350,3 +350,15 @@ func sliceLog(logLevel LogLevel, current time.Time) {
 	InitWarning(logLevel.Warning)
 	InitError(logLevel.Error)
 }
+
+// Close 关闭所有日志文件
+func Close() {
+	logFileMapping.Range(func(key, value interface{}) bool {
+		file, ok := value.(*os.File)
+		if !ok {
+			return true
+		}
+		_ = file.Close()
+		return true
+	})
+}
