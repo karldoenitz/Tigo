@@ -351,7 +351,7 @@ func execAddHandler(handlerName string) {
 
 // execAddLogger 增加日志配置
 func execAddLogger() {
-	// TODO 这里增加logrus配置，后续增加支持，目前只实现一个入口，具体逻辑还没添加，工作太忙了，没空维护
+	// 这里实现logrus基础功能即可，开发者可以自行增加具体日志配置
 	workDir := getWorkingDirPath()
 	loggerPath := fmt.Sprintf("%s/common", workDir)
 	_ = os.Mkdir(loggerPath, os.ModePerm)
