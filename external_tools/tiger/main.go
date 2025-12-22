@@ -268,6 +268,7 @@ func execCreate(arg string) {
 	_ = fHandler.Close()
 
 	fmt.Printf("project `%s` created successfully\n", arg)
+	fmt.Printf("execute command `cd %s` to enter the project directory\n", projectPath)
 	fmt.Println("Execute go mod")
 }
 
