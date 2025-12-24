@@ -6,10 +6,27 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"text/template"
 	"time"
 
 	"github.com/karldoenitz/Tigo/web"
 )
+
+type TemplateData struct {
+	ProjectName   string
+	PackageName   string
+	HandlerName   string
+	ConfigWorkDir string
+}
+
+type HandlerTemplateData struct {
+	HandlerName string
+}
+
+type ConfigTemplateData struct {
+	CookieKey string
+	WorkDir   string
+}
 
 // getWorkingDirPath 获取当前工作路径
 func getWorkingDirPath() string {
@@ -98,10 +115,19 @@ func execCreate(arg string) {
 	defer func() {
 		_ = f.Close()
 	}()
-	if _, err := f.WriteString(fmt.Sprintf(mainCode, arg)); err != nil {
-		panic(err)
+
+	// 解析main模板
+	mainTmpl, err := template.New("main").Parse(mainCode)
+	if err != nil {
+		panic(fmt.Sprintf("main模板解析失败: %v", err))
 	}
-	// 创建handler文件
+
+	// 执行main模板渲染
+	mainData := TemplateData{ProjectName: arg}
+	if err := mainTmpl.Execute(f, mainData); err != nil {
+		panic(fmt.Sprintf("main模板渲染失败: %v", err))
+	}
+
 	if err := os.Mkdir(projectPath+"/handler", os.ModePerm); err != nil {
 		fmt.Println(err.Error())
 	}
@@ -110,7 +136,19 @@ func execCreate(arg string) {
 		fmt.Println(err.Error())
 		return
 	}
-	_, _ = fHandler.WriteString(fmt.Sprintf(handlerCode, "PingHandler", "PingHandler", "PingHandler"))
+
+	// 解析handler模板
+	handlerTmpl, err := template.New("handler").Parse(handlerCode)
+	if err != nil {
+		panic(fmt.Sprintf("handler模板解析失败: %v", err))
+	}
+
+	// 执行handler模板渲染
+	handlerData := HandlerTemplateData{HandlerName: "PingHandler"}
+	if err := handlerTmpl.Execute(fHandler, handlerData); err != nil {
+		panic(fmt.Sprintf("handler模板渲染失败: %v", err))
+	}
+
 	_ = f.Close()
 	_ = fHandler.Close()
 
@@ -155,7 +193,18 @@ func execAddHandler(handlerName string) {
 		fmt.Println(err.Error())
 		return
 	}
-	_, _ = fHandler.WriteString(fmt.Sprintf(handlerCode, handlerName, handlerName, handlerName))
+
+	// 解析handler模板
+	handlerTmpl, err := template.New("handler").Parse(handlerCode)
+	if err != nil {
+		panic(fmt.Sprintf("handler模板解析失败: %v", err))
+	}
+
+	// 执行handler模板渲染
+	handlerData := HandlerTemplateData{HandlerName: handlerName}
+	if err := handlerTmpl.Execute(fHandler, handlerData); err != nil {
+		panic(fmt.Sprintf("handler模板渲染失败: %v", err))
+	}
 	_ = fHandler.Close()
 	// 判断是否有 main 文件
 	_, err = os.Stat(fmt.Sprintf("%s/main.go", workDir))
@@ -225,10 +274,31 @@ func execConf(arg string) {
 		return
 	}
 	currentTime := time.Now().String() + arg
+	// 准备配置模板数据
+	cookieKey := web.MD5m16(currentTime)
+	configData := ConfigTemplateData{
+		CookieKey: cookieKey,
+		WorkDir:   workDir,
+	}
+
 	if strings.HasSuffix(arg, ".json") {
-		_, _ = f.WriteString(fmt.Sprintf(configCodeJson, web.MD5m16(currentTime), workDir, workDir, workDir))
+		// 解析JSON配置模板
+		jsonTmpl, err := template.New("configJson").Parse(configCodeJson)
+		if err != nil {
+			panic(fmt.Sprintf("JSON配置模板解析失败: %v", err))
+		}
+		if err := jsonTmpl.Execute(f, configData); err != nil {
+			panic(fmt.Sprintf("JSON配置模板渲染失败: %v", err))
+		}
 	} else {
-		_, _ = f.WriteString(fmt.Sprintf(configCodeYaml, web.MD5m16(currentTime), workDir, workDir, workDir))
+		// 解析YAML配置模板
+		yamlTmpl, err := template.New("configYaml").Parse(configCodeYaml)
+		if err != nil {
+			panic(fmt.Sprintf("YAML配置模板解析失败: %v", err))
+		}
+		if err := yamlTmpl.Execute(f, configData); err != nil {
+			panic(fmt.Sprintf("YAML配置模板渲染失败: %v", err))
+		}
 	}
 	_ = f.Close()
 	content, err := os.ReadFile(fmt.Sprintf("%s/main.go", workDir))

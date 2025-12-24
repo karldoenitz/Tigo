@@ -36,7 +36,7 @@ func main() {
 
 import (
 	"github.com/karldoenitz/Tigo/web"
-	"%s/handler"
+	"{{ .ProjectName }}/handler"
 )
 
 // Write you url mapping here
@@ -62,16 +62,16 @@ import (
 	"github.com/karldoenitz/Tigo/web"
 )
 
-type %s struct {
+type {{ .HandlerName }} struct {
 	web.BaseHandler
 }
 
-func (p *%s) Get() {
+func (p *{{ .HandlerName }}) Get() {
 	// write your code here
 	p.ResponseAsText("Pong")
 }
 
-func (p *%s) Post() {
+func (p *{{ .HandlerName }}) Post() {
 	// write your code here
 	p.ResponseAsText("Pong")
 }
@@ -95,25 +95,25 @@ func init() {
 
 `
 	configCodeJson = `{
-	"cookie": "%s",
+	"cookie": "{{ .CookieKey }}",
 	"ip": "0.0.0.0",
 	"port": 8080,
 	"log": {
 		"trace": "stdout",
-		"info": "%s/log/tigo-framework-info.log",
-		"warning": "%s/log/tigo-framework-warning.log",
-		"error": "%s/log/tigo-framework-info-error.log"
+		"info": "{{ .WorkDir }}/log/tigo-framework-info.log",
+		"warning": "{{ .WorkDir }}/log/tigo-framework-warning.log",
+		"error": "{{ .WorkDir }}/log/tigo-framework-info-error.log"
 	}
 }
 `
-	configCodeYaml = `cookie: %s
+	configCodeYaml = `cookie: {{ .CookieKey }}
 ip: 0.0.0.0
 port: 8080
 log:
   trace: stdout
-  info: "%s/log/tigo-framework-info.log"
-  warning: "%s/log/tigo-framework-warning.log"
-  error: "%s/log/tigo-framework-info-error.log"
+  info: "{{ .WorkDir }}/log/tigo-framework-info.log"
+  warning: "{{ .WorkDir }}/log/tigo-framework-warning.log"
+  error: "{{ .WorkDir }}/log/tigo-framework-info-error.log"
 `
 	cmdVerbose = `
 use command tiger to create a Tigo projection.
