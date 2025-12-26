@@ -6,163 +6,27 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"text/template"
 	"time"
 
 	"github.com/karldoenitz/Tigo/web"
 )
 
-const (
-	DemoCode = `package main
-
-import (
-	"github.com/karldoenitz/Tigo/web"
-)
-
-// HelloHandler it's a demo handler
-type HelloHandler struct {
-    web.BaseHandler
+type TemplateData struct {
+	ProjectName   string
+	PackageName   string
+	HandlerName   string
+	ConfigWorkDir string
 }
 
-// Get http get method
-func (h *HelloHandler) Get() {
-	// write your code here
-	h.ResponseAsHtml("<p1 style='color: red'>Hello Tiger Go!</p1>")
+type HandlerTemplateData struct {
+	HandlerName string
 }
 
-// urls url mapping
-var urls = []web.Pattern{
-	{"/hello-world", HelloHandler{}, nil},
+type ConfigTemplateData struct {
+	CookieKey string
+	WorkDir   string
 }
-
-func main() {
-	application := web.Application{
-		IPAddress:   "0.0.0.0",
-		Port:        8888,
-		UrlPatterns: urls,
-	}
-	application.Run()
-}
-`
-	mainCode = `package main
-
-import (
-	"github.com/karldoenitz/Tigo/web"
-	"%s/handler"
-)
-
-// Write you url mapping here
-var urls = []web.Pattern{
-	{"/ping", handler.PingHandler{}, nil},
-}
-
-func main() {
-	application := web.Application{
-		IPAddress:   "0.0.0.0",
-		Port:        8080,
-		UrlPatterns: urls,
-	}
-	application.Run()
-}
-
-`
-	handlerCode = `// you can write your code here.
-// You can add 'Post', 'Put', 'Delete' and other methods to handler.
-package handler
-
-import (
-	"github.com/karldoenitz/Tigo/web"
-)
-
-type %s struct {
-	web.BaseHandler
-}
-
-func (p *%s) Get() {
-	// write your code here
-	p.ResponseAsText("Pong")
-}
-
-func (p *%s) Post() {
-	// write your code here
-	p.ResponseAsText("Pong")
-}
-
-`
-	logCode = `// you can write your code here.
-// You can modify the log level and add more logs.
-package logger
-
-import (
-	"os"
-	"github.com/sirupsen/logrus"
-)
-
-var Logger = logrus.New()
-
-func init() {
-	Logger.SetOutput(os.Stdout)
-	Logger.SetLevel(logrus.InfoLevel)
-}
-
-`
-	configCodeJson = `{
-	"cookie": "%s",
-	"ip": "0.0.0.0",
-	"port": 8080,
-	"log": {
-		"trace": "stdout",
-		"info": "%s/log/tigo-framework-info.log",
-		"warning": "%s/log/tigo-framework-warning.log",
-		"error": "%s/log/tigo-framework-info-error.log"
-	}
-}
-`
-	configCodeYaml = `cookie: %s
-ip: 0.0.0.0
-port: 8080
-log:
-  trace: stdout
-  info: "%s/log/tigo-framework-info.log"
-  warning: "%s/log/tigo-framework-warning.log"
-  error: "%s/log/tigo-framework-info-error.log"
-`
-	cmdVerbose = `
-use command tiger to create a Tigo projection.
-
-Usage:
-
-    tiger <command> [args]
-
-The commands are:
-
-    addHandler      to add a handler for Tigo projection
-    create          to create a Tigo projection
-    conf            to add a configuration for Tigo projection
-    logger          to add a logger for Tigo projection
-    mod             to run go mod
-    version         to show Tigo version
-
-Use "tiger help <command>" for more information about a command.
-
-`
-	cmdCreateVerbose = `
-use this command to create a Tigo project.
-"tiger create <project_name>" can create a project with name "project_name",
-"tiger create demo" can create a demo project.
-
-`
-	cmdConfVerbose = `
-use this command to add a configuration.
-if it's an empty folder, this command will throw an error.
-the new configuration will replace the old configuration.
-
-`
-	cmdAddHandlerVerbose = `
-use this command to add a handler with defined name.
-"tiger addHandler <handler_name>" will add a handler named "handler_name".
-
-`
-)
 
 // getWorkingDirPath 获取当前工作路径
 func getWorkingDirPath() string {
@@ -251,10 +115,19 @@ func execCreate(arg string) {
 	defer func() {
 		_ = f.Close()
 	}()
-	if _, err := f.WriteString(fmt.Sprintf(mainCode, arg)); err != nil {
-		panic(err)
+
+	// 解析main模板
+	mainTmpl, err := template.New("main").Parse(mainCode)
+	if err != nil {
+		panic(fmt.Sprintf("main模板解析失败: %v", err))
 	}
-	// 创建handler文件
+
+	// 执行main模板渲染
+	mainData := TemplateData{ProjectName: arg}
+	if err := mainTmpl.Execute(f, mainData); err != nil {
+		panic(fmt.Sprintf("main模板渲染失败: %v", err))
+	}
+
 	if err := os.Mkdir(projectPath+"/handler", os.ModePerm); err != nil {
 		fmt.Println(err.Error())
 	}
@@ -263,11 +136,24 @@ func execCreate(arg string) {
 		fmt.Println(err.Error())
 		return
 	}
-	_, _ = fHandler.WriteString(fmt.Sprintf(handlerCode, "PingHandler", "PingHandler", "PingHandler"))
+
+	// 解析handler模板
+	handlerTmpl, err := template.New("handler").Parse(handlerCode)
+	if err != nil {
+		panic(fmt.Sprintf("handler模板解析失败: %v", err))
+	}
+
+	// 执行handler模板渲染
+	handlerData := HandlerTemplateData{HandlerName: "PingHandler"}
+	if err := handlerTmpl.Execute(fHandler, handlerData); err != nil {
+		panic(fmt.Sprintf("handler模板渲染失败: %v", err))
+	}
+
 	_ = f.Close()
 	_ = fHandler.Close()
 
 	fmt.Printf("project `%s` created successfully\n", arg)
+	fmt.Printf("execute command `cd %s` to enter the project directory\n", projectPath)
 	fmt.Println("Execute go mod")
 }
 
@@ -307,7 +193,18 @@ func execAddHandler(handlerName string) {
 		fmt.Println(err.Error())
 		return
 	}
-	_, _ = fHandler.WriteString(fmt.Sprintf(handlerCode, handlerName, handlerName, handlerName))
+
+	// 解析handler模板
+	handlerTmpl, err := template.New("handler").Parse(handlerCode)
+	if err != nil {
+		panic(fmt.Sprintf("handler模板解析失败: %v", err))
+	}
+
+	// 执行handler模板渲染
+	handlerData := HandlerTemplateData{HandlerName: handlerName}
+	if err := handlerTmpl.Execute(fHandler, handlerData); err != nil {
+		panic(fmt.Sprintf("handler模板渲染失败: %v", err))
+	}
 	_ = fHandler.Close()
 	// 判断是否有 main 文件
 	_, err = os.Stat(fmt.Sprintf("%s/main.go", workDir))
@@ -377,10 +274,31 @@ func execConf(arg string) {
 		return
 	}
 	currentTime := time.Now().String() + arg
+	// 准备配置模板数据
+	cookieKey := web.MD5m16(currentTime)
+	configData := ConfigTemplateData{
+		CookieKey: cookieKey,
+		WorkDir:   workDir,
+	}
+
 	if strings.HasSuffix(arg, ".json") {
-		_, _ = f.WriteString(fmt.Sprintf(configCodeJson, web.MD5m16(currentTime), workDir, workDir, workDir))
+		// 解析JSON配置模板
+		jsonTmpl, err := template.New("configJson").Parse(configCodeJson)
+		if err != nil {
+			panic(fmt.Sprintf("JSON配置模板解析失败: %v", err))
+		}
+		if err := jsonTmpl.Execute(f, configData); err != nil {
+			panic(fmt.Sprintf("JSON配置模板渲染失败: %v", err))
+		}
 	} else {
-		_, _ = f.WriteString(fmt.Sprintf(configCodeYaml, web.MD5m16(currentTime), workDir, workDir, workDir))
+		// 解析YAML配置模板
+		yamlTmpl, err := template.New("configYaml").Parse(configCodeYaml)
+		if err != nil {
+			panic(fmt.Sprintf("YAML配置模板解析失败: %v", err))
+		}
+		if err := yamlTmpl.Execute(f, configData); err != nil {
+			panic(fmt.Sprintf("YAML配置模板渲染失败: %v", err))
+		}
 	}
 	_ = f.Close()
 	content, err := os.ReadFile(fmt.Sprintf("%s/main.go", workDir))
