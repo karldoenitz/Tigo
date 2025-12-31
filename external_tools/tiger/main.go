@@ -228,6 +228,7 @@ func execAddHandler(handlerName string) {
 		if code == "var urls = []web.Pattern{" {
 			isFoundUrls = true
 		}
+		// 这里后来最好优化一下，将整段代码进行优化
 		if code == "}" && isFoundUrls {
 			code = fmt.Sprintf("\t{\"/%s\", handler.%s{}, nil},\n}", url, handlerName)
 			isFoundUrls = false
