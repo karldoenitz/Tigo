@@ -56,7 +56,7 @@ func printCmdUsage(args []string) {
 	case "conf":
 		fmt.Print(cmdConfVerbose)
 		break
-	case "addHandler":
+	case "addhandler":
 		fmt.Print(cmdAddHandlerVerbose)
 		break
 	default:
@@ -75,7 +75,7 @@ func execEngine(args []string) {
 	case "conf":
 		execConf(args[1])
 		break
-	case "addHandler":
+	case "addhandler":
 		execAddHandler(args[1])
 		break
 	case "logger":
@@ -336,7 +336,7 @@ func main() {
 	// 如果创建demo，则直接把常变量`DemoCode`注入到目标文件中就行
 	// tiger支持的命令:
 	//  - create xxx: 创建项目
-	//  - addHandler xxx: 增加xxx命名的handler
+	//  - addhandler xxx: 增加xxx命名的handler
 	//  - conf xxx: 用xxx命名的配置文件替换现有配置文件，没有则新建
 	//  - mod: 进行go mod
 	//  - version: 获取当前Tigo版本号

@@ -124,7 +124,7 @@ Usage:
 
 The commands are:
 
-    addHandler      to add a handler for Tigo projection
+    addhandler      to add a handler for Tigo projection
     create          to create a Tigo projection
     conf            to add a configuration for Tigo projection
     logger          to add a logger for Tigo projection
