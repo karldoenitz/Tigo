@@ -6,22 +6,23 @@ import (
 	"compress/gzip"
 	"encoding/json"
 	"fmt"
-	"github.com/karldoenitz/Tigo/logger"
 	"io"
 	"net/http"
 	"net/url"
 	"reflect"
 	"strings"
+
+	"github.com/karldoenitz/Tigo/logger"
 )
 
 const (
-	GET     string = "GET"
-	POST    string = "POST"
-	PUT     string = "PUT"
-	PATCH   string = "PATCH"
-	HEAD    string = "HEAD"
-	OPTIONS string = "OPTIONS"
-	DELETE  string = "DELETE"
+	GET     = "GET"
+	POST    = "POST"
+	PUT     = "PUT"
+	PATCH   = "PATCH"
+	HEAD    = "HEAD"
+	OPTIONS = "OPTIONS"
+	DELETE  = "DELETE"
 )
 
 // HttpClient 是自定义HTTPClient
@@ -57,6 +58,9 @@ func (client HttpClient) request(method, uri string, headers map[string]string, 
 		switch response.Header.Get("Content-Encoding") {
 		case "gzip":
 			reader, _ := gzip.NewReader(response.Body)
+			defer func() {
+				_ = reader.Close()
+			}()
 			for {
 				buf := make([]byte, 1024)
 				n, err := reader.Read(buf)
@@ -236,7 +240,7 @@ func Delete(requestUrl string, headers ...map[string]string) (*Response, error) 
 	return response, nil
 }
 
-///////////////////////////////////////////////////utils////////////////////////////////////////////////////////////////
+// /////////////////////////////////////////////////utils////////////////////////////////////////////////////////////////
 
 // Map2Xml map转xml
 //   - versionAndEncode 版本号和编码，[]string{version, encode}
