@@ -2,11 +2,12 @@ package binding
 
 import (
 	"fmt"
-	"github.com/karldoenitz/Tigo/logger"
 	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/karldoenitz/Tigo/logger"
 )
 
 // checkField 对字段类型进行校验
