@@ -13,7 +13,7 @@ A web framework developed in go language.
 # Plugins and Tools for Tigo
 - **tiger**  
 `tiger` is a commandline tool for `Tigo` framework, you can use `tiger` to create a `Tigo` projection.  
-[glance tiger](https://github.com/karldoenitz/tiger)  
+[glance tiger](https://github.com/karldoenitz/Tigo/tree/master/external_tools/tiger)  
 - **tission**  
 `tission` is a session plugin for `Tigo`.  
 [glance tission](https://github.com/karldoenitz/tission)  
