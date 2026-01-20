@@ -11,6 +11,8 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 .idea/
+.comate/
+.vscode/
 *.log
 external_tools/*/main
 *plan.md
