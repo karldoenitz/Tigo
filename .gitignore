@@ -17,3 +17,4 @@
 external_tools/*/main
 *plan.md
 ignores/
+.DS_Store

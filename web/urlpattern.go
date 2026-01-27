@@ -16,6 +16,12 @@ const (
 	FnTeardownRequest = "TeardownRequest"
 )
 
+// websocket 定义函数名
+const (
+	FnWebSocketCommunicate = "Communicate"
+	FnWebSocketBaseHandler = "WSBaseHandler"
+)
+
 // UrlPatternHandle 是URL路由句柄，用来驱动url路由以及其映射的handler
 type UrlPatternHandle struct {
 	Handler    reflect.Type
@@ -73,6 +79,17 @@ func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v interface {
 		fileRouter.PathPrefix("/").Handler(http.StripPrefix(pattern.Url, fileServer))
 		return
 	}
+	// 判断是否是Websocket
+	if _, isWSHandler := v.(*WSPatternHandle); isWSHandler {
+		var wsMiddleware []middleware
+		for _, mv := range pattern.Middleware {
+			m := convertHandleFuncMV(mv)
+			wsMiddleware = append(wsMiddleware, m)
+		}
+		wsMiddlewares := chainMiddleware(wsMiddleware...)
+		urlPattern.router.HandleFunc(pattern.Url, wsMiddlewares(v.Handle))
+		return
+	}
 	// 判断是否是handler
 	baseMiddleware := []middleware{HttpContextLogMiddleware, InternalServerErrorMiddleware}
 	for _, mv := range pattern.Middleware {
@@ -89,6 +106,16 @@ func (urlPattern *UrlPattern) Init() {
 		handlerType := reflect.TypeOf(pattern.Handler)
 		if handlerType.Kind() == reflect.Ptr {
 			handlerType = handlerType.Elem()
+		}
+		// 判断是否是 WSHandlerInterface 接口类型
+		// 判断 handlerType 是否包含成员变量 WSBaseHandler
+		_, isWSHandler := handlerType.FieldByName(FnWebSocketBaseHandler)
+		if isWSHandler {
+			urlPattern.AppendRouterPattern(pattern, &WSPatternHandle{
+				Handler:    handlerType,
+				requestUrl: pattern.Url,
+			})
+			continue
 		}
 		urlPattern.AppendRouterPattern(pattern, &UrlPatternHandle{
 			Handler:    handlerType,
