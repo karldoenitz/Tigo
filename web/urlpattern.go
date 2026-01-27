@@ -63,9 +63,7 @@ type UrlPattern struct {
 }
 
 // AppendRouterPattern 向http服务挂载单个Router，Router中配置有url对应的handler以及对应的中间件
-func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v interface {
-	Handle(http.ResponseWriter, *http.Request)
-}) {
+func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v OriginHandlerInterface) {
 	// 判断是否是文件服务器
 	if filePath, isFileServer := pattern.Handler.(string); isFileServer {
 		fileServer := http.FileServer(http.Dir(filePath))
