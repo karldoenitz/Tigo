@@ -2,6 +2,21 @@ package web
 
 const Version = "2.0.2"
 
+// 定义函数名
+const (
+	FnBaseHandler     = "BaseHandler"
+	FnInitHandler     = "InitHandler"
+	FnPassJson        = "PassJson"
+	FnBeforeRequest   = "BeforeRequest"
+	FnTeardownRequest = "TeardownRequest"
+)
+
+// websocket 定义函数名
+const (
+	FnWebSocketCommunicate = "Communicate"
+	FnWebSocketBaseHandler = "WSBaseHandler"
+)
+
 const (
 	httpLowerGet     = "get"
 	httpLowerHead    = "head"

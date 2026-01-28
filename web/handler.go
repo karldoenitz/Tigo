@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/websocket"
 	"github.com/karldoenitz/Tigo/binding"
 	"github.com/karldoenitz/Tigo/logger"
 	"gorm.io/gorm"
@@ -739,4 +740,16 @@ func (baseHandler *BaseHandler) UrlEncode(value string) string {
 // UrlDecode 对值进行url解码
 func (baseHandler *BaseHandler) UrlDecode(value string) string {
 	return UrlDecode(value)
+}
+
+// =============================================== WebSocket Handler ===================================================
+
+type WSBaseHandler struct {
+}
+
+func (h *WSBaseHandler) Communicate(conn *websocket.Conn) {
+	respMsg := []byte("Communicate is not implemented")
+	if err := conn.WriteMessage(websocket.TextMessage, respMsg); err != nil {
+		logger.Error.Println("发送错误:", err)
+	}
 }

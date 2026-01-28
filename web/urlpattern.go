@@ -8,47 +8,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// 定义函数名
-const (
-	FnInitHandler     = "InitHandler"
-	FnPassJson        = "PassJson"
-	FnBeforeRequest   = "BeforeRequest"
-	FnTeardownRequest = "TeardownRequest"
-)
-
-// websocket 定义函数名
-const (
-	FnWebSocketCommunicate = "Communicate"
-	FnWebSocketBaseHandler = "WSBaseHandler"
-)
-
-// UrlPatternHandle 是URL路由句柄，用来驱动url路由以及其映射的handler
-type UrlPatternHandle struct {
-	Handler    reflect.Type
-	requestUrl string
-}
-
-// Handle 封装HTTP请求的中间件，主要有以下功能：
-//   - 1、根据反射找到挂载的handler；
-//   - 2、调用handler的InitHandler方法；
-//   - 3、进行HTTP请求预处理，包括判断请求方式是否合法等；
-//   - 4、调用handler中的功能方法；
-//   - 5、进行HTTP请求结束处理。
-func (urlPatternMidWare UrlPatternHandle) Handle(responseWriter http.ResponseWriter, request *http.Request) {
-	// 加载handler
-	handler := reflect.New(urlPatternMidWare.Handler)
-	// 调用InitHandler方法
-	VoidFuncCall(handler, FnInitHandler, reflect.ValueOf(responseWriter), reflect.ValueOf(request))
-	// 调用PassJson方法
-	VoidFuncCall(handler, FnPassJson)
-	// 调用BeforeRequest方法
-	VoidFuncCall(handler, FnBeforeRequest)
-	// 根据http请求方式调用相关方法
-	VoidFuncCall(handler, MethodEnum(request.Method))
-	// 调用TeardownRequest方法
-	VoidFuncCall(handler, FnTeardownRequest)
-}
-
 // Pattern 路由对象
 type Pattern struct {
 	Url        string
@@ -101,23 +60,19 @@ func (urlPattern *UrlPattern) AppendRouterPattern(pattern Pattern, v OriginHandl
 // Init 初始化url映射，遍历UrlMapping，将handler与对应的URL依次挂载到http服务上
 func (urlPattern *UrlPattern) Init() {
 	for _, pattern := range urlPattern.UrlPatterns {
-		handlerType := reflect.TypeOf(pattern.Handler)
-		if handlerType.Kind() == reflect.Ptr {
-			handlerType = handlerType.Elem()
-		}
-		// 判断是否是 WSHandlerInterface 接口类型
-		// 判断 handlerType 是否包含成员变量 WSBaseHandler
-		_, isWSHandler := handlerType.FieldByName(FnWebSocketBaseHandler)
-		if isWSHandler {
-			urlPattern.AppendRouterPattern(pattern, &WSPatternHandle{
-				Handler:    handlerType,
-				requestUrl: pattern.Url,
-			})
-			continue
-		}
-		urlPattern.AppendRouterPattern(pattern, &UrlPatternHandle{
-			Handler:    handlerType,
-			requestUrl: pattern.Url,
-		})
+		oriHandler := NewOriginHandler(pattern)
+		urlPattern.AppendRouterPattern(pattern, oriHandler)
 	}
+}
+
+func NewOriginHandler(pattern Pattern) OriginHandlerInterface {
+	handlerType := reflect.TypeOf(pattern.Handler)
+	if handlerType.Kind() == reflect.Ptr {
+		handlerType = handlerType.Elem()
+	}
+	_, isWSHandler := handlerType.FieldByName(FnWebSocketBaseHandler)
+	if isWSHandler {
+		return newWSPatternHandle(handlerType, pattern)
+	}
+	return newUrlPatternHandle(handlerType, pattern)
 }

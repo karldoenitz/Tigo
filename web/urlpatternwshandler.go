@@ -21,11 +21,31 @@ func SetWSUpgrader(u *websocket.Upgrader) {
 	upgrader = *u
 }
 
+// newWSPatternHandle 创建新的 WebSocket 模式处理器
+//   - handlerType: WebSocket 处理器的反射类型
+//   - pattern: URL 模式配置，包含请求路径信息
+//   - 返回值: 初始化完成的 WSPatternHandle 结构体指针
+func newWSPatternHandle(handlerType reflect.Type, pattern Pattern) *WSPatternHandle {
+	return &WSPatternHandle{
+		Handler:    handlerType,
+		requestUrl: pattern.Url,
+	}
+}
+
 type WSPatternHandle struct {
 	Handler    reflect.Type
 	requestUrl string
 }
 
+// Handle 处理WebSocket连接请求
+// 功能:
+//
+//	将HTTP连接升级为WebSocket连接，加载对应的处理器并执行通信逻辑
+//	如果升级失败会记录错误日志并返回
+//	连接成功后自动调用处理器的Communicate方法进行通信
+//
+//	- responseWriter: HTTP响应写入器
+//	- request: HTTP请求对象
 func (wsHandler WSPatternHandle) Handle(responseWriter http.ResponseWriter, request *http.Request) {
 	// 加载handler
 	handler := reflect.New(wsHandler.Handler)
@@ -42,14 +62,4 @@ func (wsHandler WSPatternHandle) Handle(responseWriter http.ResponseWriter, requ
 	logger.Info.Printf("websocket | %s | connect success", wsHandler.requestUrl)
 	// 调用 Communicate 方法
 	VoidFuncCall(handler, FnWebSocketCommunicate, reflect.ValueOf(conn))
-}
-
-type WSBaseHandler struct {
-}
-
-func (h *WSBaseHandler) Communicate(conn *websocket.Conn) {
-	respMsg := []byte("Communicate is not implemented")
-	if err := conn.WriteMessage(websocket.TextMessage, respMsg); err != nil {
-		logger.Error.Println("发送错误:", err)
-	}
 }
