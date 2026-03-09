@@ -745,11 +745,12 @@ func (baseHandler *BaseHandler) UrlDecode(value string) string {
 // =============================================== WebSocket Handler ===================================================
 
 type WSBaseHandler struct {
+	conn *websocket.Conn
 }
 
-func (h *WSBaseHandler) Communicate(conn *websocket.Conn) {
+func (h *WSBaseHandler) Communicate() {
 	respMsg := []byte("Communicate is not implemented")
-	if err := conn.WriteMessage(websocket.TextMessage, respMsg); err != nil {
+	if err := h.conn.WriteMessage(websocket.TextMessage, respMsg); err != nil {
 		logger.Error.Println("发送错误:", err)
 	}
 }

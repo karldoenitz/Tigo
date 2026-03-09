@@ -59,7 +59,9 @@ func (wsHandler WSPatternHandle) Handle(responseWriter http.ResponseWriter, requ
 		// 关闭连接
 		_ = conn.Close()
 	}()
+	// 把conn给handler.conn字段，赋上值
+	handler.Elem().FieldByName("conn").Set(reflect.ValueOf(conn))
 	logger.Info.Printf("websocket | %s | connect success", wsHandler.requestUrl)
 	// 调用 Communicate 方法
-	VoidFuncCall(handler, FnWebSocketCommunicate, reflect.ValueOf(conn))
+	VoidFuncCall(handler, FnWebSocketCommunicate)
 }
