@@ -491,7 +491,7 @@ func (baseHandler *BaseHandler) SetSession(key string, value interface{}) (err e
 			sessionId = session.SessionId()
 		}
 	}
-	baseHandler.SetAdvancedCookie(SessionCookieName, sessionId, "path=/")
+	baseHandler.SetAdvancedCookie(SessionCookieName, sessionId, "path=/", "httpOnly=true")
 	err = session.Set(key, value)
 	return
 }
