@@ -141,13 +141,14 @@ func (httpResponseWriter *HttpResponseWriter) GetStatus() int {
 
 // GlobalConfig 全局配置对象
 type GlobalConfig struct {
-	IP       string          `json:"ip"`       // IP地址
-	Port     int             `json:"port"`     // 端口
-	Cert     string          `json:"cert"`     // https证书路径
-	CertKey  string          `json:"cert_key"` // https密钥路径
-	Cookie   string          `json:"cookie"`   // cookie加密解密的密钥
-	Template string          `json:"template"` // 模板文件所在文件夹的路径
-	Log      logger.LogLevel `json:"log"`      // log相关属性配置
+	IP        string          `json:"ip"`        // IP地址
+	Port      int             `json:"port"`      // 端口
+	Cert      string          `json:"cert"`      // https证书路径
+	CertKey   string          `json:"cert_key"`  // https密钥路径
+	Cookie    string          `json:"cookie"`    // cookie加密解密的密钥
+	Template  string          `json:"template"`  // 模板文件所在文件夹的路径
+	Log       logger.LogLevel `json:"log"`       // log相关属性配置
+	WebSocket WSConfig        `json:"websocket"` // WebSocket 配置
 }
 
 // Init 根据配置文件初始化全局配置变量

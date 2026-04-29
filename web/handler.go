@@ -8,11 +8,13 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+	"net"
 	"net/http"
 	"net/http/httputil"
 	"reflect"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -744,13 +746,261 @@ func (baseHandler *BaseHandler) UrlDecode(value string) string {
 
 // =============================================== WebSocket Handler ===================================================
 
-type WSBaseHandler struct {
-	conn *websocket.Conn
+// WSConfig WebSocket 配置选项
+type WSConfig struct {
+	HandshakeTimeout  time.Duration            // 握手超时时间
+	ReadBufferSize    int                      // 读缓冲区大小
+	WriteBufferSize   int                      // 写缓冲区大小
+	EnableCompression bool                     // 是否启用压缩
+	PingInterval      time.Duration            // Ping 间隔，0 表示禁用心跳
+	PongWait          time.Duration            // 等待 Pong 超时时间
+	WriteWait         time.Duration            // 写入超时时间
+	CheckOrigin       func(*http.Request) bool // Origin 检查函数
 }
 
-func (h *WSBaseHandler) Communicate() {
-	respMsg := []byte("Communicate is not implemented")
-	if err := h.conn.WriteMessage(websocket.TextMessage, respMsg); err != nil {
-		logger.Error.Println("发送错误:", err)
+// DefaultWSConfig 返回默认的 WebSocket 配置
+func DefaultWSConfig() WSConfig {
+	return WSConfig{
+		HandshakeTimeout:  10 * time.Second,
+		ReadBufferSize:    1024,
+		WriteBufferSize:   1024,
+		EnableCompression: false,
+		PingInterval:      30 * time.Second,
+		PongWait:          60 * time.Second,
+		WriteWait:         10 * time.Second,
+		CheckOrigin: func(r *http.Request) bool {
+			return true
+		},
 	}
+}
+
+// WSBaseHandler WebSocket handler 基类
+type WSBaseHandler struct {
+	conn      *websocket.Conn
+	ctx       context.Context
+	cancelCtx context.CancelFunc
+	writeMu   sync.Mutex
+	request   *http.Request
+	config    WSConfig
+}
+
+// =========================================== 生命周期钩子方法 ===========================================
+
+// Connection 获取连接
+func (h *WSBaseHandler) Connection() *websocket.Conn {
+	return h.conn
+}
+
+// OnConnect 连接建立时调用，子类可重写此方法
+func (h *WSBaseHandler) OnConnect() {}
+
+// OnMessage 收到消息时调用，子类可重写此方法
+func (h *WSBaseHandler) OnMessage(messageType int, data []byte) {}
+
+// OnError 发生错误时调用，子类可重写此方法
+func (h *WSBaseHandler) OnError(err error) {}
+
+// OnDisconnect 连接关闭时调用，子类可重写此方法
+func (h *WSBaseHandler) OnDisconnect() {}
+
+// =========================================== 实用方法 ===========================================
+
+// Communicate 默认通信方法，子类必须重写此方法或使用默认的消息循环
+// 默认实现会调用 OnConnect，然后进入消息循环，收到消息时调用 OnMessage
+func (h *WSBaseHandler) Communicate() {
+	// 调用 OnConnect 钩子
+	h.OnConnect()
+
+	// 进入消息循环
+	for {
+		messageType, data, err := h.conn.ReadMessage()
+		if err != nil {
+			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseNormalClosure) {
+				h.OnError(err)
+			}
+			break
+		}
+		h.OnMessage(messageType, data)
+	}
+
+	// 调用 OnDisconnect 钩子
+	h.OnDisconnect()
+}
+
+// SetConn 设置 WebSocket 连接，内部使用
+func (h *WSBaseHandler) SetConn(conn *websocket.Conn) {
+	h.conn = conn
+}
+
+// SetRequest 设置 HTTP 请求对象，内部使用
+func (h *WSBaseHandler) SetRequest(req *http.Request) {
+	h.request = req
+	h.ctx, h.cancelCtx = context.WithCancel(req.Context())
+}
+
+// SetConfig 设置 WebSocket 配置
+func (h *WSBaseHandler) SetConfig(config WSConfig) {
+	h.config = config
+}
+
+// GetConn 获取 WebSocket 连接对象
+func (h *WSBaseHandler) GetConn() *websocket.Conn {
+	return h.conn
+}
+
+// GetContext 获取请求上下文
+func (h *WSBaseHandler) GetContext() context.Context {
+	return h.ctx
+}
+
+// GetRequest 获取原始 HTTP 请求对象
+func (h *WSBaseHandler) GetRequest() *http.Request {
+	return h.request
+}
+
+// SendText 发送文本消息（线程安全）
+func (h *WSBaseHandler) SendText(msg string) error {
+	h.writeMu.Lock()
+	defer h.writeMu.Unlock()
+
+	if h.config.WriteWait > 0 {
+		if err := h.conn.SetWriteDeadline(time.Now().Add(h.config.WriteWait)); err != nil {
+			return err
+		}
+	}
+	return h.conn.WriteMessage(websocket.TextMessage, []byte(msg))
+}
+
+// SendJSON 发送 JSON 消息（线程安全）
+func (h *WSBaseHandler) SendJSON(v interface{}) error {
+	h.writeMu.Lock()
+	defer h.writeMu.Unlock()
+
+	if h.config.WriteWait > 0 {
+		if err := h.conn.SetWriteDeadline(time.Now().Add(h.config.WriteWait)); err != nil {
+			return err
+		}
+	}
+	return h.conn.WriteJSON(v)
+}
+
+// SendBinary 发送二进制消息（线程安全）
+func (h *WSBaseHandler) SendBinary(data []byte) error {
+	h.writeMu.Lock()
+	defer h.writeMu.Unlock()
+
+	if h.config.WriteWait > 0 {
+		if err := h.conn.SetWriteDeadline(time.Now().Add(h.config.WriteWait)); err != nil {
+			return err
+		}
+	}
+	return h.conn.WriteMessage(websocket.BinaryMessage, data)
+}
+
+// ReadMessage 读取消息
+func (h *WSBaseHandler) ReadMessage() (int, []byte, error) {
+	if h.config.PongWait > 0 {
+		if err := h.conn.SetReadDeadline(time.Now().Add(h.config.PongWait)); err != nil {
+			return -1, nil, err
+		}
+	}
+	return h.conn.ReadMessage()
+}
+
+// ReadJSON 读取 JSON 消息
+func (h *WSBaseHandler) ReadJSON(v interface{}) error {
+	if h.config.PongWait > 0 {
+		if err := h.conn.SetReadDeadline(time.Now().Add(h.config.PongWait)); err != nil {
+			return err
+		}
+	}
+	return h.conn.ReadJSON(v)
+}
+
+// WriteMessage 写入消息（低级方法，不推荐直接使用）
+// 注意：此方法不是线程安全的，如需并发写入请使用 SendText/SendJSON/SendBinary
+func (h *WSBaseHandler) WriteMessage(messageType int, data []byte) error {
+	if h.config.WriteWait > 0 {
+		if err := h.conn.SetWriteDeadline(time.Now().Add(h.config.WriteWait)); err != nil {
+			return err
+		}
+	}
+	return h.conn.WriteMessage(messageType, data)
+}
+
+// Close 关闭连接
+func (h *WSBaseHandler) Close() error {
+	if h.cancelCtx != nil {
+		h.cancelCtx()
+	}
+	return h.conn.Close()
+}
+
+// RemoteAddr 获取客户端地址
+func (h *WSBaseHandler) RemoteAddr() net.Addr {
+	if h.conn != nil {
+		return h.conn.RemoteAddr()
+	}
+	return nil
+}
+
+// LocalAddr 获取服务端地址
+func (h *WSBaseHandler) LocalAddr() net.Addr {
+	if h.conn != nil {
+		return h.conn.LocalAddr()
+	}
+	return nil
+}
+
+// StartPingPong 启动 Ping/Pong 心跳
+func (h *WSBaseHandler) StartPingPong() {
+	if h.config.PingInterval <= 0 {
+		return
+	}
+
+	go func() {
+		ticker := time.NewTicker(h.config.PingInterval)
+		defer ticker.Stop()
+
+		for {
+			select {
+			case <-h.ctx.Done():
+				return
+			case <-ticker.C:
+				h.writeMu.Lock()
+				if err := h.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+					logger.Error.Printf("WebSocket ping error: %v", err)
+					h.writeMu.Unlock()
+					return
+				}
+				h.writeMu.Unlock()
+			}
+		}
+	}()
+}
+
+// SetPongHandler 设置 Pong 处理器
+func (h *WSBaseHandler) SetPongHandler(handler func(appData string) error) {
+	h.conn.SetPongHandler(func(appData string) error {
+		if h.config.PongWait > 0 {
+			if err := h.conn.SetReadDeadline(time.Now().Add(h.config.PongWait)); err != nil {
+				return err
+			}
+		}
+		if handler != nil {
+			return handler(appData)
+		}
+		return nil
+	})
+}
+
+// SetCloseHandler 设置关闭处理器
+func (h *WSBaseHandler) SetCloseHandler(handler func(code int, text string) error) {
+	h.conn.SetCloseHandler(func(code int, text string) error {
+		if handler != nil {
+			return handler(code, text)
+		}
+		h.OnDisconnect()
+		return nil
+	})
 }
