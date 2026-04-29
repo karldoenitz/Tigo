@@ -1,0 +1,34 @@
+// RESTful API main.go 模板
+package main
+
+import (
+	"github.com/karldoenitz/Tigo/web"
+	"{{ .PackageName }}/handler"
+	"{{ .PackageName }}/middleware"
+)
+
+// RESTful API 路由
+var urls = []web.Pattern{
+	{"/health", handler.HealthHandler{}, nil},
+	{"/api/v1/users", handler.UserHandler{}, middleware.Authorize},
+}
+
+func main() {
+	application := web.Application{
+		IPAddress:   "{{ .IP }}",
+		Port:        {{ .Port }},
+		UrlPatterns: urls,
+	}
+
+	{{ if .EnableLogger }}
+	// 配置日志文件路径
+	// application.ConfigPath = "config.json"
+	{{ end }}
+
+	{{ if .EnableSession }}
+	// 启用 Session（需要配置 session manager）
+	// application.StartSession(sessionManager)
+	{{ end }}
+
+	application.Run()
+}

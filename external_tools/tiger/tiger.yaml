@@ -1,0 +1,22 @@
+version: "2.0"
+default_template: "basic"
+templates:
+  - name: "basic"
+    path: "./templates/project/basic"
+  - name: "restful"
+    path: "./templates/project/restful"
+  - name: "websocket"
+    path: "./templates/project/websocket"
+template_repositories:
+  - "https://github.com/karldoenitz/tigo-templates"
+project_defaults:
+  port: 8080
+  ip: "0.0.0.0"
+  enable_logger: true
+  enable_session: false
+editor:
+  format: "gofmt"
+  imports: "goimports"
+git:
+  auto_init: false
+  default_branch: "main"

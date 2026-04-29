@@ -1,0 +1,21 @@
+// Authorize 中间件模板
+package middleware
+
+import (
+	"github.com/karldoenitz/Tigo/web"
+)
+
+// Authorize 身份验证中间件
+func Authorize(w *web.ResponseWriter, r *web.Request) bool {
+	// TODO: 实现你的身份验证逻辑
+	// 例如：验证 token、session 等
+
+	token := r.GetHeader("Authorization")
+	if token == "" {
+		(*w).WriteHeader(401)
+		return false
+	}
+
+	// 验证通过，继续处理请求
+	return true
+}

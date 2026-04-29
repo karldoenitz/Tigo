@@ -1,0 +1,31 @@
+// WebSocket Handler 模板
+package handler
+
+import (
+	"github.com/karldoenitz/Tigo/web"
+)
+
+type WebSocketHandler struct {
+	web.WSBaseHandler
+}
+
+// OnConnect 连接建立时调用
+func (h *WebSocketHandler) OnConnect() {
+	h.SendText("Welcome to WebSocket!")
+}
+
+// OnMessage 收到消息时调用
+func (h *WebSocketHandler) OnMessage(messageType int, data []byte) {
+	// 处理接收到的消息
+	h.SendText("Echo: " + string(data))
+}
+
+// OnError 发生错误时调用
+func (h *WebSocketHandler) OnError(err error) {
+	// 处理错误
+}
+
+// OnDisconnect 连接关闭时调用
+func (h *WebSocketHandler) OnDisconnect() {
+	// 清理资源
+}

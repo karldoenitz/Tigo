@@ -1,0 +1,20 @@
+// PingHandler Handler 模板
+package handler
+
+import (
+	"github.com/karldoenitz/Tigo/web"
+)
+
+type PingHandler struct {
+	web.BaseHandler
+}
+
+// Get 处理 GET 请求
+func (p *PingHandler) Get() {
+	p.ResponseAsText("Pong")
+}
+
+// Post 处理 POST 请求
+func (p *PingHandler) Post() {
+	p.ResponseAsText("Pong (POST)")
+}

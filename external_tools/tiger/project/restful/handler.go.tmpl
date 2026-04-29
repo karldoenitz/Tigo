@@ -1,0 +1,83 @@
+// RESTful Handler 模板
+package handler
+
+import (
+	"encoding/json"
+	"github.com/karldoenitz/Tigo/web"
+)
+
+type UserHandler struct {
+	web.BaseHandler
+}
+
+// ResponseResult API 响应结构
+type ResponseResult struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data,omitempty"`
+}
+
+// Get 获取用户列表
+func (h *UserHandler) Get() {
+	users := []map[string]interface{}{
+		{"id": 1, "name": "Alice"},
+		{"id": 2, "name": "Bob"},
+	}
+
+	result := ResponseResult{
+		Code:    200,
+		Message: "success",
+		Data:    users,
+	}
+	h.ResponseAsJson(result)
+}
+
+// Post 创建用户
+func (h *UserHandler) Post() {
+	var user map[string]interface{}
+	if err := h.CheckJsonBinding(&user); err != nil {
+		result := ResponseResult{
+			Code:    400,
+			Message: err.Error(),
+		}
+		h.ResponseAsJson(result)
+		return
+	}
+
+	// TODO: 保存用户到数据库
+
+	result := ResponseResult{
+		Code:    201,
+		Message: "user created",
+		Data:    user,
+	}
+	h.ResponseAsJson(result)
+}
+
+// Put 更新用户
+func (h *UserHandler) Put() {
+	userId := h.GetPathParam("id")
+
+	// TODO: 更新用户
+
+	result := ResponseResult{
+		Code:    200,
+		Message: "user updated",
+		Data:    map[string]interface{}{"id": userId},
+	}
+	h.ResponseAsJson(result)
+}
+
+// Delete 删除用户
+func (h *UserHandler) Delete() {
+	userId := h.GetPathParam("id")
+
+	// TODO: 删除用户
+
+	result := ResponseResult{
+		Code:    200,
+		Message: "user deleted",
+		Data:    map[string]interface{}{"id": userId},
+	}
+	h.ResponseAsJson(result)
+}

@@ -1,0 +1,28 @@
+// main.go 模板
+package main
+
+import (
+	"github.com/karldoenitz/Tigo/web"
+	"{{ .PackageName }}/handler"
+)
+
+// 写入你的路由映射
+var urls = []web.Pattern{
+	{"/ping", handler.PingHandler{}, nil},
+}
+
+func main() {
+	application := web.Application{
+		IPAddress:   "{{ .IP }}",
+		Port:        {{ .Port }},
+		UrlPatterns: urls,
+	}
+
+	{{ if .EnableLogger }}
+	// 配置日志文件路径
+	// application.ConfigPath = "config.json"
+	// application.ConfigPath = "config.yaml"
+	{{ end }}
+
+	application.Run()
+}
