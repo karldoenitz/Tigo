@@ -1,78 +1,78 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+本文件为 Claude Code (claude.ai/code) 提供项目代码指导。
 
-## Overview
+## 概述
 
-Tigo is a Go web framework with a handler-based architecture. Handlers inherit from `web.BaseHandler` and implement HTTP methods (Get, Post, Put, Delete, etc.) that are automatically routed based on request method.
+Tigo 是一个基于 Handler 架构的 Go Web 框架。Handler 继承自 `web.BaseHandler`，通过实现 HTTP 方法（Get、Post、Put、Delete 等）来自动路由请求。
 
-**Module Path:** `github.com/karldoenitz/Tigo`
+**模块路径:** `github.com/karldoenitz/Tigo`
 
-## Project Structure
+## 项目结构
 
-- `web/` - Core framework package: Application, handlers, middleware, routing, utilities
-- `binding/` - JSON and form binding with validation
-- `logger/` - Logging functionality
-- `request/` - HTTP client for making outgoing requests
-- `test_case/` - Test files
-- `external_tools/tiger/` - Scaffolding CLI tool for creating Tigo projects
+- `web/` - 核心框架包：Application、Handler、中间件、路由、工具函数
+- `binding/` - JSON 和表单数据绑定及验证
+- `logger/` - 日志功能
+- `request/` - HTTP 客户端（用于发起外部请求）
+- `test_case/` - 测试文件
+- `external_tools/tiger/` - 脚手架 CLI 工具，用于创建 Tigo 项目
 
-## Common Commands
+## 常用命令
 
-### Building/Testing
+### 构建与测试
 ```bash
-# Run all tests
+# 运行所有测试
 go test ./test_case/...
 
-# Run specific test
+# 运行特定测试文件
 go test ./test_case/client_test.go
 
-# Build the main application
+# 构建主程序
 go build main.go
 ```
 
-### Tiger CLI Tool (Scaffolding)
+### Tiger CLI 工具（脚手架）
 ```bash
-# Install tiger
+# 安装 tiger
 go install github.com/karldoenitz/Tigo/external_tools/tiger@latest
 
-# Create new Tigo project
+# 创建新的 Tigo 项目
 tiger create projectName
 ```
 
-## Architecture
+## 架构设计
 
-### Handler Pattern
-All handlers inherit from `web.BaseHandler` and implement HTTP methods by name:
-- `Get()` - Handles GET requests
-- `Post()` - Handles POST requests
-- `Put()`, `Delete()`, etc. - Other HTTP methods
+### Handler 模式
+所有 Handler 继承 `web.BaseHandler`，通过方法名实现对应的 HTTP 方法：
+- `Get()` - 处理 GET 请求
+- `Post()` - 处理 POST 请求
+- `Put()`、`Delete()` 等 - 处理其他 HTTP 方法
 
-Unimplemented methods return 405 Method Not Allowed.
+未实现的方法自动返回 405 Method Not Allowed。
 
-### Handler Lifecycle
-1. Request is routed to handler via reflection-based method dispatch
-2. `InitHandler()` is called to set up ResponseWriter and Request
-3. `BeforeRequest()` hook runs (override in custom handler)
-4. HTTP method handler (Get/Post/etc.) executes
-5. `TeardownRequest()` hook runs (override in custom handler)
+### Handler 生命周期
+1. 请求通过反射机制路由到对应的 Handler
+2. 调用 `InitHandler()` 初始化 ResponseWriter 和 Request
+3. 执行 `BeforeRequest()` 前置钩子（可在自定义 Handler 中重写）
+4. 执行对应的 HTTP 方法处理函数（Get/Post 等）
+5. 执行 `TeardownRequest()` 后置钩子（可在自定义 Handler 中重写）
 
-The framework automatically detects and calls the appropriate HTTP method using reflection.
+框架通过反射自动检测并调用对应的 HTTP 方法。
 
-### Application Lifecycle
-1. Create `web.Application` with IP, Port, UrlPatterns, and optional ConfigPath
-2. Call `application.Run()` (or `EndlessStart()` / `OverseerStart()` for graceful restart)
-3. `InitApp()` is called internally to set up routing and load config
+### Application 生命周期
+1. 创建 `web.Application`，传入 IP、Port、UrlPatterns 和可选的 ConfigPath
+2. 调用 `application.Run()`（或 `EndlessStart()` / `OverseerStart()` 实现优雅重启）
+3. 内部调用 `InitApp()` 初始化路由并加载配置
 
-### Routing
-Routes defined as `[]web.Pattern`:
-- `Url` - URL path string
-- `Handler` - Handler instance (inherits `BaseHandler`)
-- `Middleware` - Optional slice of middleware functions
+### 路由
+路由定义为 `[]web.Pattern`：
+- `Url` - URL 路径字符串
+- `Handler` - Handler 实例（继承 `BaseHandler`）
+- `Middleware` - 可选的中间件函数切片
 
-The framework uses `gorilla/mux` for routing under the hood, supporting path parameters via `mux.Vars()`.
+底层使用 `gorilla/mux` 进行路由匹配，支持通过 `mux.Vars()` 获取路径参数。
 
-Example:
+示例：
 ```go
 var urls = []web.Pattern{
     {"/demo", DemoHandler{}, []web.Middleware{Authorize}},
@@ -80,66 +80,62 @@ var urls = []web.Pattern{
 }
 ```
 
-### Middleware
-Custom middleware signature: `func(w *http.ResponseWriter, r *http.Request) bool`
-- Return `true` to continue to next handler
-- Return `false` to stop request processing
+### 中间件
+自定义中间件签名：`func(w *http.ResponseWriter, r *http.Request) bool`
+- 返回 `true` 继续执行后续处理
+- 返回 `false` 中止请求处理
 
-Built-in middleware (always applied):
-- `HttpContextLogMiddleware` - Logs request duration and status
-- `InternalServerErrorMiddleware` - Catches panics and returns 500
+内置中间件（始终生效）：
+- `HttpContextLogMiddleware` - 记录请求耗时和状态
+- `InternalServerErrorMiddleware` - 捕获 panic 并返回 500 错误
 
-### WebSocket Support
-Handlers with a `conn *websocket.Conn` field are automatically detected as WebSocket handlers. WebSocket connections use `web.WSBaseHandler` as base.
+### WebSocket 支持
+包含 `conn *websocket.Conn` 字段的 Handler 会被自动识别为 WebSocket Handler。WebSocket 连接使用 `web.WSBaseHandler` 作为基类。
 
-### File Server
-Mount static files with `application.MountFileServer("/path/to/files", "/files/")`
+### 静态文件服务
+使用 `application.MountFileServer("/path/to/files", "/files/")` 挂载静态文件。
 
-## Configuration
+## 配置
 
-Global config can be loaded from JSON or YAML file via `ConfigPath` field:
-- `ip` - IP address
-- `port` - Port number
-- `cert` / `cert_key` - HTTPS certificate paths
-- `cookie` - Cookie encryption key
-- `template` - Template file directory path
-- `log` - Log level configuration
+通过 `ConfigPath` 字段可从 JSON 或 YAML 文件加载全局配置：
+- `ip` - IP 地址
+- `port` - 端口号
+- `cert` / `cert_key` - HTTPS 证书路径
+- `cookie` - Cookie 加密密钥
+- `template` - 模板文件目录路径
+- `log` - 日志级别配置
 
-## Handler Methods
+## Handler 方法
 
-`BaseHandler` provides common methods:
-- **Response**: `ResponseAsJson()`, `ResponseAsText()`, `ResponseAsHtml()`, `Render()` (templates)
-- **Parameters**: `GetParameter()`, `GetPathParam()`, `GetJsonValue()`, `CheckParamBinding()`
-- **Cookies**: `SetCookie()`, `GetCookie()`, `SetSecureCookie()`, `ClearCookie()`
-- **Session**: `SetSession()`, `GetSession()`, `DelSession()` (requires `application.StartSession()`)
-- **Headers**: `GetHeader()`, `SetHeader()`
-- **Redirects**: `Redirect()`, `Move()`, `RedirectPermanently()`
-- **Context**: `SetCtxVal()`, `GetCtxVal()` for request-scoped values
+`BaseHandler` 提供的常用方法：
+- **响应**: `ResponseAsJson()`、`ResponseAsText()`、`ResponseAsHtml()`、`Render()`（模板渲染）
+- **参数获取**: `GetParameter()`、`GetPathParam()`、`GetJsonValue()`、`CheckParamBinding()`
+- **Cookie**: `SetCookie()`、`GetCookie()`、`SetSecureCookie()`、`ClearCookie()`
+- **Session**: `SetSession()`、`GetSession()`、`DelSession()`（需先调用 `application.StartSession()`）
+- **请求头**: `GetHeader()`、`SetHeader()`
+- **重定向**: `Redirect()`、`Move()`、`RedirectPermanently()`
+- **上下文**: `SetCtxVal()`、`GetCtxVal()` 用于请求级别的值传递
 
-## Cookie Encryption
+## Cookie 加密
 
-Tigo provides built-in cookie encryption via the `web.Cookie` struct:
-- Use `SetSecureCookie()` / `GetSecureCookie()` for encrypted cookies
-- Set encryption key via `GlobalConfig.Cookie` or pass as parameter
-- Supports advanced cookie options with `SetAdvancedCookie()` (path, domain, expires, secure, httpOnly)
+Tigo 通过 `web.Cookie` 结构体提供内置的 Cookie 加密功能：
+- 使用 `SetSecureCookie()` / `GetSecureCookie()` 操作加密 Cookie
+- 通过 `GlobalConfig.Cookie` 或参数传入设置加密密钥
+- 支持通过 `SetAdvancedCookie()` 设置高级选项（path、domain、expires、secure、httpOnly）
 
-## Custom Validation
+## 数据绑定与验证
 
-Structs used for binding can implement a `Check() error` method for custom validation logic that runs after tag-based validation.
+使用 `binding` 包进行结构化的请求数据验证：
+- `json:"field_name"` 标签用于 JSON 数据
+- `form:"field_name"` 标签用于表单数据
+- 在 Handler 中调用 `baseHandler.CheckJsonBinding(obj)` 或 `CheckFormBinding(obj)`
 
-## Binding/Validation
+**验证标签：**
+- `required:"true"` - 标记字段为必填
+- `default:"value"` - 字段为空时设置默认值
+- `regex:"pattern"` - 根据正则表达式验证字段
 
-Use `binding` package for structured request validation:
-- `json:"field_name"` tags for JSON
-- `form:"field_name"` tags for form data
-- Call `baseHandler.CheckJsonBinding(obj)` or `CheckFormBinding(obj)` in handlers
-
-**Validation Tags:**
-- `required:"true"` - marks field as required
-- `default:"value"` - sets default value if field is empty
-- `regex:"pattern"` - validates field against regex pattern
-
-Example:
+示例：
 ```go
 type UserRequest struct {
     Name  string `json:"name" required:"true"`
@@ -148,9 +144,13 @@ type UserRequest struct {
 }
 ```
 
-## Session Support
+### 自定义验证
 
-Tigo uses a pluggable session architecture. Third-party session implementations must implement the `web.SessionInterface`:
+用于绑定的结构体可以实现 `Check() error` 方法，在标签验证之后执行自定义验证逻辑。
+
+## Session 支持
+
+Tigo 采用可插拔的 Session 架构。第三方 Session 实现需实现 `web.SessionInterface` 接口：
 
 ```go
 type SessionInterface interface {
@@ -158,13 +158,13 @@ type SessionInterface interface {
 }
 ```
 
-To enable sessions, call `application.StartSession()` with a session manager before running the app. For a ready-to-use Redis/MySQL session plugin, see [tission](https://github.com/karldoenitz/tission).
+启用 Session 需在应用启动前调用 `application.StartSession()` 并传入 Session 管理器。可使用现成的 Redis/MySQL Session 插件 [tission](https://github.com/karldoenitz/tission)。
 
-## Third-Party Tools
+## 相关工具
 
-- **tiger** - Scaffolding CLI tool for creating Tigo projects (`go install github.com/karldoenitz/Tigo/external_tools/tiger@latest`)
-- **tission** - Session plugin for Redis/MySQL backend storage
+- **tiger** - 脚手架 CLI 工具，用于快速创建 Tigo 项目（`go install github.com/karldoenitz/Tigo/external_tools/tiger@latest`）
+- **tission** - Session 插件，支持 Redis/MySQL 后端存储
 
-## Test Files
+## 测试
 
-Tests are located in `test_case/` directory. Run with standard Go test commands.
+测试文件位于 `test_case/` 目录，使用标准 Go 测试命令运行。

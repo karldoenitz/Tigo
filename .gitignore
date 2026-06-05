@@ -18,3 +18,8 @@ external_tools/*/main
 *plan.md
 ignores/
 .DS_Store
+
+# vibe coding tools
+.claude/
+.joycode/
+.understand-anything/
